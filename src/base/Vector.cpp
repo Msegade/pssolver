@@ -27,6 +27,17 @@ Vector<ValueType>::Vector(int size)
 }
 
 template <typename ValueType>
+Vector<ValueType>::Vector(int size, const ValueType val)
+{
+    assert(size>0);
+    pImplHost = new HostVector<ValueType>();
+    pImplHost->Allocate(size);
+    pImpl = pImplHost;
+    pImpl->SetVal(val);
+
+}
+
+template <typename ValueType>
 Vector<ValueType>::~Vector()
 {
     // We can only delete once the pointer, if we free here pImpl we get 
@@ -105,6 +116,14 @@ Vector<ValueType>& Vector<ValueType>::operator=(
 
 }
 
+template <typename ValueType>
+void Vector<ValueType>::operator+=(
+                                const Vector<ValueType>& otherVector)
+{
+    assert(GetSize() == otherVector.GetSize());
+    pImpl->Add(*(otherVector.pImpl));
+}
+                                
 
 // Instantiate the class for the supported template type 
 // parameters. If not done you have to include the 

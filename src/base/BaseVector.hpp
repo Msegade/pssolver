@@ -21,6 +21,8 @@ public:
 
     virtual void CopyFrom(const BaseVector<ValueType> &otherVector) = 0;
 
+    virtual void Add(const BaseVector<ValueType> &otherVector) = 0;
+
 protected:
     int mSize;
 

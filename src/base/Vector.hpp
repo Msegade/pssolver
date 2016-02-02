@@ -14,6 +14,7 @@ class Vector
 public:
     Vector();
     Vector(int size);
+    Vector(int size, const ValueType val);
     virtual ~Vector();
     
     void Allocate(int size);
@@ -27,6 +28,11 @@ public:
 
     //Assignment
     Vector<ValueType>& operator=(const Vector<ValueType>& otherVector);
+    //Plus equal operator (Doesn't allocate another vector)
+    // a = a + b; --> Allocates a temporary vector
+    // a += b; --> Doesn't allocate a temorary vector
+    void operator+=(const Vector<ValueType>& otherVector);
+     
 
 
 private:

@@ -57,6 +57,19 @@ void HostVector<ValueType>::CopyFrom(
     }
 
 }
+
+template <typename ValueType>
+void HostVector<ValueType>::Add(
+                        const BaseVector<ValueType> &otherVector)
+{
+    const HostVector<ValueType> *cast_vec = 
+        dynamic_cast<const HostVector<ValueType>*> (&otherVector);
+    for (int i=0; i<this->mSize; i++)
+    {
+        mData[i] = mData[i] + cast_vec->mData[i];
+    }
+
+}
 template class HostVector<double>;
 template class HostVector<float>;
 template class HostVector<int>;

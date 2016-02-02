@@ -9,15 +9,18 @@ int main()
 {
 
     // Vector<float> b(); Doesn't work because fo vexing parse issue;
-    Vector<float> b(100);
+    Vector<float> b(100,3.0);
+    Vector<float> c(100,5.1);
+    c.Allocate(200);
+    b+=c;
+    cout << b[3] << endl;
 
-    Vector<float> c;
-    Vector<float> d;
 
-    d = c = b;
-    //std::cout << "Hasta aquí" << std::endl;
 
-    
+    //Vector<float> c;
+    //Vector<float> d;
+
+    //d = c = b;
 
     //std::cout << b.GetSize() << std::endl;
 
@@ -35,14 +38,13 @@ int main()
 
     //b.SetVal(5.0);
 
-    //std::cout << "==== Operator[] as lvalue =====" << std::endl;
-    //std::cout << b[3] << std::endl;
-
-    //b[3] = 7.3;
     //std::cout << "==== Operator [] =====" << std::endl;
     //std::cout << b[3] << std::endl;
 
-    //Vector<float> c;
+    //b[3] = 7.3;
+    //std::cout << "==== Operator[] as lvalue =====" << std::endl;
+    //std::cout << b[3] << std::endl;
+
     //c = b;
     //std::cout << "==== Assingment=====" << std::endl;
     //std::cout << c[3] << std::endl;
