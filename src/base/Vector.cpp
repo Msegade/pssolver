@@ -43,7 +43,7 @@ Vector<ValueType>::~Vector()
     // We can only delete once the pointer, if we free here pImpl we get 
     // double free error
     delete pImplHost;
-    std::cout << "Vector Destructor" << std::endl;
+    //std::cout << "Vector Destructor" << std::endl;
 }
 
 template <typename ValueType>
@@ -107,7 +107,7 @@ Vector<ValueType>& Vector<ValueType>::operator=(
     // otherVector.pImpl is BaseVector*
     pImpl->CopyFrom(*(otherVector.pImpl));
 
-    // Returning a Vector object allows chaning assigment
+    // Returning a Vector object allows chaining assigment
     // a = b = c;
     // Returning by reference makes that no copy of the object is created
     // and destroyed

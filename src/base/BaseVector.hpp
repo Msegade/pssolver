@@ -23,6 +23,7 @@ public:
 
     virtual void Add(const BaseVector<ValueType> &otherVector) = 0;
 
+// Protected so the derived classes have acces to it
 protected:
     int mSize;
 

@@ -18,7 +18,7 @@ HostVector<ValueType>::~HostVector()
 {
 
     delete[] mData;
-    std::cout << "HostVector Destructor" << std::endl;
+    //std::cout << "HostVector Destructor" << std::endl;
 
 
 }

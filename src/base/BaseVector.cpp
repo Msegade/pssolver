@@ -8,7 +8,7 @@ BaseVector<ValueType>::BaseVector() : mSize(0) {}
 template <typename ValueType>
 BaseVector<ValueType>::~BaseVector()
 {
-    std::cout << "BaseVector Destructor" << std::endl;
+    //std::cout << "BaseVector Destructor" << std::endl;
 } 
 
 template <typename ValueType>

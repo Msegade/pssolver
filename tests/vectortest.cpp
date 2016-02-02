@@ -1,19 +1,45 @@
+#include <catch.hpp>
+
 #include "pssolver.hpp"
 #include <unistd.h>
 #include <iostream>
 
+
 using namespace pssolver;
 using namespace std;
 
-int main()
+TEST_CASE( "Vector<int> Operations", "[Vector]")
 {
+    Vector<int> v(5);
+    REQUIRE( v.GetSize() == 5);
 
+    v.Allocate(10); 
+    REQUIRE( v.GetSize() == 10);
+
+    v.SetVal(7);
+    REQUIRE( v[3] == 7);
+
+    Vector<int> v2(10, 3);
+    REQUIRE( v2[3] == 3);
+    REQUIRE( v2.GetSize() == 10);
+    v2 = v;
+
+    REQUIRE( v2[3] == 7);
+
+    v2 += v;
+    REQUIRE( v2[3] == 14);
+
+}
+
+
+//int main()
+//{
     // Vector<float> b(); Doesn't work because fo vexing parse issue;
-    Vector<float> b(100,3.0);
-    Vector<float> c(100,5.1);
-    c.Allocate(200);
-    b+=c;
-    cout << b[3] << endl;
+    //Vector<float> b(100,3.0);
+    //Vector<float> c(100,5.1);
+    //c.Allocate(200);
+    //b+=c;
+    //cout << b[3] << endl;
 
 
 
@@ -53,5 +79,5 @@ int main()
     
 
 
-    return 0;
-}
+//    return 0;
+//}
