@@ -8,28 +8,33 @@
 using namespace pssolver;
 using namespace std;
 
-TEST_CASE( "Vector<int> Operations", "[Vector]")
-{
-    Vector<int> v(5);
-    REQUIRE( v.GetSize() == 5);
+#define TEST_TYPE(NAME, DESCRIPTION, T)           \
+TEST_CASE( NAME,DESCRIPTION)                      \
+{                                                 \
+    Vector<T> v(5);                               \
+    REQUIRE( v.GetSize() == 5);                   \
+                                                  \
+    v.Allocate(10);                               \
+    REQUIRE( v.GetSize() == 10);                  \
+                                                  \
+    v.SetVal(7);                                  \
+    REQUIRE( v[3] == 7);                          \
+                                                  \
+    Vector<T> v2(10, 3);                          \
+    REQUIRE( v2[3] == 3);                         \
+    REQUIRE( v2.GetSize() == 10);                 \
+    v2 = v;                                       \
+                                                  \
+    REQUIRE( v2[3] == 7);                         \
+                                                  \
+    v2 += v;                                      \
+    REQUIRE( v2[3] == 14);                        \
+                                                  \
+}                                               
 
-    v.Allocate(10); 
-    REQUIRE( v.GetSize() == 10);
-
-    v.SetVal(7);
-    REQUIRE( v[3] == 7);
-
-    Vector<int> v2(10, 3);
-    REQUIRE( v2[3] == 3);
-    REQUIRE( v2.GetSize() == 10);
-    v2 = v;
-
-    REQUIRE( v2[3] == 7);
-
-    v2 += v;
-    REQUIRE( v2[3] == 14);
-
-}
+TEST_TYPE("Vector of Integers","Vector<int>", int);
+TEST_TYPE("Vector of floats","Vector<float>", float);
+TEST_TYPE("Vector of doubles","Vector<double>", double);
 
 
 //int main()
