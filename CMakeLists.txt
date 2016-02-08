@@ -12,6 +12,8 @@ endif()
 set (EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/build/bin/")
 set (LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/build/lib/")
 
+enable_testing()
+
 add_subdirectory(src)
 add_subdirectory(tests)
 
