@@ -3,6 +3,8 @@
 #include "BaseVector.hpp"
 #include "host/HostVector.hpp"
 
+#include <memory>
+
 namespace pssolver
 {
 
@@ -36,8 +38,8 @@ public:
 
 
 private:
-    BaseVector<ValueType> *pImpl;
-    HostVector<ValueType> *pImplHost;
+    std::shared_ptr<BaseVector<ValueType>> pImpl;
+    std::shared_ptr<HostVector<ValueType>> pImplHost;
 
 };
 

@@ -17,10 +17,8 @@ HostVector<ValueType>::HostVector()
 template <typename ValueType>
 HostVector<ValueType>::~HostVector()
 {
-
     delete[] mData;
     //std::cout << "HostVector Destructor" << std::endl;
-
 
 }
 

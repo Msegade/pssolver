@@ -11,7 +11,8 @@ template <typename ValueType>
 Vector<ValueType>::Vector()
 {
     // Create empty vector on host
-    pImplHost = new HostVector<ValueType>();
+    pImplHost = std::shared_ptr<HostVector<ValueType>>
+                                (new HostVector<ValueType>());
     pImpl = pImplHost;
 
 }
@@ -20,7 +21,8 @@ template <typename ValueType>
 Vector<ValueType>::Vector(int size)
 {
     assert(size>0);
-    pImplHost = new HostVector<ValueType>();
+    pImplHost = std::shared_ptr<HostVector<ValueType>>
+                                (new HostVector<ValueType>());
     pImplHost->Allocate(size);
     pImpl = pImplHost;
 
@@ -30,7 +32,8 @@ template <typename ValueType>
 Vector<ValueType>::Vector(int size, const ValueType val)
 {
     assert(size>0);
-    pImplHost = new HostVector<ValueType>();
+    pImplHost = std::shared_ptr<HostVector<ValueType>>
+                                (new HostVector<ValueType>());
     pImplHost->Allocate(size);
     pImpl = pImplHost;
     pImpl->SetVal(val);
@@ -42,7 +45,8 @@ Vector<ValueType>::~Vector()
 {
     // We can only delete once the pointer, if we free here pImpl we get 
     // double free error
-    delete pImplHost;
+    //delete pImplHost;
+    // No-op -> pImplHost gets deleted automatically (smart pointer)
     //std::cout << "Vector Destructor" << std::endl;
 }
 
@@ -52,8 +56,9 @@ void Vector<ValueType>::Allocate(int size)
     if ( pImpl == pImplHost )
     {
         assert(size>0);
-        delete pImplHost; 
-        pImplHost = new HostVector<ValueType>();
+        pImplHost.reset();
+        pImplHost = std::shared_ptr<HostVector<ValueType>>
+                                    (new HostVector<ValueType>());
         assert(pImplHost != NULL);
         pImplHost->Allocate(size);
         pImpl = pImplHost;
