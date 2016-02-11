@@ -8,8 +8,9 @@ namespace pssolver
 {
 
 template <typename ValueType>
-HostVector<ValueType>::HostVector()
+HostVector<ValueType>::HostVector() 
 {
+    mData = new ValueType[0];
 
 }
 
