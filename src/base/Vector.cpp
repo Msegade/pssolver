@@ -142,6 +142,20 @@ Vector<ValueType> Vector<ValueType>::operator+(
     return result;
         
 }
+
+template <typename ValueType>
+double Vector<ValueType>::Norm(void) const
+{
+    if (GetSize()>0)
+    {
+        return pImpl->Norm();
+    }
+    else
+    {
+        return 0.0;
+    }
+
+}
                                 
 
 // Instantiate the class for the supported template type 

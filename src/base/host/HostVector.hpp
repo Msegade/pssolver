@@ -29,6 +29,7 @@ public:
     virtual void Add(const BaseVector<ValueType> &otherVector);
     virtual void Add(const BaseVector<ValueType> &v1,
                     const BaseVector<ValueType> &v2);
+    virtual double Norm(void) const;
 
 private:
 

@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include <cmath>
 
 namespace pssolver
 {
@@ -84,6 +85,19 @@ void HostVector<ValueType>::Add(
     {
         mData[i] = cast_v1->mData[i] + cast_v2->mData[i];
     }
+
+}
+
+template <typename ValueType>
+double HostVector<ValueType>::Norm(void) const
+{
+    double norm = 0.0;
+    for (int i=0; i<mSize; ++i)
+    {
+       norm += mData[i]*mData[i];
+    }
+
+    return std::sqrt((double)norm);
 
 }
 

@@ -76,6 +76,14 @@ TYPED_TEST(VectorTest, VectorOperations)
         EXPECT_EQ(9, c[i]);
     }
 
+    // Norm
+    c.Allocate(5);
+    c.SetVal(7);
+    EXPECT_NEAR(15.652476, c.Norm(), 0.0001);
+
+
+
+
 }
 
 

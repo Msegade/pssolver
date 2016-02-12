@@ -30,11 +30,12 @@ public:
 
     //Assignment
     Vector<ValueType>& operator=(const Vector<ValueType>& otherVector);
-    //Plus equal operator (Doesn't allocate another vector)
     // a = a + b; --> Allocates a temporary vector
     // a += b; --> Doesn't allocate a temorary vector
     void operator+=(const Vector<ValueType>& otherVector);
     Vector operator+(const Vector<ValueType>& otherVector);
+
+    double Norm(void) const;
      
 
 
