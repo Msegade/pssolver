@@ -22,6 +22,8 @@ public:
     virtual void CopyFrom(const BaseVector<ValueType> &otherVector) = 0;
 
     virtual void Add(const BaseVector<ValueType> &otherVector) = 0;
+    virtual void Add(const BaseVector<ValueType>& v1,
+                const BaseVector<ValueType>& v2) = 0;
 
 // Protected so the derived classes have acces to it
 protected:

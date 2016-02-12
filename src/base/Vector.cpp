@@ -128,6 +128,20 @@ void Vector<ValueType>::operator+=(
     assert(GetSize() == otherVector.GetSize());
     pImpl->Add(*(otherVector.pImpl));
 }
+
+template <typename ValueType>
+Vector<ValueType> Vector<ValueType>::operator+(
+                                const Vector<ValueType>& otherVector)
+{
+    assert(GetSize() == otherVector.GetSize());
+
+    Vector<ValueType> result(GetSize());
+
+    result.pImpl->Add(*(otherVector.pImpl), *pImpl);
+
+    return result;
+        
+}
                                 
 
 // Instantiate the class for the supported template type 

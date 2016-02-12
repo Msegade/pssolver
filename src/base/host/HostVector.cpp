@@ -69,6 +69,24 @@ void HostVector<ValueType>::Add(
     }
 
 }
+
+template <typename ValueType>
+void HostVector<ValueType>::Add(
+                        const BaseVector<ValueType> &v1,
+                        const BaseVector<ValueType> &v2)
+{
+    const HostVector<ValueType> *cast_v1 = 
+        dynamic_cast<const HostVector<ValueType>*> (&v1);
+    const HostVector<ValueType> *cast_v2 = 
+        dynamic_cast<const HostVector<ValueType>*> (&v2);
+
+    for (int i=0; i<this->mSize; i++)
+    {
+        mData[i] = cast_v1->mData[i] + cast_v2->mData[i];
+    }
+
+}
+
 template class HostVector<double>;
 template class HostVector<float>;
 template class HostVector<int>;

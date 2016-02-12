@@ -60,12 +60,20 @@ TYPED_TEST(VectorTest, VectorOperations)
     {
         EXPECT_EQ(3, b[i]);
     }
-    // Sum
+    // Increment
     b += *(this->Vector_);
     EXPECT_EQ(100, b.GetSize());
     for (int i = 0; i<100; i++)
     {
         EXPECT_EQ(6, b[i]);
+    }
+    // Sum 
+    Vector<TypeParam> c;
+    c = b + *(this->Vector_);
+    EXPECT_EQ(100, c.GetSize());
+    for (int i = 0; i<100; i++)
+    {
+        EXPECT_EQ(9, c[i]);
     }
 
 }
