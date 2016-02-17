@@ -101,6 +101,22 @@ double HostVector<ValueType>::Norm(void) const
 
 }
 
+template <typename ValueType>
+ValueType HostVector<ValueType>::Dot(const BaseVector<ValueType>& otherVector)
+{
+    const HostVector<ValueType> *cast_v = 
+        dynamic_cast<const HostVector<ValueType>*> (&otherVector);
+
+    ValueType result = 0.0;
+    for (int i=0; i<this->mSize; i++)
+    {
+        result += mData[i]*cast_v->mData[i];
+    }
+
+    return result;
+
+}
+
 template class HostVector<double>;
 template class HostVector<float>;
 template class HostVector<int>;

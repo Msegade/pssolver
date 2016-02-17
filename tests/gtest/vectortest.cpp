@@ -81,6 +81,11 @@ TYPED_TEST(VectorTest, VectorOperations)
     c.SetVal(7);
     EXPECT_NEAR(15.652476, c.Norm(), 0.0001);
 
+    // Dot Product
+    b.Allocate(5);
+    b.SetVal(4);
+    EXPECT_EQ(140, b.Dot(c));
+
 
 
 

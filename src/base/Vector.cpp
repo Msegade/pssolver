@@ -156,6 +156,14 @@ double Vector<ValueType>::Norm(void) const
     }
 
 }
+
+template <typename ValueType>
+ValueType Vector<ValueType>::Dot(const Vector<ValueType>& otherVector) const 
+{
+    assert(GetSize() == otherVector.GetSize()); 
+    return pImpl->Dot(*(otherVector.pImpl));
+    
+}
                                 
 
 // Instantiate the class for the supported template type 

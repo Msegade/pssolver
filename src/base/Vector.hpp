@@ -36,8 +36,7 @@ public:
     Vector operator+(const Vector<ValueType>& otherVector);
 
     double Norm(void) const;
-     
-
+    ValueType Dot(const Vector<ValueType>& otherVector) const;
 
 private:
     std::shared_ptr<BaseVector<ValueType>> pImpl;

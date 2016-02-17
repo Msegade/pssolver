@@ -30,6 +30,7 @@ public:
     virtual void Add(const BaseVector<ValueType> &v1,
                     const BaseVector<ValueType> &v2);
     virtual double Norm(void) const;
+    virtual ValueType Dot(const BaseVector<ValueType> &otherVector);
 
 private:
 
