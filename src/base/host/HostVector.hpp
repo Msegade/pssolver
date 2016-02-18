@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../BaseVector.hpp"
+#include "../device/DeviceVector.hpp"
 
 
 namespace pssolver
@@ -18,6 +19,7 @@ class HostVector: public BaseVector<ValueType>
     using BaseVector<ValueType>::mSize;
     // For the [] operator
     friend class Vector<ValueType>;
+    friend class DeviceVector<ValueType>;
 
 public:
     HostVector();

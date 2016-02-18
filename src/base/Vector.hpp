@@ -2,6 +2,7 @@
 
 #include "BaseVector.hpp"
 #include "host/HostVector.hpp"
+#include "device/DeviceVector.hpp"
 
 #include <memory>
 
@@ -19,6 +20,7 @@ public:
     Vector(int size, const ValueType val);
     virtual ~Vector();
     
+    void MoveToDevice(void);
     void Allocate(int size);
     int GetSize(void) const;
     void info(void) const;
@@ -30,17 +32,18 @@ public:
 
     //Assignment
     Vector<ValueType>& operator=(const Vector<ValueType>& otherVector);
-    // a = a + b; --> Allocates a temporary vector
     // a += b; --> Doesn't allocate a temorary vector
     void operator+=(const Vector<ValueType>& otherVector);
+    // a = a + b; --> Allocates a temporary vector
     Vector operator+(const Vector<ValueType>& otherVector);
 
     double Norm(void) const;
-    ValueType Dot(const Vector<ValueType>& otherVector) const;
+    ValueType operator*(const Vector<ValueType>& otherVector) const;
 
 private:
     std::shared_ptr<BaseVector<ValueType>> pImpl;
     std::shared_ptr<HostVector<ValueType>> pImplHost;
+    std::shared_ptr<DeviceVector<ValueType>> pImplDevice;
 
 };
 

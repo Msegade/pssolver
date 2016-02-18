@@ -1,0 +1,41 @@
+#include "DeviceVector.hpp"
+#include "../host/HostVector.hpp"
+
+#include <cassert>
+#include <cstring>
+#include <iostream>
+#include <cmath>
+
+namespace pssolver
+{
+
+template <typename ValueType>
+DeviceVector<ValueType>::DeviceVector()
+{
+        
+}
+
+template <typename ValueType>
+void DeviceVector<ValueType>::Allocate (const int size)
+{
+    assert(size > 0);
+    mSize = size;
+    cudaMalloc(&d_mData, mSize*sizeof(double));
+}
+
+template <typename ValueType>
+void DeviceVector<ValueType>::CopyFrom(const BaseVector<ValueType>& src)
+{
+    const HostVector<ValueType> *cast_vec; 
+    cast_vec = dynamic_cast<const HostVector<ValueType>*> (&src);
+
+    cudaMemcpy(d_mData, cast_vec->mData, mSize*sizeof(double),
+                cudaMemcpyHostToDevice);
+
+}
+
+template class DeviceVector<double>;
+template class DeviceVector<float>;
+template class DeviceVector<int>;
+
+}

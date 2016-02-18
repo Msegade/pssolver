@@ -1,6 +1,7 @@
 file ( GLOB_RECURSE hdr *.hpp )       
 file ( GLOB_RECURSE cpp *.cpp )       
+file ( GLOB_RECURSE cu *.cu )       
 
-set ( SOURCES ${hdr} ${cpp} )   
+set ( SOURCES ${hdr} ${cpp} ${cu})   
 
-add_library (pssolver SHARED ${SOURCES} )
+cuda_add_library (pssolver SHARED ${SOURCES} )

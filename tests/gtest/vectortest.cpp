@@ -84,7 +84,7 @@ TYPED_TEST(VectorTest, VectorOperations)
     // Dot Product
     b.Allocate(5);
     b.SetVal(4);
-    EXPECT_EQ(140, b.Dot(c));
+    EXPECT_EQ(140, b*c);
 
 
 

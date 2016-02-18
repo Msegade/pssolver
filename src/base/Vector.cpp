@@ -43,11 +43,18 @@ Vector<ValueType>::Vector(int size, const ValueType val)
 template <typename ValueType>
 Vector<ValueType>::~Vector()
 {
-    // We can only delete once the pointer, if we free here pImpl we get 
-    // double free error
-    //delete pImplHost;
     // No-op -> pImplHost gets deleted automatically (smart pointer)
     //std::cout << "Vector Destructor" << std::endl;
+}
+
+template <typename ValueType>
+void Vector<ValueType>::MoveToDevice(void)
+{
+    pImplDevice = std::shared_ptr<DeviceVector<ValueType>>
+                                (new DeviceVector<ValueType>());
+    pImplDevice->Allocate(pImpl->GetSize());
+    pImplDevice->CopyFrom(*pImplHost);
+    pImpl = pImplDevice;
 }
 
 template <typename ValueType>
@@ -158,7 +165,7 @@ double Vector<ValueType>::Norm(void) const
 }
 
 template <typename ValueType>
-ValueType Vector<ValueType>::Dot(const Vector<ValueType>& otherVector) const 
+ValueType Vector<ValueType>::operator*(const Vector<ValueType>& otherVector) const 
 {
     assert(GetSize() == otherVector.GetSize()); 
     return pImpl->Dot(*(otherVector.pImpl));

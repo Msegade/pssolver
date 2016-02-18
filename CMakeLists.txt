@@ -3,6 +3,8 @@ project (pssolver)
 
 set (CMAKE_CXX_STANDARD 11)
 
+find_package (CUDA REQUIRED)
+
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR "${CMAKE_BUILD_TYPE}" STREQUAL "debug")
     set(CMAKE_CXX_FLAGS "-pg -O0 -Wall -fPIC")
 else()
