@@ -21,6 +21,9 @@ public:
     virtual ~Vector();
     
     void MoveToDevice(void);
+    bool IsHost(void) const;
+    bool IsDevice(void) const;
+
     void Allocate(int size);
     int GetSize(void) const;
     void info(void) const;
@@ -28,7 +31,7 @@ public:
     virtual void SetVal(const ValueType val);
 
     //Access operator - Modify
-    ValueType& operator[](const int i);
+    ValueType operator[](const int i) const;
 
     //Assignment
     Vector<ValueType>& operator=(const Vector<ValueType>& otherVector);
@@ -39,6 +42,7 @@ public:
 
     double Norm(void) const;
     ValueType operator*(const Vector<ValueType>& otherVector) const;
+
 
 private:
     std::shared_ptr<BaseVector<ValueType>> pImpl;

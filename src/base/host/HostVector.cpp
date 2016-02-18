@@ -42,6 +42,12 @@ void HostVector<ValueType>::SetVal(const ValueType val)
 }
 
 template <typename ValueType>
+ValueType HostVector<ValueType>::Read(const int i) const
+{
+    return mData[i];
+}
+
+template <typename ValueType>
 void HostVector<ValueType>::CopyFromHost(
                         const BaseVector<ValueType> &otherVector)
 {

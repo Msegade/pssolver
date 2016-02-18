@@ -47,6 +47,21 @@ TYPED_TEST(VectorTest, VectorDataManipulation)
         EXPECT_EQ(7, b[i]);
     }
 
+    // Mov to the device
+    b.MoveToDevice();
+    EXPECT_TRUE(b.IsDevice());
+
+    b.Allocate(5);
+    EXPECT_EQ(5, b.GetSize());
+
+    b.SetVal(9);
+    for (int i = 0; i<5; i++)
+    {
+        EXPECT_EQ(9, b[i]);
+    }
+
+    
+
 }
 
 TYPED_TEST(VectorTest, VectorOperations)
@@ -85,7 +100,6 @@ TYPED_TEST(VectorTest, VectorOperations)
     b.Allocate(5);
     b.SetVal(4);
     EXPECT_EQ(140, b*c);
-
 
 
 

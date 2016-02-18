@@ -58,17 +58,39 @@ void Vector<ValueType>::MoveToDevice(void)
 }
 
 template <typename ValueType>
+bool Vector<ValueType>::IsHost(void) const
+{
+    return (pImpl == pImplHost);
+}
+
+template <typename ValueType>
+bool Vector<ValueType>::IsDevice(void) const
+{
+    return (pImpl == pImplDevice);
+}
+
+template <typename ValueType>
 void Vector<ValueType>::Allocate(int size)
 {
+    assert(size>0);
     if ( pImpl == pImplHost )
     {
-        assert(size>0);
         pImplHost.reset();
         pImplHost = std::shared_ptr<HostVector<ValueType>>
                                     (new HostVector<ValueType>());
         assert(pImplHost != NULL);
         pImplHost->Allocate(size);
         pImpl = pImplHost;
+    }
+    else if (pImpl == pImplDevice )
+    {
+        pImplDevice.reset();
+        pImplDevice = std::shared_ptr<DeviceVector<ValueType>>
+                                    (new DeviceVector<ValueType>());
+        assert(pImplDevice != NULL);
+        pImplDevice->Allocate(size);
+        pImpl = pImplDevice;
+
     }
 
 }
@@ -98,11 +120,10 @@ void Vector<ValueType>::SetVal(const ValueType val)
 }
 
 template <typename ValueType>
-ValueType& Vector<ValueType>::operator[](const int i)
+ValueType Vector<ValueType>::operator[](const int i) const
 {
-    assert(pImplHost != NULL);
-    assert((i >= 0) && (i < pImplHost->GetSize()));
-    return pImplHost->mData[i];
+    assert((i >= 0) && (i < pImpl->GetSize()));
+    return pImpl->Read(i);
 }
 
 template <typename ValueType>

@@ -19,6 +19,8 @@ public:
 
     virtual void SetVal(const ValueType val) = 0;
 
+    virtual ValueType Read(const int i) const = 0;
+
     virtual void CopyFromHost(const BaseVector<ValueType> &otherVector) = 0;
     virtual void CopyFromDevice(const BaseVector<ValueType> &otherVector) = 0;
     virtual void CopyToHost(BaseVector<ValueType> &otherVector) const = 0;

@@ -49,6 +49,16 @@ void DeviceVector<ValueType>::SetVal (const ValueType val)
 }
 
 template <typename ValueType>
+ValueType DeviceVector<ValueType>::Read(const int i) const
+{
+    ValueType val;
+    checkCudaErrors(cudaMemcpy(&val, &(d_mData[i]), sizeof(ValueType),
+                    cudaMemcpyDeviceToHost));
+    return val;
+}
+
+
+template <typename ValueType>
 void DeviceVector<ValueType>::CopyFromHost(const BaseVector<ValueType>& src)
 {
     const HostVector<ValueType> *cast_vec; 
