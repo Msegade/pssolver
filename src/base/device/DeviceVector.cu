@@ -35,7 +35,7 @@ DeviceVector<ValueType>::~DeviceVector()
 template <typename ValueType>
 void DeviceVector<ValueType>::Allocate (const int size)
 {
-    assert(size > 0);
+    assert(size >= 0);
     mSize = size;
     checkCudaErrors(cudaMalloc(&d_mData, mSize*sizeof(double)));
 }
@@ -145,29 +145,60 @@ double DeviceVector<ValueType>::Norm(void) const
     dim3 GridSize( mSize / BLOCKSIZE +1);
     kernel_vector_multiply <<<GridSize, BlockSize>>> ( mSize, aux.d_mData,
                                                     d_mData);
-    kernel_vector_sum_reduce <<<GridSize, BlockSize>>> ( mSize, aux.d_mData);
+
+    result = aux.SumReduce();
+
+    return sqrt((double)result);
+
+}
+
+template <typename ValueType>
+ValueType DeviceVector<ValueType>::Dot(const BaseVector<ValueType>& otherVector)
+{
+    const DeviceVector<ValueType> *cast_v = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&otherVector);
+
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    DeviceVector<ValueType> aux(*this);
+    kernel_vector_multiply <<<GridSize, BlockSize>>> ( mSize, aux.d_mData,
+                                                    cast_v->d_mData);
+    double result = 0.0;
+    aux.SumReduce();
+
+    return result;
+       
+    
+}
+
+template <typename ValueType>
+ValueType DeviceVector<ValueType>::SumReduce(void)
+{
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    kernel_vector_sum_reduce <<<GridSize, BlockSize>>> ( mSize, d_mData);
 
     //If the grid size is odd, we get at an odd number of elements at the beginning of the
     // array that we need to sum, and the algorithm kernel_sum_reduce_onevector
     // only reduces an even number of elements
+    ValueType result=0.0;
     if ( GridSize.x % 2 != 0)
     {
         // We change the element to 0 and increase the size of the grid by one
         // to get an even number of elements
-        double zero = 0.0;
-        checkCudaErrors(cudaMemcpy(&aux.d_mData[GridSize.x], &zero, sizeof(double), cudaMemcpyHostToDevice));
+        ValueType zero = 0.0;
+        checkCudaErrors(cudaMemcpy(&d_mData[GridSize.x], &zero, sizeof(double), cudaMemcpyHostToDevice));
         BlockSize = GridSize.x + 1;
         GridSize = 1;
-        kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, aux.d_mData);
+        kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, d_mData);
     }
     BlockSize = GridSize;
     GridSize = 1;
-    kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, aux.d_mData);
+    kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, d_mData);
 
-    checkCudaErrors(cudaMemcpy( &result, aux.d_mData, sizeof(double), cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy( &result, d_mData, sizeof(double), cudaMemcpyDeviceToHost));
 
-    return sqrt(result);
-
+    return result;
 }
 
 template class DeviceVector<double>;

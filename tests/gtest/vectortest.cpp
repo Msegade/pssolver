@@ -127,13 +127,13 @@ TYPED_TEST(VectorTest, VectorOperationsDevice)
     }
     // Sum
     Vector<TypeParam> d;
+    d.MoveToDevice();
     d = b + c;
     EXPECT_EQ(100, b.GetSize());
     for (int i = 0; i<100; i++)
     {
         EXPECT_EQ(21, d[i]);
     }
-
 
 }
 

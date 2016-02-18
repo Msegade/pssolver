@@ -33,14 +33,12 @@ public:
                 const BaseVector<ValueType>& v2);
 
     virtual double Norm(void) const;
-    virtual ValueType Dot(const BaseVector<ValueType>& otherVector)
-    {
-        ValueType result=0.0;
-        return result;
-    }
+    virtual ValueType Dot(const BaseVector<ValueType>& otherVector);
     
 private:
     ValueType *d_mData;
+
+    ValueType SumReduce(void);
 };
 
 }
