@@ -64,7 +64,7 @@ TYPED_TEST(VectorTest, VectorDataManipulation)
 
 }
 
-TYPED_TEST(VectorTest, VectorOperations)
+TYPED_TEST(VectorTest, VectorOperationsHost)
 {
     // *(this->Vector_) is the one created in the fixture
     Vector<TypeParam> b;
@@ -102,9 +102,40 @@ TYPED_TEST(VectorTest, VectorOperations)
     EXPECT_EQ(140, b*c);
 
 
-
 }
 
+TYPED_TEST(VectorTest, VectorOperationsDevice)
+{
+    // *(this->Vector_) is the one created in the fixture
+    Vector<TypeParam> b(10,5);
+    Vector<TypeParam> c(100,7);
+    b.MoveToDevice();
+    c.MoveToDevice();
+    //Assigment
+    b = c;
+    EXPECT_EQ(100, b.GetSize());
+    for (int i = 0; i<100; i++)
+    {
+        EXPECT_EQ(7, b[i]);
+    }
+    // Increment
+    b += c;
+    EXPECT_EQ(100, b.GetSize());
+    for (int i = 0; i<100; i++)
+    {
+        EXPECT_EQ(14, b[i]);
+    }
+    // Sum
+    Vector<TypeParam> d;
+    d = b + c;
+    EXPECT_EQ(100, b.GetSize());
+    for (int i = 0; i<100; i++)
+    {
+        EXPECT_EQ(21, d[i]);
+    }
+
+
+}
 
 int main(int argc, char *argv[])
 {

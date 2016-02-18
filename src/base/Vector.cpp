@@ -134,17 +134,33 @@ Vector<ValueType>& Vector<ValueType>::operator=(
     if (this == &otherVector)
        return *this;
     
-    int size = otherVector.GetSize();
-    this->Allocate(size);
-    // we need to pass a reference (BaseVector&)
-    // otherVector.pImpl is BaseVector*
-    pImpl->CopyFromHost(*(otherVector.pImpl));
+    if((pImpl == pImplHost) && (otherVector.pImpl == otherVector.pImplHost))
+    {
+        int size = otherVector.GetSize();
+        this->Allocate(size);
+        // we need to pass a reference (BaseVector&)
+        // otherVector.pImpl is BaseVector*
+        pImpl->CopyFromHost(*(otherVector.pImpl));
 
-    // Returning a Vector object allows chaining assigment
-    // a = b = c;
-    // Returning by reference makes that no copy of the object is created
-    // and destroyed
-    return *this;
+        // Returning a Vector object allows chaining assigment
+        // a = b = c;
+        // Returning by reference makes that no copy of the object is created
+        // and destroyed
+        return *this;
+    }
+    else if((pImpl == pImplDevice) && (otherVector.pImpl == otherVector.pImplDevice))
+    {
+        int size = otherVector.GetSize();
+        this->Allocate(size);
+        pImpl->CopyFromDevice(*(otherVector.pImpl));
+        return *this;
+    }
+    else
+    {
+        std::cerr << "Objects must be on the same place (device or host)"
+                  << std::endl;
+        return *this;
+    }
 
 
 }
@@ -165,7 +181,13 @@ Vector<ValueType> Vector<ValueType>::operator+(
 
     Vector<ValueType> result(GetSize());
 
-    result.pImpl->Add(*(otherVector.pImpl), *pImpl);
+    if (pImpl == pImplHost)
+        result.pImpl->Add(*(otherVector.pImpl), *pImpl);
+    else if (pImpl == pImplDevice)
+    {
+        result.MoveToDevice();
+        result.pImpl->Add(*(otherVector.pImpl), *pImpl);
+    }
 
     return result;
         
