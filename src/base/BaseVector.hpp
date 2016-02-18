@@ -19,7 +19,10 @@ public:
 
     virtual void SetVal(const ValueType val) = 0;
 
-    virtual void CopyFrom(const BaseVector<ValueType> &otherVector) = 0;
+    virtual void CopyFromHost(const BaseVector<ValueType> &otherVector) = 0;
+    virtual void CopyFromDevice(const BaseVector<ValueType> &otherVector) = 0;
+    virtual void CopyToHost(BaseVector<ValueType> &otherVector) const = 0;
+    virtual void CopyToDevice(BaseVector<ValueType> &otherVector) const = 0;
 
     virtual void Add(const BaseVector<ValueType> &otherVector) = 0;
     virtual void Add(const BaseVector<ValueType>& v1,

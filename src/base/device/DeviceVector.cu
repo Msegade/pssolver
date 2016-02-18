@@ -20,6 +20,13 @@ DeviceVector<ValueType>::DeviceVector()
 }
 
 template <typename ValueType>
+DeviceVector<ValueType>::DeviceVector(const DeviceVector<ValueType>& v)
+{
+    this->Allocate(v.mSize);
+    this->CopyFromDevice(v);
+}
+
+template <typename ValueType>
 DeviceVector<ValueType>::~DeviceVector()
 {
     checkCudaErrors(cudaFree(d_mData)); 
@@ -42,13 +49,46 @@ void DeviceVector<ValueType>::SetVal (const ValueType val)
 }
 
 template <typename ValueType>
-void DeviceVector<ValueType>::CopyFrom(const BaseVector<ValueType>& src)
+void DeviceVector<ValueType>::CopyFromHost(const BaseVector<ValueType>& src)
 {
     const HostVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const HostVector<ValueType>*> (&src);
 
     checkCudaErrors(cudaMemcpy(d_mData, cast_vec->mData, mSize*sizeof(double),
                     cudaMemcpyHostToDevice));
+
+}
+
+template <typename ValueType>
+void DeviceVector<ValueType>::CopyFromDevice(const BaseVector<ValueType>& src)
+{
+    const DeviceVector<ValueType> *cast_vec; 
+    cast_vec = dynamic_cast<const DeviceVector<ValueType>*> (&src);
+
+    checkCudaErrors(cudaMemcpy(d_mData, cast_vec->d_mData, mSize*sizeof(double),
+                    cudaMemcpyDeviceToDevice));
+
+}
+
+template <typename ValueType>
+void DeviceVector<ValueType>::CopyToHost(BaseVector<ValueType>& dst) const
+{
+    const HostVector<ValueType> *cast_vec; 
+    cast_vec = dynamic_cast<const HostVector<ValueType>*> (&dst);
+
+    checkCudaErrors(cudaMemcpy(cast_vec->mData, d_mData, mSize*sizeof(double),
+                    cudaMemcpyDeviceToHost));
+
+}
+
+template <typename ValueType>
+void DeviceVector<ValueType>::CopyToDevice(BaseVector<ValueType>& dst) const
+{
+    const DeviceVector<ValueType> *cast_vec; 
+    cast_vec = dynamic_cast<const DeviceVector<ValueType>*> (&dst);
+
+    checkCudaErrors(cudaMemcpy(cast_vec->d_mData, d_mData, mSize*sizeof(double),
+                    cudaMemcpyDeviceToDevice));
 
 }
 
@@ -89,8 +129,34 @@ void DeviceVector<ValueType>::Add(
 template <typename ValueType>
 double DeviceVector<ValueType>::Norm(void) const
 {
+    DeviceVector<ValueType> aux(*this);
     double result = 0.0;
-    return result;
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    kernel_vector_multiply <<<GridSize, BlockSize>>> ( mSize, aux.d_mData,
+                                                    d_mData);
+    kernel_vector_sum_reduce <<<GridSize, BlockSize>>> ( mSize, aux.d_mData);
+
+    //If the grid size is odd, we get at an odd number of elements at the beginning of the
+    // array that we need to sum, and the algorithm kernel_sum_reduce_onevector
+    // only reduces an even number of elements
+    if ( GridSize.x % 2 != 0)
+    {
+        // We change the element to 0 and increase the size of the grid by one
+        // to get an even number of elements
+        double zero = 0.0;
+        checkCudaErrors(cudaMemcpy(&aux.d_mData[GridSize.x], &zero, sizeof(double), cudaMemcpyHostToDevice));
+        BlockSize = GridSize.x + 1;
+        GridSize = 1;
+        kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, aux.d_mData);
+    }
+    BlockSize = GridSize;
+    GridSize = 1;
+    kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, aux.d_mData);
+
+    checkCudaErrors(cudaMemcpy( &result, aux.d_mData, sizeof(double), cudaMemcpyDeviceToHost));
+
+    return sqrt(result);
 
 }
 

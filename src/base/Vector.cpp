@@ -53,7 +53,7 @@ void Vector<ValueType>::MoveToDevice(void)
     pImplDevice = std::shared_ptr<DeviceVector<ValueType>>
                                 (new DeviceVector<ValueType>());
     pImplDevice->Allocate(pImpl->GetSize());
-    pImplDevice->CopyFrom(*pImplHost);
+    pImplDevice->CopyFromHost(*pImplHost);
     pImpl = pImplDevice;
 }
 
@@ -117,7 +117,7 @@ Vector<ValueType>& Vector<ValueType>::operator=(
     this->Allocate(size);
     // we need to pass a reference (BaseVector&)
     // otherVector.pImpl is BaseVector*
-    pImpl->CopyFrom(*(otherVector.pImpl));
+    pImpl->CopyFromHost(*(otherVector.pImpl));
 
     // Returning a Vector object allows chaining assigment
     // a = b = c;

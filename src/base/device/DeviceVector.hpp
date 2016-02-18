@@ -18,11 +18,15 @@ class DeviceVector: public BaseVector<ValueType>
 
 public:
     DeviceVector();
+    DeviceVector(const DeviceVector<ValueType>& v);
     virtual ~DeviceVector();
 
     virtual void Allocate(const int size);
     virtual void SetVal(const ValueType val);
-    virtual void CopyFrom(const BaseVector<ValueType> &hostVector);
+    virtual void CopyFromHost(const BaseVector<ValueType> &hostVector);
+    virtual void CopyFromDevice(const BaseVector<ValueType> &deviceVector);
+    virtual void CopyToHost(BaseVector<ValueType> &hostVector) const;
+    virtual void CopyToDevice(BaseVector<ValueType> &deviceVector) const;
     virtual void Add(const BaseVector<ValueType> &otherVector);
     virtual void Add(const BaseVector<ValueType>& v1,
                 const BaseVector<ValueType>& v2);

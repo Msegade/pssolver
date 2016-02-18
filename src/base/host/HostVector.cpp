@@ -42,7 +42,7 @@ void HostVector<ValueType>::SetVal(const ValueType val)
 }
 
 template <typename ValueType>
-void HostVector<ValueType>::CopyFrom(
+void HostVector<ValueType>::CopyFromHost(
                         const BaseVector<ValueType> &otherVector)
 {
     // To access private attributes of the derived class we need to 
@@ -59,6 +59,47 @@ void HostVector<ValueType>::CopyFrom(
 }
 
 template <typename ValueType>
+void HostVector<ValueType>::CopyFromDevice(
+                        const BaseVector<ValueType> &deviceVector)
+{
+    // To access private attributes of the derived class we need to 
+    // downcast the object
+
+    const DeviceVector<ValueType> *cast_vec = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&deviceVector);
+
+    cast_vec->CopyToHost(*this);
+
+}
+
+template <typename ValueType>
+void HostVector<ValueType>::CopyToHost(
+                        BaseVector<ValueType> &otherVector) const
+{
+
+    const HostVector<ValueType> *cast_vec = 
+        dynamic_cast<const HostVector<ValueType>*> (&otherVector);
+
+    for (int i=0; i<this->mSize; i++)
+    {
+        cast_vec->mData[i] = mData[i];
+    }
+
+}
+
+template <typename ValueType>
+void HostVector<ValueType>::CopyToDevice(
+                        BaseVector<ValueType> &deviceVector) const
+{
+
+    DeviceVector<ValueType> *cast_vec = 
+        dynamic_cast<DeviceVector<ValueType>*> (&deviceVector);
+
+    cast_vec->CopyFromHost(*this);
+
+}
+
+template <typename ValueType>
 void HostVector<ValueType>::Add(
                         const BaseVector<ValueType> &otherVector)
 {
@@ -70,6 +111,7 @@ void HostVector<ValueType>::Add(
     }
 
 }
+
 
 template <typename ValueType>
 void HostVector<ValueType>::Add(
