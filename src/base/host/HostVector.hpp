@@ -19,6 +19,7 @@ class HostVector: public BaseVector<ValueType>
     using BaseVector<ValueType>::mSize;
     // For the [] operator
     friend class Vector<ValueType>;
+    // Copying from host to device
     friend class DeviceVector<ValueType>;
 
 public:

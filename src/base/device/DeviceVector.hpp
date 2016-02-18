@@ -18,6 +18,8 @@ class DeviceVector: public BaseVector<ValueType>
 
 public:
     DeviceVector();
+    virtual ~DeviceVector();
+
     virtual void Allocate(const int size);
     virtual void SetVal(const ValueType val) {}
     virtual void CopyFrom(const BaseVector<ValueType> &hostVector);
