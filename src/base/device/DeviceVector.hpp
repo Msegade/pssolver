@@ -21,7 +21,7 @@ public:
     virtual ~DeviceVector();
 
     virtual void Allocate(const int size);
-    virtual void SetVal(const ValueType val) {}
+    virtual void SetVal(const ValueType val);
     virtual void CopyFrom(const BaseVector<ValueType> &hostVector);
     virtual void Add(const BaseVector<ValueType> &otherVector) {}
     virtual void Add(const BaseVector<ValueType>& v1,
