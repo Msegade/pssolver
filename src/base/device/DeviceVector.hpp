@@ -23,11 +23,11 @@ public:
     virtual void Allocate(const int size);
     virtual void SetVal(const ValueType val);
     virtual void CopyFrom(const BaseVector<ValueType> &hostVector);
-    virtual void Add(const BaseVector<ValueType> &otherVector) {}
+    virtual void Add(const BaseVector<ValueType> &otherVector);
     virtual void Add(const BaseVector<ValueType>& v1,
-                const BaseVector<ValueType>& v2) {}
+                const BaseVector<ValueType>& v2);
 
-    virtual double Norm(void) const { double result=0.0; return result;}
+    virtual double Norm(void) const;
     virtual ValueType Dot(const BaseVector<ValueType>& otherVector)
     {
         ValueType result=0.0;

@@ -91,13 +91,13 @@ void HostVector<ValueType>::Add(
 template <typename ValueType>
 double HostVector<ValueType>::Norm(void) const
 {
-    double norm = 0.0;
+    double result = 0.0;
     for (int i=0; i<mSize; ++i)
     {
-       norm += mData[i]*mData[i];
+       result += mData[i]*mData[i];
     }
 
-    return std::sqrt((double)norm);
+    return std::sqrt((double)result);
 
 }
 

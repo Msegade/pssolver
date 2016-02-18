@@ -38,7 +38,7 @@ void DeviceVector<ValueType>::SetVal (const ValueType val)
 {
     dim3 BlockSize(BLOCKSIZE);
     dim3 GridSize( mSize / BLOCKSIZE +1);
-    kernel_fill_vector <<<GridSize, BlockSize>>>(mSize, d_mData, val);
+    kernel_vector_fill <<<GridSize, BlockSize>>>(mSize, d_mData, val);
 }
 
 template <typename ValueType>
@@ -49,6 +49,48 @@ void DeviceVector<ValueType>::CopyFrom(const BaseVector<ValueType>& src)
 
     checkCudaErrors(cudaMemcpy(d_mData, cast_vec->mData, mSize*sizeof(double),
                     cudaMemcpyHostToDevice));
+
+}
+
+template <typename ValueType>
+void DeviceVector<ValueType>::Add(
+                        const BaseVector<ValueType> &otherVector)
+{
+    const DeviceVector<ValueType> *cast_vec = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&otherVector);
+
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    kernel_vector_add <<<GridSize, BlockSize>>>
+                                    (mSize, d_mData, cast_vec->d_mData);
+
+}
+
+template <typename ValueType>
+void DeviceVector<ValueType>::Add(
+                        const BaseVector<ValueType> &v1,
+                        const BaseVector<ValueType> &v2)
+
+{
+    const DeviceVector<ValueType> *cast_v1 = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&v1);
+    const DeviceVector<ValueType> *cast_v2 = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&v2);
+
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    kernel_vector_add <<<GridSize, BlockSize>>>
+                                    (mSize, d_mData,
+                                     cast_v1->d_mData,
+                                     cast_v2->d_mData);
+
+}
+
+template <typename ValueType>
+double DeviceVector<ValueType>::Norm(void) const
+{
+    double result = 0.0;
+    return result;
 
 }
 
