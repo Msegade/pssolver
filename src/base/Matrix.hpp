@@ -19,6 +19,8 @@ public:
     Matrix(int nRows, int nCols, int nnz);
     virtual ~Matrix();
 
+    void AllocateCSR(int nRows, int nCols, int nnz);
+
     int GetNRows(void) const;
     int GetNCols(void) const;
     int GetNnz(void) const;
