@@ -163,14 +163,21 @@ ValueType DeviceVector<ValueType>::Dot(const BaseVector<ValueType>& otherVector)
     DeviceVector<ValueType> aux(*this);
     kernel_vector_multiply <<<GridSize, BlockSize>>> ( mSize, aux.d_mData,
                                                     cast_v->d_mData);
-    double result = 0.0;
-    aux.SumReduce();
+    ValueType result = aux.SumReduce();
 
     return result;
        
     
 }
 
+template <typename ValueType>
+void DeviceVector<ValueType>::ScalarMul(const ValueType& val)
+{
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    kernel_vector_scalar_multiply <<<GridSize, BlockSize>>> (mSize, d_mData, val);
+        
+}
 template <typename ValueType>
 ValueType DeviceVector<ValueType>::SumReduce(void)
 {

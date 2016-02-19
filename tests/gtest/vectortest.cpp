@@ -101,6 +101,13 @@ TYPED_TEST(VectorTest, VectorOperationsHost)
     b.SetVal(4);
     EXPECT_EQ(140, b*c);
 
+    // ScalarMul
+    b *= 3;
+    for (int i = 0; i<4; i++)
+    {
+        EXPECT_EQ(12, b[i]);
+    }
+
 
 }
 
@@ -133,6 +140,22 @@ TYPED_TEST(VectorTest, VectorOperationsDevice)
     for (int i = 0; i<100; i++)
     {
         EXPECT_EQ(21, d[i]);
+    }
+
+    c.Allocate(5);
+    c.SetVal(7);
+    EXPECT_NEAR(15.652476, c.Norm(), 0.0001);
+
+    // Dot Product
+    b.Allocate(5);
+    b.SetVal(4);
+    EXPECT_EQ(140, b*c);
+
+    // ScalarMul
+    b *= 3;
+    for (int i = 0; i<4; i++)
+    {
+        EXPECT_EQ(12, b[i]);
     }
 
 }

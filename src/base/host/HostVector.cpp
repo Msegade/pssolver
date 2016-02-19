@@ -164,6 +164,14 @@ ValueType HostVector<ValueType>::Dot(const BaseVector<ValueType>& otherVector)
     return result;
 
 }
+template <typename ValueType>
+void HostVector<ValueType>::ScalarMul(const ValueType& val)
+{
+    for (int i=0; i<this->mSize; i++)    
+    {
+        mData[i] = mData[i]*val;
+    }
+}
 
 template class HostVector<double>;
 template class HostVector<float>;

@@ -33,6 +33,9 @@ public:
     virtual double Norm(void) const = 0;
     virtual ValueType Dot(const BaseVector<ValueType>& otherVector) = 0;
 
+    virtual void ScalarMul(const ValueType& val) = 0;
+
+    
 // Protected so the derived classes have acces to it
 protected:
     int mSize;

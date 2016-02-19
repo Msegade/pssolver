@@ -214,6 +214,12 @@ ValueType Vector<ValueType>::operator*(const Vector<ValueType>& otherVector) con
     return pImpl->Dot(*(otherVector.pImpl));
     
 }
+
+template <typename ValueType>
+void Vector<ValueType>::operator*=(const ValueType& val)
+{
+    pImpl->ScalarMul(val);
+}
                                 
 
 // Instantiate the class for the supported template type 

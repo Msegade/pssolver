@@ -62,3 +62,12 @@ __global__ void kernel_vector_sum_reduce(const int n,  ValueType* in)
         }
 }
 
+template <typename ValueType>
+__global__ void kernel_vector_scalar_multiply(const int n,
+                                                ValueType* in, ValueType val)
+{
+    
+    int ind = threadIdx.x + blockDim.x * blockIdx.x;
+    if (ind < n)
+        in[ind] = in[ind]*val;
+}

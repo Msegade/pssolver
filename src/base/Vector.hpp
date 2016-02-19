@@ -38,10 +38,17 @@ public:
     // a += b; --> Doesn't allocate a temorary vector
     void operator+=(const Vector<ValueType>& otherVector);
     // a = a + b; --> Allocates a temporary vector
-    Vector operator+(const Vector<ValueType>& otherVector);
+    Vector<ValueType> operator+(const Vector<ValueType>& otherVector);
 
     double Norm(void) const;
+    // Dot Product
     ValueType operator*(const Vector<ValueType>& otherVector) const;
+
+    // Scalar multiplication 
+    // a *= val --> Doesn't allocate a temporary vector
+    void operator*=(const ValueType& val);
+    // a = a * val --> Allocates a temporary vector
+
 
 
 private:
