@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace pssolver
 {
     
@@ -14,6 +16,8 @@ public:
     virtual ~BaseMatrix();
 
     virtual MatrixType GetFormat(void) const = 0;
+
+    virtual void ReadFile(const std::string filename) = 0;
     
     int GetNRows(void) const;
     int GetNCols(void) const;

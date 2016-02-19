@@ -33,6 +33,15 @@ TYPED_TEST(MatrixTest, MatrixConstructors)
     EXPECT_EQ(15, B.GetNCols());
     EXPECT_EQ(20, B.GetNnz());
 
+    Matrix<TypeParam> C;
+    C.AllocateCOO(7, 14, 21);
+    EXPECT_EQ(7, C.GetNRows());
+    EXPECT_EQ(14, C.GetNCols());
+    EXPECT_EQ(21, C.GetNnz());
+
+    C.ReadFile("matrix.mtx");
+
+
 }
 
 

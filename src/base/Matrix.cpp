@@ -1,6 +1,10 @@
 #include "Matrix.hpp"
+#include "host/HostCOOMatrix.hpp"
+#include "host/HostCsrMatrix.hpp"
 
 #include <cassert>
+
+#include <string>
 
 namespace pssolver
 {
@@ -37,6 +41,22 @@ MatrixType Matrix<ValueType>::GetFormat(void) const
 }
 
 template <typename ValueType>
+void Matrix<ValueType>::ReadFile(const std::string filename)
+{
+    if (GetFormat() == COO )
+    {
+        pImplHost.reset();
+        pImplHost = std::shared_ptr<HostMatrix<ValueType>>
+                        (new HostCOOMatrix<ValueType>());
+        
+        pImplHost->ReadFile(filename);
+        pImpl = pImplHost;
+    }
+    
+}
+
+
+template <typename ValueType>
 int Matrix<ValueType>::GetNRows(void) const
 {
     return pImpl->GetNRows();
@@ -66,6 +86,29 @@ void Matrix<ValueType>::AllocateCSR(int nRows, int nCols, int nnz)
         pImplHost->Allocate(nRows, nCols, nnz);
         pImpl = pImplHost;
     }
+    
+}
+
+template <typename ValueType>
+void Matrix<ValueType>::AllocateCOO(int nRows, int nCols, int nnz)
+{
+    assert(nRows > 0 && nCols > 0 && nnz > 0 );
+    if (pImpl == pImplHost )
+    {
+        pImplHost.reset();
+        pImplHost = std::shared_ptr<HostMatrix<ValueType>>
+                            (new HostCOOMatrix<ValueType>());
+        pImplHost->Allocate(nRows, nCols, nnz);
+        pImpl = pImplHost;
+    }
+
+}
+
+template <typename ValueType>
+void Matrix<ValueType>::ConvertTo(MatrixType format)
+{
+    assert( format == COO || format == CSR );
+    if (format == this->GetFormat() ) return;
     
 }
 

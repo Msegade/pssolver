@@ -22,7 +22,11 @@ public:
 
     MatrixType GetFormat(void) const;
 
+    void ReadFile(const std::string filename);
     void AllocateCSR(int nRows, int nCols, int nnz);
+    void AllocateCOO(int nRows, int nCols, int nnz);
+
+    void ConvertTo(MatrixType format);
 
     int GetNRows(void) const;
     int GetNCols(void) const;
