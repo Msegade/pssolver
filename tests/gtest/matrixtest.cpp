@@ -25,6 +25,8 @@ TYPED_TEST(MatrixTest, MatrixConstructors)
     EXPECT_EQ(0, A.GetNRows());
     EXPECT_EQ(0, A.GetNCols());
     EXPECT_EQ(0, A.GetNnz());
+
+    EXPECT_TRUE(A.GetFormat() == CSR);
     
     Matrix<TypeParam> B(10, 15, 20);
     EXPECT_EQ(10, B.GetNRows());

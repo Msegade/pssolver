@@ -5,5 +5,6 @@
 #include "base/device/DeviceVector.hpp"
 
 #include "base/Matrix.hpp"
+#include "base/BaseMatrix.hpp"
 #include "base/host/HostMatrix.hpp"
 #include "base/host/HostCsrMatrix.hpp"

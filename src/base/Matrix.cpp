@@ -23,10 +23,17 @@ Matrix<ValueType>::Matrix(int nRows, int nCols, int nnz)
     pImpl = pImplHost;
 }
 
+
 template <typename ValueType>
 Matrix<ValueType>::~Matrix()
 {
     // No-op
+}
+
+template <typename ValueType>
+MatrixType Matrix<ValueType>::GetFormat(void) const
+{
+    return pImpl->GetFormat(); 
 }
 
 template <typename ValueType>
@@ -61,6 +68,7 @@ void Matrix<ValueType>::AllocateCSR(int nRows, int nCols, int nnz)
     }
     
 }
+
 
 
 template class Matrix<double>;

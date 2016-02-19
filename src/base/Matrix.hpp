@@ -5,6 +5,7 @@
 #include "host/HostCsrMatrix.hpp"
 
 #include <memory>
+#include <string>
 
 namespace pssolver
 {
@@ -18,6 +19,8 @@ public:
     Matrix();
     Matrix(int nRows, int nCols, int nnz);
     virtual ~Matrix();
+
+    MatrixType GetFormat(void) const;
 
     void AllocateCSR(int nRows, int nCols, int nnz);
 
