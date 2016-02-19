@@ -16,6 +16,8 @@ public:
     int GetNCols(void) const;
     int GetNnz(void) const;
 
+    virtual void Allocate(const int nRows, const int nCols, const int nNz) = 0;
+
 
 protected:
     int mNRows, mNCols, mNnz;

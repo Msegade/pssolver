@@ -16,8 +16,12 @@ class Matrix
 
 public:
     Matrix();
-    Matrix(int nRows, int nCols);
+    Matrix(int nRows, int nCols, int nnz);
     virtual ~Matrix();
+
+    int GetNRows(void) const;
+    int GetNCols(void) const;
+    int GetNnz(void) const;
 
 private:
     std::shared_ptr<BaseMatrix<ValueType>> pImpl;
