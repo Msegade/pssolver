@@ -4,6 +4,7 @@
 #include "HostMatrix.hpp"
 
 #include <string>
+#include <iostream>
 
 namespace pssolver
 {
@@ -17,6 +18,7 @@ public:
 
     virtual void Allocate(const int nRows,const int nCols,const int nnz);
     virtual void ReadFile(const std::string filename) {}
+    virtual void Print(std::ostream& os);
 private:
     int *mRowPtr;
     int *mColInd;

@@ -39,6 +39,25 @@ void HostCsrMatrix<ValueType>::Allocate(const int nRows,
     memset(mRowPtr, 0, (nRows+1)*sizeof(int));
 }
 
+template <typename ValueType>
+void HostCsrMatrix<ValueType>::Print(std::ostream& os)
+{
+    os << "Data" << "\t" << "Col Index" << "\t" << 
+                                                    "Row Ptr" << std::endl;
+    for (int i= 0; i< this->mNnz; i++)
+    {
+        if (i <= this->mNRows)
+        {
+        os << mData[i] << "\t" << mColInd[i] << "\t" << 
+                                                    mRowPtr[i] << std::endl;
+
+        }
+        else 
+        os << mData[i] << "\t" << mColInd[i] << "\t" << std::endl;
+
+    }
+}
+
 template class HostCsrMatrix<double>;
 template class HostCsrMatrix<float>;
 

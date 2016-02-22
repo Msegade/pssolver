@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <iostream>
 
 namespace pssolver
 {
@@ -32,10 +33,16 @@ public:
     int GetNCols(void) const;
     int GetNnz(void) const;
 
+    template <typename T>
+    friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& Mat);
+
 private:
     std::shared_ptr<BaseMatrix<ValueType>> pImpl;
     std::shared_ptr<HostMatrix<ValueType>> pImplHost;
 
 };
+
+template <typename ValueType>
+std::ostream& operator<<(std::ostream& os, const Matrix<ValueType>& Mat);
 
 }

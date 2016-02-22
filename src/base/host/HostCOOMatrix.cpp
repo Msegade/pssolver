@@ -1,9 +1,12 @@
 #include "HostCOOMatrix.hpp"
+#include "../../utils.hpp"
 
 #include <cassert>
 #include <cstring>
 #include <iostream>
 #include <fstream>
+#include <limits>
+#include <regex>
 
 namespace pssolver
 {
@@ -39,14 +42,56 @@ void HostCOOMatrix<ValueType>::Allocate(const int nRows,
     memset(mColInd, 0, nnz*sizeof(int));
     memset(mRowInd, 0, nnz*sizeof(int));
 }
-template <typename ValueType>
-void HostCOOMatrix<ValueType>::ReadFile(const std::string filename)
-{
-    std::ifstream mFile(filename);
-    std::string line;
-    std::getline(mFile, line);
-    std::cout << line << std::endl;
 
+template <typename ValueType>
+void HostCOOMatrix<ValueType>::ReadFile(const std::string filename) 
+{
+    BaseMatrix<ValueType>::ReadFile(filename);
+
+    //Allocate matrix after reading the size from the file
+    this->Allocate(this->mNRows, this->mNCols, this->mNnz);
+    // Re open file
+    std::ifstream mFile(filename);
+    // Go to line 3 where the data begins
+    GoToLine(mFile, 3);
+    int linenumber = 2;
+    int index;
+
+    std::string line;
+    std::istringstream linestream;
+    while   (std::getline(mFile, line))
+    {
+        if (!regex_match (line, std::regex("^((?:(?:[1-9][0-9]*\\s+?){2})"
+                                    "-?[0-9.]+e(?:\\+|\\-)[0-9]+)")))
+        {
+            std::cerr << "Bad syntax in line: " << linenumber << std::endl;
+            linenumber++;
+        }
+        else
+        {
+            linestream.str(line); 
+            index = linenumber - 2;
+            linestream >> mRowInd[index] >> mColInd[index] >> mData[index];
+            linenumber++;
+            linestream.clear();
+        }
+    }
+
+}
+
+template <typename ValueType>
+void HostCOOMatrix<ValueType>::Print(std::ostream& os)
+{
+    os << "Number of Rows: " << this->mNRows << std::endl;
+    os << "Number of Columns: " << this->mNCols << std::endl;
+    os << "Number of Non zero: " << this->mNnz << std::endl;
+    os << "Row Index" << "\t" << "Col Index" << "\t" << 
+                                                    "Data" << std::endl;
+    for (int i= 0; i< this->mNnz; i++)
+    {
+        os << mRowInd[i] << "\t" << mColInd[i] << "\t" << 
+                                                    mData[i] << std::endl;
+    }
 }
 
 template class HostCOOMatrix<double>;

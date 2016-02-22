@@ -43,18 +43,17 @@ MatrixType Matrix<ValueType>::GetFormat(void) const
 template <typename ValueType>
 void Matrix<ValueType>::ReadFile(const std::string filename)
 {
-    if (GetFormat() == COO )
-    {
+    //if (GetFormat() == COO )
+    //{
         pImplHost.reset();
         pImplHost = std::shared_ptr<HostMatrix<ValueType>>
                         (new HostCOOMatrix<ValueType>());
         
         pImplHost->ReadFile(filename);
         pImpl = pImplHost;
-    }
+    //}
     
 }
-
 
 template <typename ValueType>
 int Matrix<ValueType>::GetNRows(void) const
@@ -112,8 +111,20 @@ void Matrix<ValueType>::ConvertTo(MatrixType format)
     
 }
 
+// Friend Functions
+template <typename ValueType>
+std::ostream& operator<<(std::ostream& os, const Matrix<ValueType> &Mat)
+{
+    Mat.pImpl->Print(os);
+    return os;
+}
+
 
 
 template class Matrix<double>;
 template class Matrix<float>;
+
+template std::ostream& operator<<(std::ostream& os, const Matrix<double> &Mat);
+template std::ostream& operator<<(std::ostream& os, const Matrix<float> &Mat);
+
 }
