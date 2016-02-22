@@ -71,7 +71,10 @@ void HostCOOMatrix<ValueType>::ReadFile(const std::string filename)
         {
             linestream.str(line); 
             index = linenumber - 2;
-            linestream >> mRowInd[index] >> mColInd[index] >> mData[index];
+            int rowInd, colInd;
+            linestream >> rowInd >> colInd >> mData[index];
+            mRowInd[index] = rowInd - 1;
+            mColInd[index] = colInd - 1;
             linenumber++;
             linestream.clear();
         }

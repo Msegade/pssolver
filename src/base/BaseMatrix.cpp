@@ -74,6 +74,15 @@ void BaseMatrix<ValueType>::ReadFile(const std::string filename)
 
 }
 
+template <typename ValueType>
+void BaseMatrix<ValueType>::CopyFrom(BaseMatrix<ValueType> &mat)
+{
+    this->mNRows = mat.mNRows; 
+    this->mNCols = mat.mNCols; 
+    this->mNnz   = mat.mNnz;
+    this->mProperties = mat.mProperties;
+}
+
 template class BaseMatrix<double>;
 template class BaseMatrix<float>;
 

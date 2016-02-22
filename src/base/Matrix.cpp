@@ -43,15 +43,21 @@ MatrixType Matrix<ValueType>::GetFormat(void) const
 template <typename ValueType>
 void Matrix<ValueType>::ReadFile(const std::string filename)
 {
-    //if (GetFormat() == COO )
-    //{
-        pImplHost.reset();
-        pImplHost = std::shared_ptr<HostMatrix<ValueType>>
-                        (new HostCOOMatrix<ValueType>());
-        
+    if (GetFormat() == COO )
+    {
         pImplHost->ReadFile(filename);
         pImpl = pImplHost;
-    //}
+    }
+    if (GetFormat() == CSR)
+    {
+        std::shared_ptr<HostMatrix<ValueType>> tmpPtr
+                        (new HostCOOMatrix<ValueType>());
+        
+        tmpPtr->ReadFile(filename);
+        pImplHost->CopyFrom(*(tmpPtr));
+        pImpl = pImplHost;
+    }
+
     
 }
 
@@ -108,6 +114,17 @@ void Matrix<ValueType>::ConvertTo(MatrixType format)
 {
     assert( format == COO || format == CSR );
     if (format == this->GetFormat() ) return;
+    std::shared_ptr<HostMatrix<ValueType>> tmpPointer;
+    if (format == CSR)
+    {
+        tmpPointer = std::shared_ptr<HostMatrix<ValueType>>
+                                (new HostCsrMatrix<ValueType>());
+    }
+    tmpPointer->CopyFrom(*(pImplHost));
+    std::swap(pImplHost, tmpPointer);
+    tmpPointer.reset();
+    pImpl = pImplHost;
+
     
 }
 

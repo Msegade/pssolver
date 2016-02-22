@@ -10,6 +10,7 @@ class HostMatrix: public BaseMatrix<ValueType>
 public:
     HostMatrix();
     virtual ~HostMatrix();
+
 };
 
 }

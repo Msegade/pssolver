@@ -1,4 +1,5 @@
 #include "HostCsrMatrix.hpp"
+#include "HostCOOMatrix.hpp"
 
 #include <cassert>
 #include <cstring>
@@ -56,6 +57,66 @@ void HostCsrMatrix<ValueType>::Print(std::ostream& os)
         os << mData[i] << "\t" << mColInd[i] << "\t" << std::endl;
 
     }
+}
+
+template <typename ValueType>
+void HostCsrMatrix<ValueType>::CopyFrom(BaseMatrix<ValueType> &mat)
+{
+    BaseMatrix<ValueType>::CopyFrom(mat);
+    this->Allocate(this->mNRows, this->mNCols, this->mNnz);
+    if(mat.GetFormat() == COO)
+    {
+        HostCOOMatrix<ValueType> *cast_mat = 
+            dynamic_cast<HostCOOMatrix<ValueType>*> (&mat);
+        // ******************************************************
+        // mRowPtr
+        // Number of nnz per row in mRowPtr
+        for (int i = 0; i < this->mNnz; i++)
+        {
+            this->mRowPtr[cast_mat->mRowInd[i]] = 
+                        this->mRowPtr[cast_mat->mRowInd[i]] + 1;  
+        }
+        // Counting where the rows begin
+        int count = 0;
+        for (int i = 0; i < this->mNRows; i++)
+        {
+            int temp = this->mRowPtr[i];
+            this->mRowPtr[i] = count;
+            count += temp;
+        }
+        this->mRowPtr[this->mNRows] = this->mNnz;
+
+        for (int i = 0; i <this->mNRows+1; i++)
+        {
+            std::cout << mRowPtr[i] << std::endl;
+        }
+        // *******************************************************
+        // mColInd y mData
+        for (int i = 0; i <this->mNnz; i++)
+        {
+            int row = cast_mat->mRowInd[i];
+            int dest = this->mRowPtr[row];
+            
+            this->mColInd[dest] = cast_mat->mColInd[i];
+            this->mData[dest] = cast_mat->mData[i];
+
+            // Necesitamos un contador para saber cuantas veces entramos en 
+            // esa fila, lo guardamos en mRowPtr y luego lo volvemos a calcular
+            // para no tener que almacenar otro vector
+            this->mRowPtr[row] = this->mRowPtr[row] + 1;
+        }
+        // Recalculamos mRowPtr
+        // Tenemos desplazados todos los valores a la izquierda
+        int last = 0;
+        for (int i = 0; i < this->mNRows; i++)
+        {
+            int temp = this->mRowPtr[i];
+            this->mRowPtr[i] = last;
+            last = temp;
+        }
+
+    }
+
 }
 
 template class HostCsrMatrix<double>;

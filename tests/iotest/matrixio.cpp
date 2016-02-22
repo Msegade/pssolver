@@ -17,4 +17,10 @@ int main(int argc, char* argv[] )
     A.ReadFile(filename);
 
     std::cout << A << std::endl;
+    if( A.GetFormat() == COO )
+    {
+        std::cout << "COO Format" << std::endl;
+    }
+
+    return 0;
 }

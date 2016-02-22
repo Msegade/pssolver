@@ -3,6 +3,7 @@
 #include "../BaseMatrix.hpp"
 #include "HostMatrix.hpp"
 
+
 #include <string>
 #include <iostream>
 
@@ -19,10 +20,14 @@ public:
     virtual void Allocate(const int nRows,const int nCols,const int nnz);
     virtual void ReadFile(const std::string filename) {}
     virtual void Print(std::ostream& os);
+
+    virtual void CopyFrom(BaseMatrix<ValueType> &hostMatrix);
 private:
     int *mRowPtr;
     int *mColInd;
     ValueType *mData;
+
+    friend class HostCOOMatrix<ValueType>;
 };
 
 }

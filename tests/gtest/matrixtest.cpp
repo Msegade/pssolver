@@ -26,6 +26,7 @@ TYPED_TEST(MatrixTest, MatrixConstructors)
     EXPECT_EQ(0, A.GetNCols());
     EXPECT_EQ(0, A.GetNnz());
 
+
     EXPECT_TRUE(A.GetFormat() == CSR);
     
     Matrix<TypeParam> B(10, 15, 20);
@@ -39,8 +40,7 @@ TYPED_TEST(MatrixTest, MatrixConstructors)
     EXPECT_EQ(14, C.GetNCols());
     EXPECT_EQ(21, C.GetNnz());
 
-    C.ReadFile("matrix.mtx");
-
+    C.ReadFile("../tests/matrices/matrix.mtx");
 
 }
 

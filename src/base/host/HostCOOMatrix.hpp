@@ -3,6 +3,7 @@
 #include "../BaseMatrix.hpp"
 #include "HostMatrix.hpp"
 
+
 #include <string>
 #include <iostream>
 
@@ -24,6 +25,8 @@ private:
     int *mRowInd;
     int *mColInd;
     ValueType *mData;
+
+    friend class HostCsrMatrix<ValueType>;
 };
 
 }

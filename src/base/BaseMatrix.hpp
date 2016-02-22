@@ -14,6 +14,11 @@ struct MatrixProperties
 };
     
 enum MatrixType { CSR, COO };
+
+template <typename ValueType>
+class HostCsrMatrix;
+template <typename ValueType>
+class HostCOOMatrix;
 // Base class for the implementations of host and device vectors
 template <typename ValueType>
 class BaseMatrix
@@ -28,6 +33,8 @@ public:
     virtual void ReadFile(const std::string filename);
 
     virtual void Print(std::ostream& os) = 0;
+
+    virtual void CopyFrom(BaseMatrix<ValueType> &mat);
     
     int GetNRows(void) const;
     int GetNCols(void) const;
