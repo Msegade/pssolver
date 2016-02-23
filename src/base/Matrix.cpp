@@ -80,34 +80,24 @@ int Matrix<ValueType>::GetNnz(void) const
 }
 
 template <typename ValueType>
-void Matrix<ValueType>::AllocateCSR(int nRows, int nCols, int nnz)
+void Matrix<ValueType>::Allocate(int nRows, int nCols, int nnz, MatrixType format)
 {
     assert(nRows > 0 && nCols > 0 && nnz > 0);
     if (pImpl == pImplHost )
     {
         pImplHost.reset();
-        pImplHost = std::shared_ptr<HostMatrix<ValueType>>
+        if(format == CSR)
+            pImplHost = std::shared_ptr<HostMatrix<ValueType>>
                             (new HostCsrMatrix<ValueType>());
+        if(format == COO)
+            pImplHost = std::shared_ptr<HostMatrix<ValueType>>
+                            (new HostCOOMatrix<ValueType>());
         pImplHost->Allocate(nRows, nCols, nnz);
         pImpl = pImplHost;
     }
     
 }
 
-template <typename ValueType>
-void Matrix<ValueType>::AllocateCOO(int nRows, int nCols, int nnz)
-{
-    assert(nRows > 0 && nCols > 0 && nnz > 0 );
-    if (pImpl == pImplHost )
-    {
-        pImplHost.reset();
-        pImplHost = std::shared_ptr<HostMatrix<ValueType>>
-                            (new HostCOOMatrix<ValueType>());
-        pImplHost->Allocate(nRows, nCols, nnz);
-        pImpl = pImplHost;
-    }
-
-}
 
 template <typename ValueType>
 void Matrix<ValueType>::ConvertTo(MatrixType format)
@@ -132,6 +122,31 @@ template <typename ValueType>
 ValueType Matrix<ValueType>::operator()(int i, int j)
 {
     return pImpl->Read(i,j);
+}
+
+template <typename ValueType>
+Matrix<ValueType>& Matrix<ValueType>::operator=(const Matrix<ValueType>& otherMatrix)
+{
+    assert(&otherMatrix != NULL);
+    if (this == &otherMatrix)
+        return *this;
+    if ((pImpl == pImplHost) && (otherMatrix.pImpl == otherMatrix.pImplHost))
+    {
+        int NRows = otherMatrix.pImplHost->GetNRows();
+        int NCols = otherMatrix.pImplHost->GetNCols();
+        int Nnz = otherMatrix.pImplHost->GetNnz();
+        MatrixType format = otherMatrix.pImplHost->GetFormat();
+        this->Allocate(NRows, NCols, Nnz, format);
+        pImpl->CopyFrom(*(otherMatrix.pImpl));
+        return *this;
+        
+    }
+    else
+    {
+        std::cerr << "Objects must be on the same place (device or host)"
+                                                                 << std::endl;
+            return *this;
+    }
 }
 
 

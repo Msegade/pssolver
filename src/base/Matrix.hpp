@@ -24,8 +24,7 @@ public:
     MatrixType GetFormat(void) const;
 
     void ReadFile(const std::string filename);
-    void AllocateCSR(int nRows, int nCols, int nnz);
-    void AllocateCOO(int nRows, int nCols, int nnz);
+    void Allocate(int nRows, int nCols, int nnz, MatrixType format);
 
     void ConvertTo(MatrixType format);
 
@@ -35,6 +34,7 @@ public:
 
     ValueType operator()(int i, int j);  // 0-base indexing
 
+    Matrix<ValueType>& operator=(const Matrix<ValueType>& otherMatrix);
 
     template <typename T>
     friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& Mat);

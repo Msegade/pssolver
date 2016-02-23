@@ -86,10 +86,6 @@ void HostCsrMatrix<ValueType>::CopyFrom(BaseMatrix<ValueType> &mat)
         }
         this->mRowPtr[this->mNRows] = this->mNnz;
 
-        for (int i = 0; i <this->mNRows+1; i++)
-        {
-            std::cout << mRowPtr[i] << std::endl;
-        }
         // *******************************************************
         // mColInd y mData
         for (int i = 0; i <this->mNnz; i++)

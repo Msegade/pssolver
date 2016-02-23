@@ -35,12 +35,27 @@ TYPED_TEST(MatrixTest, MatrixConstructors)
     EXPECT_EQ(20, B.GetNnz());
 
     Matrix<TypeParam> C;
-    C.AllocateCOO(7, 14, 21);
+    C.Allocate(7, 14, 21, COO);
     EXPECT_EQ(7, C.GetNRows());
     EXPECT_EQ(14, C.GetNCols());
     EXPECT_EQ(21, C.GetNnz());
+    C.Allocate(7, 14, 21, CSR);
 
     C.ReadFile("../tests/matrices/matrix.mtx");
+    EXPECT_TRUE(C.GetFormat() == CSR);
+    EXPECT_EQ(5, C.GetNRows());
+    EXPECT_EQ(5, C.GetNCols());
+    EXPECT_EQ(13, C.GetNnz());
+    EXPECT_EQ(2, C(4,4));
+    EXPECT_EQ(-1, C(4,3));
+    Matrix<TypeParam> D;
+    D = C;
+    EXPECT_TRUE(C.GetFormat() == CSR);
+    EXPECT_EQ(5, C.GetNRows());
+    EXPECT_EQ(5, C.GetNCols());
+    EXPECT_EQ(13, C.GetNnz());
+    EXPECT_EQ(2, C(4,4));
+    EXPECT_EQ(-1, C(4,3));
 
 }
 
