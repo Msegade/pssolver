@@ -22,6 +22,8 @@ public:
     virtual void Print(std::ostream& os);
 
     virtual void CopyFrom(BaseMatrix<ValueType> &hostMatrix);
+
+    virtual ValueType Read(int i, int j) const;
 private:
     int *mRowPtr;
     int *mColInd;

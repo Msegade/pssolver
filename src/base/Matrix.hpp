@@ -33,6 +33,9 @@ public:
     int GetNCols(void) const;
     int GetNnz(void) const;
 
+    ValueType operator()(int i, int j);  // 0-base indexing
+
+
     template <typename T>
     friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& Mat);
 

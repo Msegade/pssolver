@@ -128,6 +128,13 @@ void Matrix<ValueType>::ConvertTo(MatrixType format)
     
 }
 
+template <typename ValueType>
+ValueType Matrix<ValueType>::operator()(int i, int j)
+{
+    return pImpl->Read(i,j);
+}
+
+
 // Friend Functions
 template <typename ValueType>
 std::ostream& operator<<(std::ostream& os, const Matrix<ValueType> &Mat)

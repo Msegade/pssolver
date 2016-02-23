@@ -41,6 +41,8 @@ public:
     int GetNnz(void) const;
 
     virtual void Allocate(const int nRows, const int nCols, const int nNz) = 0;
+    
+    virtual ValueType Read(int i, int j) const = 0;
 
 
 protected:

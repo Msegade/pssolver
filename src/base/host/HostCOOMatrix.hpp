@@ -21,6 +21,8 @@ public:
 
     virtual void ReadFile(const std::string filename);
     virtual void Print(std::ostream& os);
+
+    virtual ValueType Read(int i, int j) const{ return 0.0;}
 private:
     int *mRowInd;
     int *mColInd;

@@ -119,6 +119,27 @@ void HostCsrMatrix<ValueType>::CopyFrom(BaseMatrix<ValueType> &mat)
 
 }
 
+template <typename ValueType>
+ValueType HostCsrMatrix<ValueType>::Read(int i, int j) const
+{
+    assert (i >=0 && j>=0 && i < this->mNRows && j < this->mNCols);
+    int aux = mRowPtr[i];
+    int rowWidth = mRowPtr[i+1] - mRowPtr[i];
+    int k;
+    ValueType result;
+    for (k = 0; k < rowWidth; k++)
+    {
+        if(mColInd[aux+k] == j) 
+        {
+            result = mData[aux+k];
+            break;
+        }
+        else result = 0.0;
+    }
+    return result;
+
+}
+
 template class HostCsrMatrix<double>;
 template class HostCsrMatrix<float>;
 

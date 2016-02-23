@@ -22,5 +22,7 @@ int main(int argc, char* argv[] )
         std::cout << "COO Format" << std::endl;
     }
 
+    std::cout << A(4,4) << std::endl;
+
     return 0;
 }
