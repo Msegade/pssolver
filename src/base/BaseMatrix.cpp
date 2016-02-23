@@ -75,7 +75,7 @@ void BaseMatrix<ValueType>::ReadFile(const std::string filename)
 }
 
 template <typename ValueType>
-void BaseMatrix<ValueType>::CopyFrom(BaseMatrix<ValueType> &mat)
+void BaseMatrix<ValueType>::CopyFromHost(const BaseMatrix<ValueType> &mat)
 {
     this->mNRows = mat.mNRows; 
     this->mNCols = mat.mNCols; 

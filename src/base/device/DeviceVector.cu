@@ -64,7 +64,7 @@ void DeviceVector<ValueType>::CopyFromHost(const BaseVector<ValueType>& src)
     const HostVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const HostVector<ValueType>*> (&src);
 
-    checkCudaErrors(cudaMemcpy(d_mData, cast_vec->mData, mSize*sizeof(double),
+    checkCudaErrors(cudaMemcpy(d_mData, cast_vec->mData, mSize*sizeof(ValueType),
                     cudaMemcpyHostToDevice));
 
 }
@@ -75,7 +75,7 @@ void DeviceVector<ValueType>::CopyFromDevice(const BaseVector<ValueType>& src)
     const DeviceVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const DeviceVector<ValueType>*> (&src);
 
-    checkCudaErrors(cudaMemcpy(d_mData, cast_vec->d_mData, mSize*sizeof(double),
+    checkCudaErrors(cudaMemcpy(d_mData, cast_vec->d_mData, mSize*sizeof(ValueType),
                     cudaMemcpyDeviceToDevice));
 
 }
@@ -86,7 +86,7 @@ void DeviceVector<ValueType>::CopyToHost(BaseVector<ValueType>& dst) const
     const HostVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const HostVector<ValueType>*> (&dst);
 
-    checkCudaErrors(cudaMemcpy(cast_vec->mData, d_mData, mSize*sizeof(double),
+    checkCudaErrors(cudaMemcpy(cast_vec->mData, d_mData, mSize*sizeof(ValueType),
                     cudaMemcpyDeviceToHost));
 
 }
@@ -97,7 +97,7 @@ void DeviceVector<ValueType>::CopyToDevice(BaseVector<ValueType>& dst) const
     const DeviceVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const DeviceVector<ValueType>*> (&dst);
 
-    checkCudaErrors(cudaMemcpy(cast_vec->d_mData, d_mData, mSize*sizeof(double),
+    checkCudaErrors(cudaMemcpy(cast_vec->d_mData, d_mData, mSize*sizeof(ValueType),
                     cudaMemcpyDeviceToDevice));
 
 }

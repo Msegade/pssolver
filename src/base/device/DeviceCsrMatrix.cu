@@ -1,4 +1,5 @@
 #include "DeviceCsrMatrix.hpp"
+#include "../host/HostCsrMatrix.hpp"
 
 #include "cuda_utils.h"
 #include "cuda_variables.h"
@@ -10,6 +11,7 @@
 
 namespace pssolver
 {
+
 template <typename ValueType>
 DeviceCsrMatrix<ValueType>::DeviceCsrMatrix()
 {
@@ -36,6 +38,76 @@ void DeviceCsrMatrix<ValueType>::Allocate(const int nRows, const int nCols,
     checkCudaErrors(cudaMalloc(&d_mRowPtr, (nRows+1)*sizeof(int)));
 
 }
+template <typename ValueType>
+void DeviceCsrMatrix<ValueType>::Print(std::ostream& os) 
+{
+    HostCsrMatrix<ValueType> tmp;
+    this->CopyToHost(tmp);
+    tmp.Print(os);
+}
+
+
+template <typename ValueType>
+void DeviceCsrMatrix<ValueType>::CopyFromHost(
+                                       const BaseMatrix<ValueType> &hostMatrix)
+{
+    BaseMatrix<ValueType>::CopyFromHost(hostMatrix);
+    const HostCsrMatrix<ValueType> *cast_host = 
+                dynamic_cast<const HostCsrMatrix<ValueType>*> (&hostMatrix);
+    checkCudaErrors(cudaMemcpy(d_mData, cast_host->mData, this->mNnz*sizeof(ValueType),
+                            cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemcpy(d_mColInd, cast_host->mColInd, this->mNnz*sizeof(int),
+                            cudaMemcpyHostToDevice));
+    checkCudaErrors(cudaMemcpy(d_mRowPtr, cast_host->mRowPtr, this->mNRows*sizeof(int),
+                            cudaMemcpyHostToDevice));
+
+}
+
+template <typename ValueType>
+void DeviceCsrMatrix<ValueType>::CopyFromDevice(
+                                       const BaseMatrix<ValueType> &deviceMatrix)
+{
+    const DeviceCsrMatrix<ValueType> *cast_device = 
+                dynamic_cast<const DeviceCsrMatrix<ValueType>*> (&deviceMatrix);
+    checkCudaErrors(cudaMemcpy(d_mData, cast_device->d_mData, this->mNnz*sizeof(ValueType),
+                            cudaMemcpyDeviceToDevice));
+    checkCudaErrors(cudaMemcpy(d_mColInd, cast_device->d_mColInd, this->mNnz*sizeof(int),
+                            cudaMemcpyDeviceToDevice));
+    checkCudaErrors(cudaMemcpy(d_mRowPtr, cast_device->d_mRowPtr, this->mNRows*sizeof(int),
+                            cudaMemcpyDeviceToDevice));
+
+}
+
+template <typename ValueType>
+void DeviceCsrMatrix<ValueType>::CopyToHost(
+                                       BaseMatrix<ValueType> &hostMatrix) const
+{
+    const HostCsrMatrix<ValueType> *cast_host = 
+                dynamic_cast<const HostCsrMatrix<ValueType>*> (&hostMatrix);
+    checkCudaErrors(cudaMemcpy(cast_host->mData, d_mData, this->mNnz*sizeof(ValueType),
+                            cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(cast_host->mColInd, d_mColInd,  this->mNnz*sizeof(int),
+                            cudaMemcpyDeviceToDevice));
+    checkCudaErrors(cudaMemcpy(cast_host->mRowPtr, d_mRowPtr, this->mNRows*sizeof(int),
+                            cudaMemcpyDeviceToDevice));
+
+}
+
+template <typename ValueType>
+void DeviceCsrMatrix<ValueType>::CopyToDevice(
+                                       BaseMatrix<ValueType> &deviceMatrix) const
+{
+    const DeviceCsrMatrix<ValueType> *cast_device = 
+                dynamic_cast<const DeviceCsrMatrix<ValueType>*> (&deviceMatrix);
+    checkCudaErrors(cudaMemcpy(cast_device->d_mData, d_mData, this->mNnz*sizeof(ValueType),
+                            cudaMemcpyDeviceToDevice));
+    checkCudaErrors(cudaMemcpy(cast_device->d_mColInd, d_mColInd, this->mNnz*sizeof(int),
+                            cudaMemcpyDeviceToDevice));
+    checkCudaErrors(cudaMemcpy(cast_device->d_mRowPtr, d_mRowPtr, this->mNRows*sizeof(int),
+                            cudaMemcpyDeviceToDevice));
+
+}
+
 
 template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::MatVec(BaseVector<ValueType>& invec,

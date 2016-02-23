@@ -60,14 +60,14 @@ void HostCsrMatrix<ValueType>::Print(std::ostream& os)
 }
 
 template <typename ValueType>
-void HostCsrMatrix<ValueType>::CopyFrom(BaseMatrix<ValueType> &mat)
+void HostCsrMatrix<ValueType>::CopyFromHost(const BaseMatrix<ValueType> &mat)
 {
-    BaseMatrix<ValueType>::CopyFrom(mat);
+    BaseMatrix<ValueType>::CopyFromHost(mat);
     this->Allocate(this->mNRows, this->mNCols, this->mNnz);
     if(mat.GetFormat() == COO)
     {
-        HostCOOMatrix<ValueType> *cast_mat = 
-            dynamic_cast<HostCOOMatrix<ValueType>*> (&mat);
+        const HostCOOMatrix<ValueType> *cast_mat = 
+            dynamic_cast<const HostCOOMatrix<ValueType>*> (&mat);
         // ******************************************************
         // mRowPtr
         // Number of nnz per row in mRowPtr

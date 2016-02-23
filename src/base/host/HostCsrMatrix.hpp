@@ -23,7 +23,10 @@ public:
     virtual void ReadFile(const std::string filename) {}
     virtual void Print(std::ostream& os);
 
-    virtual void CopyFrom(BaseMatrix<ValueType> &hostMatrix);
+    virtual void CopyFromHost(const BaseMatrix<ValueType> &hostMatrix);
+    virtual void CopyFromDevice(const BaseMatrix<ValueType> &deviceMatrix) {}
+    virtual void CopyToHost(BaseMatrix<ValueType> &hostMatrix) const {}
+    virtual void CopyToDevice(BaseMatrix<ValueType> &deviceMatrix) const {}
 
     virtual ValueType Read(int i, int j) const;
 
@@ -36,6 +39,7 @@ private:
     ValueType *mData;
 
     friend class HostCOOMatrix<ValueType>;
+    friend class DeviceCsrMatrix<ValueType>;
 };
 
 }

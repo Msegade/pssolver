@@ -19,6 +19,11 @@ public:
 
     virtual void Allocate(const int nRows,const int nCols,const int nnz);
 
+    virtual void CopyFromHost(const BaseMatrix<ValueType> &hostMatrix) {}
+    virtual void CopyFromDevice(const BaseMatrix<ValueType> &deviceMatrix) {}
+    virtual void CopyToHost(BaseMatrix<ValueType> &hostMatrix) const {}
+    virtual void CopyToDevice(BaseMatrix<ValueType> &deviceMatrix) const {}
+
     virtual void ReadFile(const std::string filename);
     virtual void Print(std::ostream& os);
 

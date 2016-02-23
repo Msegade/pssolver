@@ -38,7 +38,10 @@ public:
 
     virtual void Print(std::ostream& os) = 0;
 
-    virtual void CopyFrom(BaseMatrix<ValueType> &mat);
+    virtual void CopyFromHost(const BaseMatrix<ValueType> &mat);
+    virtual void CopyFromDevice(const BaseMatrix<ValueType> &mat) = 0;
+    virtual void CopyToHost(BaseMatrix<ValueType> &mat) const = 0;
+    virtual void CopyToDevice(BaseMatrix<ValueType> &mat) const = 0;
     
     int GetNRows(void) const;
     int GetNCols(void) const;

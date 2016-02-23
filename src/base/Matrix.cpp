@@ -66,7 +66,7 @@ void Matrix<ValueType>::ReadFile(const std::string filename)
                         (new HostCOOMatrix<ValueType>());
         
         tmpPtr->ReadFile(filename);
-        pImplHost->CopyFrom(*(tmpPtr));
+        pImplHost->CopyFromHost(*(tmpPtr));
         pImpl = pImplHost;
     }
 
@@ -122,7 +122,7 @@ void Matrix<ValueType>::ConvertTo(MatrixType format)
         tmpPointer = std::shared_ptr<HostMatrix<ValueType>>
                                 (new HostCsrMatrix<ValueType>());
     }
-    tmpPointer->CopyFrom(*(pImplHost));
+    tmpPointer->CopyFromHost(*(pImplHost));
     std::swap(pImplHost, tmpPointer);
     tmpPointer.reset();
     pImpl = pImplHost;
@@ -149,7 +149,7 @@ Matrix<ValueType>& Matrix<ValueType>::operator=(const Matrix<ValueType>& otherMa
         int Nnz = otherMatrix.pImplHost->GetNnz();
         MatrixType format = otherMatrix.pImplHost->GetFormat();
         this->Allocate(NRows, NCols, Nnz, format);
-        pImpl->CopyFrom(*(otherMatrix.pImpl));
+        pImpl->CopyFromHost(*(otherMatrix.pImpl));
         return *this;
         
     }
