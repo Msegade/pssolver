@@ -41,6 +41,18 @@ MatrixType Matrix<ValueType>::GetFormat(void) const
 }
 
 template <typename ValueType>
+bool Matrix<ValueType>::IsHost(void) const
+{
+    return (pImpl == pImplHost);
+}
+
+template <typename ValueType>
+bool Matrix<ValueType>::IsDevice(void) const
+{
+    return (pImpl == pImplDevice);
+}
+
+template <typename ValueType>
 void Matrix<ValueType>::ReadFile(const std::string filename)
 {
     if (GetFormat() == COO )
@@ -149,6 +161,18 @@ Matrix<ValueType>& Matrix<ValueType>::operator=(const Matrix<ValueType>& otherMa
     }
 }
 
+template <typename ValueType>
+Vector<ValueType> Matrix<ValueType>::operator*(const Vector<ValueType>& vec)
+{
+    assert(vec.GetSize() == this->GetNCols()); 
+    assert( (this->IsHost() && vec.IsHost() ) ||
+            (this->IsDevice() && vec.IsDevice() ) );
+
+    Vector<ValueType> out(this->GetNRows());
+    this->pImpl->MatVec(*(vec.pImpl), *(out.pImpl), 1.0);
+
+    return out;
+}
 
 // Friend Functions
 template <typename ValueType>

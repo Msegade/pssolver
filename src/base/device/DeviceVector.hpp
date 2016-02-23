@@ -23,6 +23,7 @@ public:
 
     virtual void Allocate(const int size);
     virtual ValueType Read(const int i) const;
+    virtual void Print(std::ostream& os) {}
     virtual void SetVal(const ValueType val);
     virtual void CopyFromHost(const BaseVector<ValueType> &hostVector);
     virtual void CopyFromDevice(const BaseVector<ValueType> &deviceVector);

@@ -136,6 +136,30 @@ ValueType HostCsrMatrix<ValueType>::Read(int i, int j) const
 
 }
 
+template <typename ValueType>
+void HostCsrMatrix<ValueType>::MatVec(BaseVector<ValueType>& invec, BaseVector<ValueType>& outvec,
+                    ValueType scalar) const
+{
+    assert(invec.GetSize() == this->GetNCols());    
+    assert(outvec.GetSize() == this->GetNRows());    
+
+    const HostVector<ValueType> *cast_in =
+                dynamic_cast<const HostVector<ValueType>*> (&invec);
+    const HostVector<ValueType> *cast_out =
+                dynamic_cast<const HostVector<ValueType>*> (&outvec);
+
+    for (int i=0; i<this->mNRows; i++)
+    {
+        for (int j=this->mRowPtr[i]; j<this->mRowPtr[i+1]; j++)
+        {
+            cast_out->mData[i] += scalar*this->mData[j]*cast_in->mData[this->mColInd[j] ];
+        }
+    }
+    
+
+
+}
+
 template class HostCsrMatrix<double>;
 template class HostCsrMatrix<float>;
 

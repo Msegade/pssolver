@@ -3,6 +3,8 @@
 #include "../BaseMatrix.hpp"
 #include "HostMatrix.hpp"
 
+#include "HostVector.hpp"
+
 
 #include <string>
 #include <iostream>
@@ -24,6 +26,10 @@ public:
     virtual void CopyFrom(BaseMatrix<ValueType> &hostMatrix);
 
     virtual ValueType Read(int i, int j) const;
+
+    virtual void MatVec(BaseVector<ValueType>& invec, 
+                                    BaseVector<ValueType>& outvec,
+                                    ValueType scalar) const;
 private:
     int *mRowPtr;
     int *mColInd;

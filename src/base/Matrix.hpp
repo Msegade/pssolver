@@ -3,6 +3,10 @@
 #include "BaseMatrix.hpp"
 #include "host/HostMatrix.hpp"
 #include "host/HostCsrMatrix.hpp"
+#include "device/DeviceMatrix.hpp"
+
+#include "Vector.hpp"
+#include "BaseVector.hpp"
 
 #include <memory>
 #include <string>
@@ -23,6 +27,9 @@ public:
 
     MatrixType GetFormat(void) const;
 
+    bool IsHost(void) const;
+    bool IsDevice(void) const;
+
     void ReadFile(const std::string filename);
     void Allocate(int nRows, int nCols, int nnz, MatrixType format);
 
@@ -35,6 +42,8 @@ public:
     ValueType operator()(int i, int j);  // 0-base indexing
 
     Matrix<ValueType>& operator=(const Matrix<ValueType>& otherMatrix);
+    Vector<ValueType> operator*(const Vector<ValueType>& vec);
+
 
     template <typename T>
     friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& Mat);
@@ -42,6 +51,7 @@ public:
 private:
     std::shared_ptr<BaseMatrix<ValueType>> pImpl;
     std::shared_ptr<HostMatrix<ValueType>> pImplHost;
+    std::shared_ptr<DeviceMatrix<ValueType>> pImplDevice;
 
 };
 

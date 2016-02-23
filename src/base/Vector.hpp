@@ -5,9 +5,13 @@
 #include "device/DeviceVector.hpp"
 
 #include <memory>
+#include <iostream>
 
 namespace pssolver
 {
+
+template <typename ValueType>
+class Matrix;
 
 // Integers Floats and doubles
 template <typename ValueType>
@@ -49,6 +53,8 @@ public:
     void operator*=(const ValueType& val);
     // a = a * val --> Allocates a temporary vector
 
+    template <typename T>
+    friend std::ostream& operator<<(std::ostream& os, const Vector<T>& vec);
 
 
 private:
@@ -56,6 +62,11 @@ private:
     std::shared_ptr<HostVector<ValueType>> pImplHost;
     std::shared_ptr<DeviceVector<ValueType>> pImplDevice;
 
+    friend class Matrix<ValueType>;
+
 };
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const Vector<T>& vec);
 
 }

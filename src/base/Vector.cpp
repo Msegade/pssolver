@@ -221,6 +221,13 @@ void Vector<ValueType>::operator*=(const ValueType& val)
     pImpl->ScalarMul(val);
 }
                                 
+// Friend functions
+template <typename ValueType>
+std::ostream& operator<<(std::ostream& os, const Vector<ValueType> &Vec)
+{
+    Vec.pImpl->Print(os);
+    return os;
+}
 
 // Instantiate the class for the supported template type 
 // parameters. If not done you have to include the 
@@ -229,4 +236,7 @@ template class Vector<double>;
 template class Vector<float>;
 template class Vector<int>;
 
+template std::ostream& operator<<(std::ostream& os, const Vector<double> &Vec);
+template std::ostream& operator<<(std::ostream& os, const Vector<float> &Vec);
+template std::ostream& operator<<(std::ostream& os, const Vector<int> &Vec);
 }

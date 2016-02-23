@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 namespace pssolver
 {
 
@@ -20,6 +22,8 @@ public:
     virtual void SetVal(const ValueType val) = 0;
 
     virtual ValueType Read(const int i) const = 0;
+
+    virtual void Print(std::ostream& os) = 0;
 
     virtual void CopyFromHost(const BaseVector<ValueType> &otherVector) = 0;
     virtual void CopyFromDevice(const BaseVector<ValueType> &otherVector) = 0;

@@ -10,6 +10,8 @@ namespace pssolver
 // Forward declaration for friend statement
 template <typename ValueType>
 class Vector;
+template <typename ValueType>
+class HostCsrMatrix;
 
 template <typename ValueType>
 class HostVector: public BaseVector<ValueType>
@@ -21,6 +23,8 @@ class HostVector: public BaseVector<ValueType>
     friend class Vector<ValueType>;
     // Copying from host to device
     friend class DeviceVector<ValueType>;
+    // Matrix vector multiplication
+    friend class HostCsrMatrix<ValueType>;
 
 public:
     HostVector();
@@ -28,6 +32,7 @@ public:
 
     virtual void Allocate(const int size);
     virtual ValueType Read(const int i) const;
+    virtual void Print(std::ostream& os);
     virtual void SetVal(const ValueType val);
     virtual void CopyFromHost(const BaseVector<ValueType> &hostVector);
     virtual void CopyFromDevice(const BaseVector<ValueType> &deviceVector);

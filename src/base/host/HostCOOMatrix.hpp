@@ -23,6 +23,10 @@ public:
     virtual void Print(std::ostream& os);
 
     virtual ValueType Read(int i, int j) const{ return 0.0;}
+
+    virtual void MatVec(BaseVector<ValueType>& invec,
+                            BaseVector<ValueType>& outvec,
+                            ValueType scalar) const {}
 private:
     int *mRowInd;
     int *mColInd;

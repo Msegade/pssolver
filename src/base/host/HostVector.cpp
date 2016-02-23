@@ -48,6 +48,16 @@ ValueType HostVector<ValueType>::Read(const int i) const
 }
 
 template <typename ValueType>
+void HostVector<ValueType>::Print(std::ostream& os)
+{
+    os << "Data" << std::endl;
+    for (int i = 0; i < this->mSize; i++)
+    {
+        os << mData[i] << std::endl;
+    }
+}
+
+template <typename ValueType>
 void HostVector<ValueType>::CopyFromHost(
                         const BaseVector<ValueType> &otherVector)
 {
