@@ -8,6 +8,8 @@ namespace pssolver
 // Forward declaration for friend statement
 template <typename ValueType>
 class Vector;
+template <typename ValueType>
+class DeviceCsrMatrix;
 
 template <typename ValueType>
 class DeviceVector: public BaseVector<ValueType>
@@ -15,6 +17,8 @@ class DeviceVector: public BaseVector<ValueType>
     using BaseVector<ValueType>::mSize;
     // For the [] operator
     friend class Vector<ValueType>;
+    // For matrix vector multiplication
+    friend class DeviceCsrMatrix<ValueType>;
 
 public:
     DeviceVector();
