@@ -80,7 +80,6 @@ void HostVector<ValueType>::CopyFromDevice(
 {
     // To access private attributes of the derived class we need to 
     // downcast the object
-
     const DeviceVector<ValueType> *cast_vec = 
         dynamic_cast<const DeviceVector<ValueType>*> (&deviceVector);
 

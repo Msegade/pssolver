@@ -10,6 +10,7 @@
 #include <iostream>
 #include <cmath>
 
+
 namespace pssolver
 {
 
@@ -57,10 +58,16 @@ ValueType DeviceVector<ValueType>::Read(const int i) const
     return val;
 }
 
+template <typename ValueType>
+void DeviceVector<ValueType>::Print(std::ostream& os)
+{
+}
+
 
 template <typename ValueType>
 void DeviceVector<ValueType>::CopyFromHost(const BaseVector<ValueType>& src)
 {
+    this->Allocate(src.GetSize());
     const HostVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const HostVector<ValueType>*> (&src);
 
@@ -72,6 +79,7 @@ void DeviceVector<ValueType>::CopyFromHost(const BaseVector<ValueType>& src)
 template <typename ValueType>
 void DeviceVector<ValueType>::CopyFromDevice(const BaseVector<ValueType>& src)
 {
+    this->Allocate(src.GetSize());
     const DeviceVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const DeviceVector<ValueType>*> (&src);
 
@@ -83,6 +91,7 @@ void DeviceVector<ValueType>::CopyFromDevice(const BaseVector<ValueType>& src)
 template <typename ValueType>
 void DeviceVector<ValueType>::CopyToHost(BaseVector<ValueType>& dst) const
 {
+    dst.Allocate(this->GetSize());
     const HostVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const HostVector<ValueType>*> (&dst);
 
@@ -94,6 +103,7 @@ void DeviceVector<ValueType>::CopyToHost(BaseVector<ValueType>& dst) const
 template <typename ValueType>
 void DeviceVector<ValueType>::CopyToDevice(BaseVector<ValueType>& dst) const
 {
+    dst.Allocate(this->GetSize());
     const DeviceVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const DeviceVector<ValueType>*> (&dst);
 

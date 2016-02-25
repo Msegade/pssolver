@@ -24,9 +24,9 @@ public:
     virtual void Print(std::ostream& os);
 
     virtual void CopyFromHost(const BaseMatrix<ValueType> &hostMatrix);
-    virtual void CopyFromDevice(const BaseMatrix<ValueType> &deviceMatrix) {}
-    virtual void CopyToHost(BaseMatrix<ValueType> &hostMatrix) const {}
-    virtual void CopyToDevice(BaseMatrix<ValueType> &deviceMatrix) const {}
+    virtual void CopyFromDevice(const BaseMatrix<ValueType> &deviceMatrix);
+    virtual void CopyToHost(BaseMatrix<ValueType> &hostMatrix) const;
+    virtual void CopyToDevice(BaseMatrix<ValueType> &deviceMatrix) const;
 
     virtual ValueType Read(int i, int j) const;
 

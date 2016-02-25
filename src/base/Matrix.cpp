@@ -1,6 +1,7 @@
 #include "Matrix.hpp"
 #include "host/HostCOOMatrix.hpp"
 #include "host/HostCsrMatrix.hpp"
+#include "device/DeviceCsrMatrix.hpp"
 
 #include <cassert>
 
@@ -131,6 +132,20 @@ void Matrix<ValueType>::ConvertTo(MatrixType format)
 }
 
 template <typename ValueType>
+void Matrix<ValueType>::MoveToDevice(void)
+{
+    assert(pImpl == pImplHost);
+    if (this->GetFormat() == CSR)
+    {
+        pImplDevice = std::shared_ptr<DeviceCsrMatrix<ValueType>>
+                        (new DeviceCsrMatrix<ValueType>());
+        pImplHost->CopyToDevice(*pImplDevice);
+        pImpl = pImplDevice;
+    }
+
+}
+
+template <typename ValueType>
 ValueType Matrix<ValueType>::operator()(int i, int j)
 {
     return pImpl->Read(i,j);
@@ -169,6 +184,8 @@ Vector<ValueType> Matrix<ValueType>::operator*(const Vector<ValueType>& vec)
             (this->IsDevice() && vec.IsDevice() ) );
 
     Vector<ValueType> out(this->GetNRows());
+
+    if ( this->IsDevice() ) out.MoveToDevice();
     this->pImpl->MatVec(*(vec.pImpl), *(out.pImpl), 1.0);
 
     return out;

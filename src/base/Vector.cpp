@@ -18,6 +18,23 @@ Vector<ValueType>::Vector()
 }
 
 template <typename ValueType>
+Vector<ValueType>::Vector(const Vector<ValueType>& otherVector)
+{
+    pImplHost = std::shared_ptr<HostVector<ValueType>>
+                                (new HostVector<ValueType>());
+    pImplHost->CopyFromHost(*(otherVector.pImplHost));
+    pImpl = pImplHost;
+    if (otherVector.IsDevice()) 
+    {
+        pImplDevice = std::shared_ptr<DeviceVector<ValueType>>
+                                (new DeviceVector<ValueType>());
+        pImplDevice->CopyFromDevice(*(otherVector.pImplDevice)); 
+        pImpl = pImplHost;
+    }
+    
+}
+
+template <typename ValueType>
 Vector<ValueType>::Vector(int size)
 {
     assert(size>0);
@@ -52,7 +69,6 @@ void Vector<ValueType>::MoveToDevice(void)
 {
     pImplDevice = std::shared_ptr<DeviceVector<ValueType>>
                                 (new DeviceVector<ValueType>());
-    pImplDevice->Allocate(pImpl->GetSize());
     pImplDevice->CopyFromHost(*pImplHost);
     pImpl = pImplDevice;
 }
@@ -80,7 +96,6 @@ void Vector<ValueType>::Allocate(int size)
                                     (new HostVector<ValueType>());
         assert(pImplHost != NULL);
         pImplHost->Allocate(size);
-        pImpl = pImplHost;
     }
     else if (pImpl == pImplDevice )
     {
@@ -89,7 +104,6 @@ void Vector<ValueType>::Allocate(int size)
                                     (new DeviceVector<ValueType>());
         assert(pImplDevice != NULL);
         pImplDevice->Allocate(size);
-        pImpl = pImplDevice;
 
     }
 
@@ -225,7 +239,13 @@ void Vector<ValueType>::operator*=(const ValueType& val)
 template <typename ValueType>
 std::ostream& operator<<(std::ostream& os, const Vector<ValueType> &Vec)
 {
-    Vec.pImpl->Print(os);
+    if (Vec.IsHost())
+        Vec.pImpl->Print(os);
+    else
+    {
+        Vec.pImpl->CopyToHost(*(Vec.pImplHost));
+        Vec.pImplHost->Print(os);
+    }
     return os;
 }
 

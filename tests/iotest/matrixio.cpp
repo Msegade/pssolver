@@ -22,9 +22,17 @@ int main(int argc, char* argv[] )
         std::cout << "COO Format" << std::endl;
     }
 
-    std::cout << A(4,4) << std::endl;
     Vector<double> b(5,1);
     Vector<double> result = A*b;
+
+    std::cout << result;
+
+    b.MoveToDevice();
+    A.MoveToDevice();
+
+    result.MoveToDevice();
+
+    result= A*b;
     std::cout << result;
 
     return 0;

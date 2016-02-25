@@ -22,6 +22,7 @@ public:
     Vector();
     Vector(int size);
     Vector(int size, const ValueType val);
+    Vector(const Vector<ValueType>& otherVector);
     virtual ~Vector();
     
     void MoveToDevice(void);

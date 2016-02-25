@@ -1,6 +1,8 @@
 #include "HostCsrMatrix.hpp"
 #include "HostCOOMatrix.hpp"
 
+#include "../device/DeviceCsrMatrix.hpp"
+
 #include <cassert>
 #include <cstring>
 #include <iostream>
@@ -62,8 +64,7 @@ void HostCsrMatrix<ValueType>::Print(std::ostream& os)
 template <typename ValueType>
 void HostCsrMatrix<ValueType>::CopyFromHost(const BaseMatrix<ValueType> &mat)
 {
-    BaseMatrix<ValueType>::CopyFromHost(mat);
-    this->Allocate(this->mNRows, this->mNCols, this->mNnz);
+    this->Allocate(mat.GetNRows(), mat.GetNCols(), mat.GetNnz());
     if(mat.GetFormat() == COO)
     {
         const HostCOOMatrix<ValueType> *cast_mat = 
@@ -112,6 +113,68 @@ void HostCsrMatrix<ValueType>::CopyFromHost(const BaseMatrix<ValueType> &mat)
         }
 
     }
+    else if(mat.GetFormat() == CSR)
+    {
+        const HostCsrMatrix<ValueType> *cast_mat = 
+            dynamic_cast<const HostCsrMatrix<ValueType>*> (&mat);
+
+        for (int i=0; i<this->mNnz; i++) 
+        {
+            this->mData[i] = cast_mat->mData[i];
+            this->mColInd[i] = cast_mat->mColInd[i];
+        }
+        for (int i=0; i<(this->mNRows+1); i++) 
+        {
+            this->mRowPtr[i] = cast_mat->mRowPtr[i];
+        }
+
+    }
+
+}
+
+template <typename ValueType>
+void HostCsrMatrix<ValueType>::CopyFromDevice(const BaseMatrix<ValueType> &mat)
+{
+    this->Allocate(mat.GetNRows(), mat.GetNCols(), mat.GetNnz());
+    const DeviceCsrMatrix<ValueType> *cast_device = 
+        dynamic_cast<const DeviceCsrMatrix<ValueType>*> (&mat);
+    cast_device->CopyToHost(*(this));
+
+
+}
+
+template <typename ValueType>
+void HostCsrMatrix<ValueType>::CopyToHost(BaseMatrix<ValueType> &mat) const
+{
+    mat.Allocate(this->GetNRows(), this->GetNCols(), this->GetNnz());
+
+    if(mat.GetFormat() == CSR)
+    {
+        HostCsrMatrix<ValueType> *cast_mat = 
+            dynamic_cast<HostCsrMatrix<ValueType>*> (&mat);
+
+        for (int i=0; i<this->mNnz; i++) 
+        {
+            cast_mat->mData[i] = this->mData[i];
+            cast_mat->mColInd[i] = this->mColInd[i];
+        }
+        for (int i=0; i<(this->mNRows+1); i++) 
+        {
+            cast_mat->mRowPtr[i] = this->mRowPtr[i];
+        }
+
+    }
+
+}
+
+template <typename ValueType>
+void HostCsrMatrix<ValueType>::CopyToDevice(BaseMatrix<ValueType> &mat) const
+{
+    mat.Allocate(this->GetNRows(), this->GetNCols(), this->GetNnz());
+    DeviceCsrMatrix<ValueType> *cast_device = 
+        dynamic_cast<DeviceCsrMatrix<ValueType>*> (&mat);
+    cast_device->CopyFromHost(*(this));
+
 
 }
 

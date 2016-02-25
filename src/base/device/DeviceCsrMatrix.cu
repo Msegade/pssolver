@@ -51,7 +51,7 @@ template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::CopyFromHost(
                                        const BaseMatrix<ValueType> &hostMatrix)
 {
-    BaseMatrix<ValueType>::CopyFromHost(hostMatrix);
+    this->Allocate(hostMatrix.GetNRows(), hostMatrix.GetNCols(), hostMatrix.GetNnz());
     const HostCsrMatrix<ValueType> *cast_host = 
                 dynamic_cast<const HostCsrMatrix<ValueType>*> (&hostMatrix);
     checkCudaErrors(cudaMemcpy(d_mData, cast_host->mData, this->mNnz*sizeof(ValueType),
@@ -67,6 +67,7 @@ template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::CopyFromDevice(
                                        const BaseMatrix<ValueType> &deviceMatrix)
 {
+    this->Allocate(deviceMatrix.GetNRows(), deviceMatrix.GetNCols(), deviceMatrix.GetNnz());
     const DeviceCsrMatrix<ValueType> *cast_device = 
                 dynamic_cast<const DeviceCsrMatrix<ValueType>*> (&deviceMatrix);
     checkCudaErrors(cudaMemcpy(d_mData, cast_device->d_mData, this->mNnz*sizeof(ValueType),
@@ -82,6 +83,7 @@ template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::CopyToHost(
                                        BaseMatrix<ValueType> &hostMatrix) const
 {
+    hostMatrix.Allocate(this->GetNRows(), this->GetNCols(), this->GetNnz());
     const HostCsrMatrix<ValueType> *cast_host = 
                 dynamic_cast<const HostCsrMatrix<ValueType>*> (&hostMatrix);
     checkCudaErrors(cudaMemcpy(cast_host->mData, d_mData, this->mNnz*sizeof(ValueType),
@@ -97,6 +99,7 @@ template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::CopyToDevice(
                                        BaseMatrix<ValueType> &deviceMatrix) const
 {
+    deviceMatrix.Allocate(this->GetNRows(), this->GetNCols(), this->GetNnz());
     const DeviceCsrMatrix<ValueType> *cast_device = 
                 dynamic_cast<const DeviceCsrMatrix<ValueType>*> (&deviceMatrix);
     checkCudaErrors(cudaMemcpy(cast_device->d_mData, d_mData, this->mNnz*sizeof(ValueType),

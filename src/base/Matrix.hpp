@@ -34,6 +34,7 @@ public:
     void Allocate(int nRows, int nCols, int nnz, MatrixType format);
 
     void ConvertTo(MatrixType format);
+    void MoveToDevice(void);
 
     int GetNRows(void) const;
     int GetNCols(void) const;
