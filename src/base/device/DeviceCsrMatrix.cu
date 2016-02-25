@@ -1,9 +1,10 @@
 #include "DeviceCsrMatrix.hpp"
 #include "../host/HostCsrMatrix.hpp"
 
+#include "../../utils.hpp"
+
 #include "cuda_utils.h"
 #include "cuda_variables.h"
-
 #include "cuda_kernels_csrmatrix.hpp"
 
 #include <iostream>
@@ -21,6 +22,7 @@ DeviceCsrMatrix<ValueType>::DeviceCsrMatrix()
 template <typename ValueType>
 DeviceCsrMatrix<ValueType>::~DeviceCsrMatrix()
 {
+    DEBUGLOG(this, "DeviceCsrMatrix::~DeviceCsrMatrix()", "Empty", 2);
     checkCudaErrors(cudaFree(d_mData));
     checkCudaErrors(cudaFree(d_mColInd));
     checkCudaErrors(cudaFree(d_mRowPtr));
@@ -31,6 +33,8 @@ template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::Allocate(const int nRows, const int nCols, 
                                      const int nnz)
 {
+    DEBUGLOG(this, "DeviceCsrMatrix::Allocate()", "nRows = " << nRows << 
+                         " nCols = " << nCols << " nnz = " << nnz, 2);
     assert(nRows>0 && nCols>0 && nnz>0);
     this->mNRows = nRows; this->mNCols = nCols; this->mNnz = nnz;
     checkCudaErrors(cudaMalloc(&d_mData, nnz*sizeof(ValueType)));
@@ -51,6 +55,7 @@ template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::CopyFromHost(
                                        const BaseMatrix<ValueType> &hostMatrix)
 {
+    DEBUGLOG(this, "DeviceCsrMatrix::CopyFromHost()", "Mat = " << &hostMatrix, 2);
     this->Allocate(hostMatrix.GetNRows(), hostMatrix.GetNCols(), hostMatrix.GetNnz());
     const HostCsrMatrix<ValueType> *cast_host = 
                 dynamic_cast<const HostCsrMatrix<ValueType>*> (&hostMatrix);
@@ -67,6 +72,7 @@ template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::CopyFromDevice(
                                        const BaseMatrix<ValueType> &deviceMatrix)
 {
+    DEBUGLOG(this, "DeviceCsrMatrix::CopyFromDevice()", "Mat = " << &deviceMatrix, 2);
     this->Allocate(deviceMatrix.GetNRows(), deviceMatrix.GetNCols(), deviceMatrix.GetNnz());
     const DeviceCsrMatrix<ValueType> *cast_device = 
                 dynamic_cast<const DeviceCsrMatrix<ValueType>*> (&deviceMatrix);
@@ -83,6 +89,7 @@ template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::CopyToHost(
                                        BaseMatrix<ValueType> &hostMatrix) const
 {
+    DEBUGLOG(this, "DeviceCsrMatrix::CopyToHost()", "Mat = " << &hostMatrix, 2);
     hostMatrix.Allocate(this->GetNRows(), this->GetNCols(), this->GetNnz());
     const HostCsrMatrix<ValueType> *cast_host = 
                 dynamic_cast<const HostCsrMatrix<ValueType>*> (&hostMatrix);
@@ -99,6 +106,7 @@ template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::CopyToDevice(
                                        BaseMatrix<ValueType> &deviceMatrix) const
 {
+    DEBUGLOG(this, "DeviceCsrMatrix::CopyToDevice()", "Mat = " << &deviceMatrix, 2);
     deviceMatrix.Allocate(this->GetNRows(), this->GetNCols(), this->GetNnz());
     const DeviceCsrMatrix<ValueType> *cast_device = 
                 dynamic_cast<const DeviceCsrMatrix<ValueType>*> (&deviceMatrix);
@@ -117,6 +125,8 @@ void DeviceCsrMatrix<ValueType>::MatVec(BaseVector<ValueType>& invec,
                                         BaseVector<ValueType>& outvec,
                                         ValueType scalar) const
 {
+    DEBUGLOG(this, "DeviceCsrMatrix::MatVec()", "InVec = " << &invec
+                    << " OutVec = " << &outvec << " Scalar = " << scalar, 2);
     const DeviceVector<ValueType> *cast_in = 
                         dynamic_cast<const DeviceVector<ValueType>*> (&invec);
     DeviceVector<ValueType> *cast_out =

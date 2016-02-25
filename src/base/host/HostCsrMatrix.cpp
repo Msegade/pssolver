@@ -3,6 +3,7 @@
 
 #include "../device/DeviceCsrMatrix.hpp"
 
+#include "../../utils.hpp"
 #include <cassert>
 #include <cstring>
 #include <iostream>
@@ -12,6 +13,7 @@ namespace pssolver
 template <typename ValueType>
 HostCsrMatrix<ValueType>::HostCsrMatrix()
 {
+    DEBUGLOG(this, "HostCsrMatrix::HostCsrMatrix()", "Empty", 2);
     mData = new ValueType[0];
     mColInd = new int[0];
     mRowPtr = new int[0];
@@ -20,6 +22,7 @@ HostCsrMatrix<ValueType>::HostCsrMatrix()
 template <typename ValueType>
 HostCsrMatrix<ValueType>::~HostCsrMatrix()
 {
+    DEBUGLOG(this, "HostCsrMatrix::~HostCsrMatrix()", "Empty", 2);
     delete[] mData;
     delete[] mRowPtr;
     delete[] mColInd;
@@ -31,6 +34,8 @@ void HostCsrMatrix<ValueType>::Allocate(const int nRows,
                                         const int nCols,const int nnz)
 {
 
+    DEBUGLOG(this, "HostCsrMatrix::Allocate()", 
+            "nRows = " << nRows << " nCols = " << nCols << " nnz = " << nnz, 2);
     assert ( nRows > 0 && nCols > 0 && nnz > 0);
     this->mNRows = nRows; this->mNCols = nCols; this->mNnz = nnz;
     mData = new ValueType[nnz];
@@ -64,6 +69,7 @@ void HostCsrMatrix<ValueType>::Print(std::ostream& os)
 template <typename ValueType>
 void HostCsrMatrix<ValueType>::CopyFromHost(const BaseMatrix<ValueType> &mat)
 {
+    DEBUGLOG(this, "HostCsrMatrix::CopyFromHost()", "BaseMat = " << &mat, 2);
     this->Allocate(mat.GetNRows(), mat.GetNCols(), mat.GetNnz());
     if(mat.GetFormat() == COO)
     {
@@ -135,7 +141,7 @@ void HostCsrMatrix<ValueType>::CopyFromHost(const BaseMatrix<ValueType> &mat)
 template <typename ValueType>
 void HostCsrMatrix<ValueType>::CopyFromDevice(const BaseMatrix<ValueType> &mat)
 {
-    this->Allocate(mat.GetNRows(), mat.GetNCols(), mat.GetNnz());
+    DEBUGLOG(this, "HostCsrMatrix::CopyFromDevice()", "BaseMat = " << &mat, 2);
     const DeviceCsrMatrix<ValueType> *cast_device = 
         dynamic_cast<const DeviceCsrMatrix<ValueType>*> (&mat);
     cast_device->CopyToHost(*(this));
@@ -146,6 +152,7 @@ void HostCsrMatrix<ValueType>::CopyFromDevice(const BaseMatrix<ValueType> &mat)
 template <typename ValueType>
 void HostCsrMatrix<ValueType>::CopyToHost(BaseMatrix<ValueType> &mat) const
 {
+    DEBUGLOG(this, "HostCsrMatrix::CopyToHost()", "BaseMat = " << &mat, 2);
     mat.Allocate(this->GetNRows(), this->GetNCols(), this->GetNnz());
 
     if(mat.GetFormat() == CSR)
@@ -170,7 +177,7 @@ void HostCsrMatrix<ValueType>::CopyToHost(BaseMatrix<ValueType> &mat) const
 template <typename ValueType>
 void HostCsrMatrix<ValueType>::CopyToDevice(BaseMatrix<ValueType> &mat) const
 {
-    mat.Allocate(this->GetNRows(), this->GetNCols(), this->GetNnz());
+    DEBUGLOG(this, "HostCsrMatrix::CopyToDevice()", "BaseMat = " << &mat, 2);
     DeviceCsrMatrix<ValueType> *cast_device = 
         dynamic_cast<DeviceCsrMatrix<ValueType>*> (&mat);
     cast_device->CopyFromHost(*(this));
@@ -203,6 +210,8 @@ template <typename ValueType>
 void HostCsrMatrix<ValueType>::MatVec(BaseVector<ValueType>& invec, BaseVector<ValueType>& outvec,
                     ValueType scalar) const
 {
+    DEBUGLOG(this, "HostCsrMatrix::MatVec()", "InVec = " << &invec
+                    << " OutVec = " << &outvec << " Scalar = " << scalar,  2);
     assert(invec.GetSize() == this->GetNCols());    
     assert(outvec.GetSize() == this->GetNRows());    
 

@@ -23,6 +23,7 @@ int main(int argc, char* argv[] )
     }
 
     Vector<double> b(5,1);
+
     Vector<double> result = A*b;
 
     std::cout << result;
@@ -32,8 +33,10 @@ int main(int argc, char* argv[] )
 
     result.MoveToDevice();
 
+    std::cout << "***************************************" <<std::endl;
     result= A*b;
-    std::cout << result;
+    std::cout << "***************************************" <<std::endl;
+//  std::cout << result;
 
     return 0;
 }

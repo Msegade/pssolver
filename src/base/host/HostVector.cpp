@@ -1,5 +1,7 @@
 #include "HostVector.hpp"
 
+#include "../../utils.hpp"
+
 #include <cassert>
 #include <cstring>
 #include <iostream>
@@ -18,6 +20,7 @@ HostVector<ValueType>::HostVector()
 template <typename ValueType>
 HostVector<ValueType>::~HostVector()
 {
+    DEBUGLOG(this, "HostVector::~HostVector()", "Empty", 2);
     delete[] mData;
     //std::cout << "HostVector Destructor" << std::endl;
 
@@ -26,6 +29,7 @@ HostVector<ValueType>::~HostVector()
 template <typename ValueType>
 void HostVector<ValueType>::Allocate(const int size)
 {
+    DEBUGLOG(this, "HostVector::Allocate()", "size = " << size, 2);
     assert(size > 0);
     mSize = size;
     mData = new ValueType[size];      
@@ -36,6 +40,7 @@ void HostVector<ValueType>::Allocate(const int size)
 template <typename ValueType>
 void HostVector<ValueType>::SetVal(const ValueType val)
 {
+    DEBUGLOG(this, "HostVector::SetVal()", "val = " << val, 2);
     for (int i=0; i<mSize; i++)
         mData[i] = val;
     
@@ -61,9 +66,10 @@ template <typename ValueType>
 void HostVector<ValueType>::CopyFromHost(
                         const BaseVector<ValueType> &otherVector)
 {
+
+    DEBUGLOG(this, "HostVector::CopyFromHost()", "Vec = " << &otherVector, 2);
     // To access private attributes of the derived class we need to 
     // downcast the object
-
     const HostVector<ValueType> *cast_vec = 
         dynamic_cast<const HostVector<ValueType>*> (&otherVector);
 
@@ -78,8 +84,7 @@ template <typename ValueType>
 void HostVector<ValueType>::CopyFromDevice(
                         const BaseVector<ValueType> &deviceVector)
 {
-    // To access private attributes of the derived class we need to 
-    // downcast the object
+    DEBUGLOG(this, "HostVector::CopyFromDevice()", "Vec = " << &deviceVector, 2);
     const DeviceVector<ValueType> *cast_vec = 
         dynamic_cast<const DeviceVector<ValueType>*> (&deviceVector);
 
@@ -92,6 +97,7 @@ void HostVector<ValueType>::CopyToHost(
                         BaseVector<ValueType> &otherVector) const
 {
 
+    DEBUGLOG(this, "HostVector::CopyToHost()", "Vec = " << &otherVector, 2);
     const HostVector<ValueType> *cast_vec = 
         dynamic_cast<const HostVector<ValueType>*> (&otherVector);
 
@@ -107,6 +113,7 @@ void HostVector<ValueType>::CopyToDevice(
                         BaseVector<ValueType> &deviceVector) const
 {
 
+    DEBUGLOG(this, "HostVector::CopyToDevice()", "Vec = " << &deviceVector, 2);
     DeviceVector<ValueType> *cast_vec = 
         dynamic_cast<DeviceVector<ValueType>*> (&deviceVector);
 

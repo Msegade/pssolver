@@ -31,6 +31,8 @@ template <typename ValueType>
 void HostCOOMatrix<ValueType>::Allocate(const int nRows,
                                         const int nCols,const int nnz)
 {
+    DEBUGLOG(this, "HostCOOMatrix::Allocate()", 
+            "nRows = " << nRows << " nCols = " << nCols << " nnz = " << nnz, 2);
 
     assert ( nRows > 0 && nCols > 0 && nnz > 0);
     this->mNRows = nRows; this->mNCols = nCols; this->mNnz = nnz;
@@ -46,6 +48,7 @@ void HostCOOMatrix<ValueType>::Allocate(const int nRows,
 template <typename ValueType>
 void HostCOOMatrix<ValueType>::ReadFile(const std::string filename) 
 {
+    DEBUGLOG(this, "HostCOOMatrix::ReadFile()", "filename = " << filename, 2);
     BaseMatrix<ValueType>::ReadFile(filename);
 
     //Allocate matrix after reading the size from the file

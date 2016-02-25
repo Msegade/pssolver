@@ -3,6 +3,8 @@
 #include "host/HostCsrMatrix.hpp"
 #include "device/DeviceCsrMatrix.hpp"
 
+#include "../utils.hpp"
+
 #include <cassert>
 
 #include <string>
@@ -12,6 +14,7 @@ namespace pssolver
 template <typename ValueType>
 Matrix<ValueType>::Matrix()
 {
+    DEBUGLOG(this, "Matrix::Matrix()", "Empty", 1);
     // Empty CSR matrix on host
     pImplHost = std::shared_ptr<HostMatrix<ValueType>>
                         (new HostCsrMatrix<ValueType>());
@@ -56,6 +59,7 @@ bool Matrix<ValueType>::IsDevice(void) const
 template <typename ValueType>
 void Matrix<ValueType>::ReadFile(const std::string filename)
 {
+    DEBUGLOG(this, "Matrix::ReadFile()", "filename = " << filename, 1);
     if (GetFormat() == COO )
     {
         pImplHost->ReadFile(filename);
@@ -134,6 +138,7 @@ void Matrix<ValueType>::ConvertTo(MatrixType format)
 template <typename ValueType>
 void Matrix<ValueType>::MoveToDevice(void)
 {
+    DEBUGLOG(this, "Matrix::MoveToDevice()", "Empty", 1);
     assert(pImpl == pImplHost);
     if (this->GetFormat() == CSR)
     {
@@ -179,6 +184,7 @@ Matrix<ValueType>& Matrix<ValueType>::operator=(const Matrix<ValueType>& otherMa
 template <typename ValueType>
 Vector<ValueType> Matrix<ValueType>::operator*(const Vector<ValueType>& vec)
 {
+    DEBUGLOG(this, "Matrix::operator*", "vec = " << &vec, 1);
     assert(vec.GetSize() == this->GetNCols()); 
     assert( (this->IsHost() && vec.IsHost() ) ||
             (this->IsDevice() && vec.IsDevice() ) );

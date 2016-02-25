@@ -1,6 +1,8 @@
 #include "DeviceVector.hpp"
 #include "../host/HostVector.hpp"
 
+#include "../../utils.hpp"
+
 #include "cuda_kernels_vector.hpp"
 #include "cuda_utils.h"
 #include "cuda_variables.h"
@@ -23,6 +25,7 @@ DeviceVector<ValueType>::DeviceVector()
 template <typename ValueType>
 DeviceVector<ValueType>::DeviceVector(const DeviceVector<ValueType>& v)
 {
+    DEBUGLOG(this, "DeviceVector::DeviceVector()", "Vec = " << &v, 2);
     this->Allocate(v.mSize);
     this->CopyFromDevice(v);
 }
@@ -30,12 +33,14 @@ DeviceVector<ValueType>::DeviceVector(const DeviceVector<ValueType>& v)
 template <typename ValueType>
 DeviceVector<ValueType>::~DeviceVector()
 {
+    DEBUGLOG(this, "DeviceVector::~DeviceVector()", "Empty", 2);
     checkCudaErrors(cudaFree(d_mData)); 
 }
 
 template <typename ValueType>
 void DeviceVector<ValueType>::Allocate (const int size)
 {
+    DEBUGLOG(this, "DeviceVector::Allocate()", "size = " << size, 2);
     assert(size >= 0);
     mSize = size;
     checkCudaErrors(cudaMalloc(&d_mData, mSize*sizeof(double)));
@@ -44,6 +49,7 @@ void DeviceVector<ValueType>::Allocate (const int size)
 template <typename ValueType>
 void DeviceVector<ValueType>::SetVal (const ValueType val)
 {
+    DEBUGLOG(this, "DeviceVector::SetVal()", "val = " << val, 2);
     dim3 BlockSize(BLOCKSIZE);
     dim3 GridSize( mSize / BLOCKSIZE +1);
     kernel_vector_fill <<<GridSize, BlockSize>>>(mSize, d_mData, val);
@@ -67,6 +73,7 @@ void DeviceVector<ValueType>::Print(std::ostream& os)
 template <typename ValueType>
 void DeviceVector<ValueType>::CopyFromHost(const BaseVector<ValueType>& src)
 {
+    DEBUGLOG(this, "DeviceVector::CopyFromHost()", "Vec = " << &src, 2);
     this->Allocate(src.GetSize());
     const HostVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const HostVector<ValueType>*> (&src);
@@ -79,6 +86,7 @@ void DeviceVector<ValueType>::CopyFromHost(const BaseVector<ValueType>& src)
 template <typename ValueType>
 void DeviceVector<ValueType>::CopyFromDevice(const BaseVector<ValueType>& src)
 {
+    DEBUGLOG(this, "DeviceVector::CopyFromDevice()", "Vec = " << &src, 2);
     this->Allocate(src.GetSize());
     const DeviceVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const DeviceVector<ValueType>*> (&src);
@@ -91,6 +99,7 @@ void DeviceVector<ValueType>::CopyFromDevice(const BaseVector<ValueType>& src)
 template <typename ValueType>
 void DeviceVector<ValueType>::CopyToHost(BaseVector<ValueType>& dst) const
 {
+    DEBUGLOG(this, "DeviceVector::CopyToHost()", "Vec = " << &dst, 2);
     dst.Allocate(this->GetSize());
     const HostVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const HostVector<ValueType>*> (&dst);
@@ -103,6 +112,7 @@ void DeviceVector<ValueType>::CopyToHost(BaseVector<ValueType>& dst) const
 template <typename ValueType>
 void DeviceVector<ValueType>::CopyToDevice(BaseVector<ValueType>& dst) const
 {
+    DEBUGLOG(this, "DeviceVector::CopyToDevice()", "Vec = " << &dst, 2);
     dst.Allocate(this->GetSize());
     const DeviceVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const DeviceVector<ValueType>*> (&dst);

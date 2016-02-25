@@ -4,12 +4,15 @@
 #include <cstddef>
 #include <iostream>
 
+#include "../utils.hpp"
+
 namespace pssolver
 {
 
 template <typename ValueType>
 Vector<ValueType>::Vector()
 {
+    DEBUGLOG( this, "Vector::Vector()", "Empty", 1);
     // Create empty vector on host
     pImplHost = std::shared_ptr<HostVector<ValueType>>
                                 (new HostVector<ValueType>());
@@ -20,6 +23,7 @@ Vector<ValueType>::Vector()
 template <typename ValueType>
 Vector<ValueType>::Vector(const Vector<ValueType>& otherVector)
 {
+    DEBUGLOG( this, "Vector::Vector()", "Vector = " << &otherVector, 1);
     pImplHost = std::shared_ptr<HostVector<ValueType>>
                                 (new HostVector<ValueType>());
     pImplHost->CopyFromHost(*(otherVector.pImplHost));
@@ -37,6 +41,7 @@ Vector<ValueType>::Vector(const Vector<ValueType>& otherVector)
 template <typename ValueType>
 Vector<ValueType>::Vector(int size)
 {
+    DEBUGLOG( this, "Vector::Vector()", "size = " << size, 1);
     assert(size>0);
     pImplHost = std::shared_ptr<HostVector<ValueType>>
                                 (new HostVector<ValueType>());
@@ -48,6 +53,8 @@ Vector<ValueType>::Vector(int size)
 template <typename ValueType>
 Vector<ValueType>::Vector(int size, const ValueType val)
 {
+    DEBUGLOG( this, "Vector::Vector()", 
+            "size = " << size << " val = " <<val, 1);
     assert(size>0);
     pImplHost = std::shared_ptr<HostVector<ValueType>>
                                 (new HostVector<ValueType>());
@@ -67,6 +74,7 @@ Vector<ValueType>::~Vector()
 template <typename ValueType>
 void Vector<ValueType>::MoveToDevice(void)
 {
+    DEBUGLOG( this, "Vector::MoveToDevice()", "Empty", 1);
     pImplDevice = std::shared_ptr<DeviceVector<ValueType>>
                                 (new DeviceVector<ValueType>());
     pImplDevice->CopyFromHost(*pImplHost);
@@ -88,6 +96,7 @@ bool Vector<ValueType>::IsDevice(void) const
 template <typename ValueType>
 void Vector<ValueType>::Allocate(int size)
 {
+    DEBUGLOG( this, "Vector::Allocate()", "Size = " << size, 1);
     assert(size>0);
     if ( pImpl == pImplHost )
     {
@@ -144,6 +153,7 @@ template <typename ValueType>
 Vector<ValueType>& Vector<ValueType>::operator=(
                                 const Vector<ValueType>& otherVector)
 {
+    DEBUGLOG( this, "Vector::operator=", "Vector = " << &otherVector, 1);
     assert(&otherVector != NULL);
     if (this == &otherVector)
        return *this;
@@ -151,7 +161,7 @@ Vector<ValueType>& Vector<ValueType>::operator=(
     if((pImpl == pImplHost) && (otherVector.pImpl == otherVector.pImplHost))
     {
         int size = otherVector.GetSize();
-        this->Allocate(size);
+        //this->Allocate(size);
         // we need to pass a reference (BaseVector&)
         // otherVector.pImpl is BaseVector*
         pImpl->CopyFromHost(*(otherVector.pImpl));
@@ -165,7 +175,7 @@ Vector<ValueType>& Vector<ValueType>::operator=(
     else if((pImpl == pImplDevice) && (otherVector.pImpl == otherVector.pImplDevice))
     {
         int size = otherVector.GetSize();
-        this->Allocate(size);
+        //this->Allocate(size);
         pImpl->CopyFromDevice(*(otherVector.pImpl));
         return *this;
     }
@@ -183,6 +193,7 @@ template <typename ValueType>
 void Vector<ValueType>::operator+=(
                                 const Vector<ValueType>& otherVector)
 {
+    DEBUGLOG( this, "Vector::operator+=", "Vec =" << &otherVector, 1);
     assert(GetSize() == otherVector.GetSize());
     pImpl->Add(*(otherVector.pImpl));
 }
@@ -191,6 +202,7 @@ template <typename ValueType>
 Vector<ValueType> Vector<ValueType>::operator+(
                                 const Vector<ValueType>& otherVector)
 {
+    DEBUGLOG( this, "Vector::operator+", "Vec =" << &otherVector, 1);
     assert(GetSize() == otherVector.GetSize());
 
     Vector<ValueType> result(GetSize());
