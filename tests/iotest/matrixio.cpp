@@ -38,5 +38,8 @@ int main(int argc, char* argv[] )
     std::cout << b;
     std::cout << result;
 
+    LinearSystem<Matrix<double>, Vector<double>> LS(A,b);
+    std::cout << LS.SolveCG(40, 0.00001);
+
     return 0;
 }

@@ -9,3 +9,5 @@
 #include "base/host/HostMatrix.hpp"
 #include "base/host/HostCsrMatrix.hpp"
 #include "base/host/HostCOOMatrix.hpp"
+
+#include "solvers/LinearSystem.hpp"
