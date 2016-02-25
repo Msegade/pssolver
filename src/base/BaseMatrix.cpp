@@ -41,7 +41,7 @@ void BaseMatrix<ValueType>::ReadFile(const std::string filename)
     int linenumber = 1;
     if ( !regex_match ( line, std::regex("%%MatrixMarket matrix"
                                     " coordinate (real|complex)"
-                                    " (symmetric|non-symmetric)")))
+                                    " (symmetric|unsymmetric)")))
     {
         std::cerr << "Bad syntax line 1" << std::endl;
     }
