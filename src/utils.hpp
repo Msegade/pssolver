@@ -12,7 +12,7 @@
 }
 
 #else
-#define DEBUGLOG( obj, fct, args );
+#define DEBUGLOG( obj, fct, args, level );
 #endif
 
 namespace pssolver

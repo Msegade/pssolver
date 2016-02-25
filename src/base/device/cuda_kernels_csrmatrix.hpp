@@ -15,9 +15,8 @@ __global__ void kernel_csrmatrix_matvec (const int nRows, const int* rowPtr,
 
     if (i < nRows)
     {
-        //printf("I = %d\n", i);
         out[i] = ValueType(0.0);
-        for (j = rowPtr[i]; j <rowPtr[j+1]; j++)
+        for (j = rowPtr[i]; j <rowPtr[i+1]; j++)
         {
             out[i] = out[i] + mat[j]*in[colInd[j]];
         }

@@ -194,7 +194,6 @@ Vector<ValueType> Matrix<ValueType>::operator*(const Vector<ValueType>& vec)
     if ( this->IsDevice() ) out.MoveToDevice();
     this->pImpl->MatVec(*(vec.pImpl), *(out.pImpl), 1.0);
 
-    std::cout << out;
     return out;
 }
 
@@ -202,8 +201,17 @@ Vector<ValueType> Matrix<ValueType>::operator*(const Vector<ValueType>& vec)
 template <typename ValueType>
 std::ostream& operator<<(std::ostream& os, const Matrix<ValueType> &Mat)
 {
-    Mat.pImpl->Print(os);
-    return os;
+    if(Mat.IsDevice())
+    {
+        Mat.pImpl->CopyToHost(*(Mat.pImplHost));
+        Mat.pImplHost->Print(os);
+        return os;
+    }
+    else
+    {
+        Mat.pImpl->Print(os);
+        return os;
+    }
 }
 
 

@@ -16,7 +16,6 @@ int main(int argc, char* argv[] )
     Matrix<double> A;
     A.ReadFile(filename);
 
-    std::cout << A << std::endl;
     if( A.GetFormat() == COO )
     {
         std::cout << "COO Format" << std::endl;
@@ -33,11 +32,11 @@ int main(int argc, char* argv[] )
 
     result.MoveToDevice();
     std::cout << "***************************************" <<std::endl;
-    result = b;
-    std::cout << "***************************************" <<std::endl;
     result = A*b;
     std::cout << "***************************************" <<std::endl;
-//  std::cout << result;
+    std::cout << A;
+    std::cout << b;
+    std::cout << result;
 
     return 0;
 }

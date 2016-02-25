@@ -63,7 +63,7 @@ void DeviceCsrMatrix<ValueType>::CopyFromHost(
                             cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemcpy(d_mColInd, cast_host->mColInd, this->mNnz*sizeof(int),
                             cudaMemcpyHostToDevice));
-    checkCudaErrors(cudaMemcpy(d_mRowPtr, cast_host->mRowPtr, this->mNRows*sizeof(int),
+    checkCudaErrors(cudaMemcpy(d_mRowPtr, cast_host->mRowPtr, (this->mNRows+1)*sizeof(int),
                             cudaMemcpyHostToDevice));
 
 }
@@ -80,7 +80,7 @@ void DeviceCsrMatrix<ValueType>::CopyFromDevice(
                             cudaMemcpyDeviceToDevice));
     checkCudaErrors(cudaMemcpy(d_mColInd, cast_device->d_mColInd, this->mNnz*sizeof(int),
                             cudaMemcpyDeviceToDevice));
-    checkCudaErrors(cudaMemcpy(d_mRowPtr, cast_device->d_mRowPtr, this->mNRows*sizeof(int),
+    checkCudaErrors(cudaMemcpy(d_mRowPtr, cast_device->d_mRowPtr, (this->mNRows+1)*sizeof(int),
                             cudaMemcpyDeviceToDevice));
 
 }
@@ -96,9 +96,9 @@ void DeviceCsrMatrix<ValueType>::CopyToHost(
     checkCudaErrors(cudaMemcpy(cast_host->mData, d_mData, this->mNnz*sizeof(ValueType),
                             cudaMemcpyDeviceToHost));
     checkCudaErrors(cudaMemcpy(cast_host->mColInd, d_mColInd,  this->mNnz*sizeof(int),
-                            cudaMemcpyDeviceToDevice));
-    checkCudaErrors(cudaMemcpy(cast_host->mRowPtr, d_mRowPtr, this->mNRows*sizeof(int),
-                            cudaMemcpyDeviceToDevice));
+                            cudaMemcpyDeviceToHost));
+    checkCudaErrors(cudaMemcpy(cast_host->mRowPtr, d_mRowPtr, (this->mNRows+1)*sizeof(int),
+                            cudaMemcpyDeviceToHost));
 
 }
 
@@ -114,7 +114,7 @@ void DeviceCsrMatrix<ValueType>::CopyToDevice(
                             cudaMemcpyDeviceToDevice));
     checkCudaErrors(cudaMemcpy(cast_device->d_mColInd, d_mColInd, this->mNnz*sizeof(int),
                             cudaMemcpyDeviceToDevice));
-    checkCudaErrors(cudaMemcpy(cast_device->d_mRowPtr, d_mRowPtr, this->mNRows*sizeof(int),
+    checkCudaErrors(cudaMemcpy(cast_device->d_mRowPtr, d_mRowPtr, (this->mNRows+1)*sizeof(int),
                             cudaMemcpyDeviceToDevice));
 
 }
