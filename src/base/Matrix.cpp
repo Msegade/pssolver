@@ -194,6 +194,7 @@ Vector<ValueType> Matrix<ValueType>::operator*(const Vector<ValueType>& vec)
     if ( this->IsDevice() ) out.MoveToDevice();
     this->pImpl->MatVec(*(vec.pImpl), *(out.pImpl), 1.0);
 
+    std::cout << out;
     return out;
 }
 

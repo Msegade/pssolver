@@ -1,5 +1,6 @@
 
 #pragma once
+#include <stdio.h>
 
 namespace pssolver
 {
@@ -14,6 +15,7 @@ __global__ void kernel_csrmatrix_matvec (const int nRows, const int* rowPtr,
 
     if (i < nRows)
     {
+        //printf("I = %d\n", i);
         out[i] = ValueType(0.0);
         for (j = rowPtr[i]; j <rowPtr[j+1]; j++)
         {

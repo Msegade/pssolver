@@ -133,6 +133,8 @@ void DeviceVector<ValueType>::Add(
     dim3 GridSize( mSize / BLOCKSIZE +1);
     kernel_vector_add <<<GridSize, BlockSize>>>
                                     (mSize, d_mData, cast_vec->d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
 
 }
 
@@ -153,6 +155,8 @@ void DeviceVector<ValueType>::Add(
                                     (mSize, d_mData,
                                      cast_v1->d_mData,
                                      cast_v2->d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
 
 }
 
@@ -165,6 +169,8 @@ double DeviceVector<ValueType>::Norm(void) const
     dim3 GridSize( mSize / BLOCKSIZE +1);
     kernel_vector_multiply <<<GridSize, BlockSize>>> ( mSize, aux.d_mData,
                                                     d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
 
     result = aux.SumReduce();
 
@@ -183,6 +189,8 @@ ValueType DeviceVector<ValueType>::Dot(const BaseVector<ValueType>& otherVector)
     DeviceVector<ValueType> aux(*this);
     kernel_vector_multiply <<<GridSize, BlockSize>>> ( mSize, aux.d_mData,
                                                     cast_v->d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
     ValueType result = aux.SumReduce();
 
     return result;
@@ -196,6 +204,8 @@ void DeviceVector<ValueType>::ScalarMul(const ValueType& val)
     dim3 BlockSize(BLOCKSIZE);
     dim3 GridSize( mSize / BLOCKSIZE +1);
     kernel_vector_scalar_multiply <<<GridSize, BlockSize>>> (mSize, d_mData, val);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
         
 }
 template <typename ValueType>
@@ -204,6 +214,8 @@ ValueType DeviceVector<ValueType>::SumReduce(void)
     dim3 BlockSize(BLOCKSIZE);
     dim3 GridSize( mSize / BLOCKSIZE +1);
     kernel_vector_sum_reduce <<<GridSize, BlockSize>>> ( mSize, d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
 
     //If the grid size is odd, we get at an odd number of elements at the beginning of the
     // array that we need to sum, and the algorithm kernel_sum_reduce_onevector
@@ -218,10 +230,14 @@ ValueType DeviceVector<ValueType>::SumReduce(void)
         BlockSize = GridSize.x + 1;
         GridSize = 1;
         kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
     }
     BlockSize = GridSize;
     GridSize = 1;
     kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
 
     checkCudaErrors(cudaMemcpy( &result, d_mData, sizeof(double), cudaMemcpyDeviceToHost));
 

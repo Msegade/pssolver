@@ -24,17 +24,18 @@ int main(int argc, char* argv[] )
 
     Vector<double> b(5,1);
 
-    Vector<double> result = A*b;
+    Vector<double> result;
 
-    std::cout << result;
+    //std::cout << result;
 
     b.MoveToDevice();
     A.MoveToDevice();
 
     result.MoveToDevice();
-
     std::cout << "***************************************" <<std::endl;
-    result= A*b;
+    result = b;
+    std::cout << "***************************************" <<std::endl;
+    result = A*b;
     std::cout << "***************************************" <<std::endl;
 //  std::cout << result;
 
