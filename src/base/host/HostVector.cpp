@@ -6,6 +6,7 @@
 #include <cstring>
 #include <iostream>
 #include <cmath>
+#include <regex>
 
 namespace pssolver
 {
@@ -35,6 +36,41 @@ void HostVector<ValueType>::Allocate(const int size)
     mData = new ValueType[size];      
     // Set to 0
     memset(mData, 0, size*sizeof(ValueType));
+}
+
+template <typename ValueType>
+void HostVector<ValueType>::ReadFile(const std::string filename)
+{
+    DEBUGLOG(this, "HostVector::ReadFile()", "filename = " << filename, 2);
+    
+    std::ifstream mFile(filename);
+    std::string line;
+    std::getline(mFile, line);
+    if ( !std::regex_match (line, std::regex("^[0-9]+")))
+    {
+        std::cerr << "Bad syntax line 1" << std::endl;
+    }
+    int size = std::stoi(line);
+    this->Allocate(size);
+    int index = 0;
+    while   (std::getline(mFile, line))
+    {
+        //if (!std::regex_match (line, std::regex("^-?[0-9.]+e(?:\\+|\\-)[0-9]+)")))
+        if (!regex_match (line, std::regex("^(-?[0-9.]+e(?:\\+|\\-)[0-9]+)")))
+        {
+            std::cerr << "Bad syntax in line: " << index+2 << std::endl;
+        }
+        else
+        {
+            mData[index] = std::stod(line);
+        }
+        index++;
+    }
+
+
+
+
+
 }
 
 template <typename ValueType>

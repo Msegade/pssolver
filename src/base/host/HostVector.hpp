@@ -30,6 +30,7 @@ public:
     HostVector();
     virtual ~HostVector();
 
+    void ReadFile(const std::string filename);
     virtual void Allocate(const int size);
     virtual ValueType Read(const int i) const;
     virtual void Print(std::ostream& os);

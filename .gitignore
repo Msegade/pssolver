@@ -1,3 +1,7 @@
 build/
 *.bak
 *.swp
+python/*.txt
+tests/dealii/*
+!tests/dealii/step-3.cc
+!tests/dealii/CMakeLists.txt

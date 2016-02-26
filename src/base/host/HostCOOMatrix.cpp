@@ -64,8 +64,8 @@ void HostCOOMatrix<ValueType>::ReadFile(const std::string filename)
     std::istringstream linestream;
     while   (std::getline(mFile, line))
     {
-        if (!regex_match (line, std::regex("^((?:(?:[1-9][0-9]*\\s+?){2})"
-                                    "-?[0-9.]+e(?:\\+|\\-)[0-9]+)")))
+        if (!regex_match (line, std::regex("^((?:(?:[0-9][0-9]*\\s+?){2})"
+                                    "-?[0-9\\.]+e(?:\\+|\\-)[0-9]+)")))
         {
             std::cerr << "Bad syntax in line: " << linenumber << std::endl;
             linenumber++;

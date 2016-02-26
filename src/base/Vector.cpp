@@ -72,6 +72,21 @@ Vector<ValueType>::~Vector()
 }
 
 template <typename ValueType>
+void Vector<ValueType>::ReadFile(const std::string filename)
+{
+    DEBUGLOG(this, "Vector::ReadFile()", "filename = " << filename, 1);
+    if (this->IsHost())
+        pImplHost->ReadFile(filename);
+    else
+    {
+        pImplHost->ReadFile(filename);
+        pImplHost->CopyToDevice(*pImplDevice);
+    }
+
+    
+}
+
+template <typename ValueType>
 void Vector<ValueType>::MoveToDevice(void)
 {
     DEBUGLOG( this, "Vector::MoveToDevice()", "Empty", 1);

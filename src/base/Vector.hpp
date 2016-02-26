@@ -25,6 +25,7 @@ public:
     Vector(const Vector<ValueType>& otherVector);
     virtual ~Vector();
     
+    void ReadFile(const std::string filename);
     void MoveToDevice(void);
     bool IsHost(void) const;
     bool IsDevice(void) const;
