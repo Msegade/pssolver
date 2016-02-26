@@ -1,5 +1,7 @@
 #include "pssolver.hpp"
+#include "../timer.hpp"
 #include <iostream>
+#include <unistd.h>
 
 using namespace pssolver;
 
@@ -22,9 +24,23 @@ int main(int argc, char* argv[] )
     A.ReadFile(matrixfile);
     //std::cout << A;
 
-    //b.MoveToDevice();
-    //A.MoveToDevice();
-
     LinearSystem<Matrix<double>, Vector<double>> LS(A,b);
-    std::cout << LS.SolveCG(1000, 1e-12);
+
+    high_resolution_timer timer;
+    LS.SolveCG(1000, 1e-12);
+    double hosttime = timer.elapsed();
+
+    std::cout << "Host Time = " << hosttime << std::endl;
+
+    A.MoveToDevice();
+    b.MoveToDevice();
+
+    timer.restart();
+    LS.SolveCG(1000, 1e-12);
+    double devicetime = timer.elapsed();
+    std::cout << "Device Time = " << devicetime;
+
+
+
+
 }

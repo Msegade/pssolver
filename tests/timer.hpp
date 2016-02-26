@@ -1,8 +1,8 @@
 #include <chrono>
 
-class high_resolution_timer
+struct high_resolution_timer
 {
-public:
+
     high_resolution_timer() : start_time_(take_time_stamp()) {}
 
     void restart()
