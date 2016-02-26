@@ -29,6 +29,27 @@ __global__ void kernel_vector_add(const int n,
         out[ind] = v1[ind] + v2[ind];
 }
 
+template <typename ValueType>
+__global__ void kernel_vector_substract(const int n,
+                                 ValueType* v1, const ValueType* v2)
+{
+    int ind = blockIdx.x*blockDim.x + threadIdx.x;
+
+    if (ind <n)
+        v1[ind] = v1[ind] - v2[ind];
+}
+
+template <typename ValueType>
+__global__ void kernel_vector_substract(const int n,
+                                 ValueType* out, const ValueType* v1,
+                                 const ValueType* v2)
+{
+    int ind = blockIdx.x*blockDim.x + threadIdx.x;
+
+    if (ind <n)
+        out[ind] = v1[ind] - v2[ind];
+}
+
 // Element-wise multiply
 template <typename ValueType>
 __global__ void kernel_vector_multiply(const int n,

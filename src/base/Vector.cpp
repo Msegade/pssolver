@@ -33,7 +33,7 @@ Vector<ValueType>::Vector(const Vector<ValueType>& otherVector)
         pImplDevice = std::shared_ptr<DeviceVector<ValueType>>
                                 (new DeviceVector<ValueType>());
         pImplDevice->CopyFromDevice(*(otherVector.pImplDevice)); 
-        pImpl = pImplHost;
+        pImpl = pImplDevice;
     }
     
 }
@@ -204,6 +204,8 @@ Vector<ValueType> Vector<ValueType>::operator+(
 {
     DEBUGLOG( this, "Vector::operator+", "Vec =" << &otherVector, 1);
     assert(GetSize() == otherVector.GetSize());
+    assert(( IsHost() && otherVector.IsHost() )|| 
+            (IsDevice() && otherVector.IsDevice()) );
 
     Vector<ValueType> result(GetSize());
 
@@ -213,6 +215,36 @@ Vector<ValueType> Vector<ValueType>::operator+(
     {
         result.MoveToDevice();
         result.pImpl->Add(*(otherVector.pImpl), *pImpl);
+    }
+
+    return result;
+        
+}
+
+template <typename ValueType>
+void Vector<ValueType>::operator-=(
+                                const Vector<ValueType>& otherVector)
+{
+    DEBUGLOG( this, "Vector::operator-=", "Vec =" << &otherVector, 1);
+    assert(GetSize() == otherVector.GetSize());
+    pImpl->Substract(*(otherVector.pImpl));
+}
+
+template <typename ValueType>
+Vector<ValueType> Vector<ValueType>::operator-(
+                                const Vector<ValueType>& otherVector)
+{
+    DEBUGLOG( this, "Vector::operator-", "Vec =" << &otherVector, 1);
+    assert(GetSize() == otherVector.GetSize());
+
+    Vector<ValueType> result(GetSize());
+
+    if (pImpl == pImplHost)
+        result.pImpl->Substract(*pImpl, *(otherVector.pImpl));
+    else if (pImpl == pImplDevice)
+    {
+        result.MoveToDevice();
+        result.pImpl->Substract((*pImpl), *(otherVector.pImpl));
     }
 
     return result;
@@ -236,8 +268,19 @@ double Vector<ValueType>::Norm(void) const
 template <typename ValueType>
 ValueType Vector<ValueType>::operator*(const Vector<ValueType>& otherVector) const 
 {
+    DEBUGLOG( this, "Vector::operator*", "Vec =" << &otherVector, 1);
     assert(GetSize() == otherVector.GetSize()); 
     return pImpl->Dot(*(otherVector.pImpl));
+    
+}
+
+template <typename ValueType>
+Vector<ValueType> Vector<ValueType>::operator*(const ValueType& val) const 
+{
+    DEBUGLOG( this, "Vector::operator*", "Scalar =" << val, 1);
+    Vector<ValueType> result(*this);
+    result.pImpl->ScalarMul(val);
+    return result;
     
 }
 

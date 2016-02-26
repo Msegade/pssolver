@@ -56,12 +56,12 @@ void HostCsrMatrix<ValueType>::Print(std::ostream& os)
     {
         if (i <= this->mNRows)
         {
-        os << mData[i] << "\t" << mColInd[i] << "\t" << 
+        os << mData[i] << "\t" << mColInd[i] << "\t\t" << 
                                                     mRowPtr[i] << std::endl;
 
         }
         else 
-        os << mData[i] << "\t" << mColInd[i] << "\t" << std::endl;
+        os << mData[i] << "\t" << mColInd[i] << "\t\t" << std::endl;
 
     }
 }

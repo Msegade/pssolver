@@ -1,5 +1,6 @@
 #include "LinearSystem.hpp"
 #include "../pssolver.hpp"
+#include "../utils.hpp"
 
 namespace pssolver
 {
@@ -7,6 +8,9 @@ namespace pssolver
 template <class MatrixType, class VectorType>
 LinearSystem<MatrixType, VectorType>::LinearSystem (MatrixType& A, VectorType& b) 
 {
+
+    DEBUGLOG(this, "LinearSystem::LinearSystem()", 
+                                        "A = " << &A << " b = " << &b, 1);
     // Check size compatibility
     assert(A.GetNRows() == b.GetSize());
     mSize = A.GetNRows();
@@ -18,10 +22,16 @@ LinearSystem<MatrixType, VectorType>::LinearSystem (MatrixType& A, VectorType& b
 template <typename MatrixType, typename VectorType>
 VectorType LinearSystem<MatrixType, VectorType>::SolveCG(int maxiter, double tol)
 {
+    DEBUGLOG(this, "LinearSystem::SolveCG()", 
+                                "maxiter = " << maxiter << " tol = " << tol, 1);
+    assert(mpA->IsHost() && mpb->IsHost() ||
+            mpA->IsDevice() && mpb->IsDevice());
+    
     // References to make the code easier
     MatrixType& rA = *mpA;
     VectorType& rb = *mpb;
 
+    // Auxiliary vectors
     // Residue Vector and old residue
     VectorType res(mSize);
     VectorType resold(mSize);
@@ -29,8 +39,20 @@ VectorType LinearSystem<MatrixType, VectorType>::SolveCG(int maxiter, double tol
     VectorType dir(mSize);
     // Initial guess
     VectorType x(mSize, 1.0);
+    // move to device if needed
+    if (mpA->IsDevice() )
+    {
+        res.MoveToDevice();
+        resold.MoveToDevice();
+        dir.MoveToDevice();
+        x.MoveToDevice();
+    }
 
-    res = rb - rA*x;
+
+    //res = rb - rA*x;
+    res = rA*x;
+    res = rb - res;
+    std::cout << res;
     dir = res;
 
     double alpha, beta;
@@ -38,7 +60,7 @@ VectorType LinearSystem<MatrixType, VectorType>::SolveCG(int maxiter, double tol
     for (int i=1; i<maxiter; i++)
     {
         alpha = res*res / (dir*(rA*dir));
-        x = x + dir*alpha;
+        x = x + (dir*alpha);
         resold = res;
         res = res - (rA*dir)*alpha;
         beta = res*res / (resold*resold);

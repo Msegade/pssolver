@@ -39,6 +39,9 @@ int main(int argc, char* argv[] )
     std::cout << result;
 
     LinearSystem<Matrix<double>, Vector<double>> LS(A,b);
+    std::cout << "**************************************" << std::endl;
+    std::cout << "Empieza gradientes conjugados" << std::endl;
+    std::cout << "**************************************" << std::endl;
     std::cout << LS.SolveCG(40, 0.00001);
 
     return 0;

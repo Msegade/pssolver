@@ -126,6 +126,7 @@ template <typename ValueType>
 void DeviceVector<ValueType>::Add(
                         const BaseVector<ValueType> &otherVector)
 {
+    DEBUGLOG(this, "DeviceVector::Add()", "Vec = " << &otherVector, 2);
     const DeviceVector<ValueType> *cast_vec = 
         dynamic_cast<const DeviceVector<ValueType>*> (&otherVector);
 
@@ -144,6 +145,48 @@ void DeviceVector<ValueType>::Add(
                         const BaseVector<ValueType> &v2)
 
 {
+    DEBUGLOG(this, "DeviceVector::Add()", "Vec1 = " << &v1 
+                                                    << " Vec2 = " << &v2, 2);
+    const DeviceVector<ValueType> *cast_v1 = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&v1);
+    const DeviceVector<ValueType> *cast_v2 = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&v2);
+    //std::cout << "cast_v2 size " << cast_v2->GetSize() << std::endl;
+    //std::cout << "My  size " << this->GetSize() << std::endl;
+
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    kernel_vector_add <<<GridSize, BlockSize>>>
+                                    (mSize, d_mData,
+                                     cast_v1->d_mData,
+                                     cast_v2->d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
+
+}
+
+template <typename ValueType>
+void DeviceVector<ValueType>::Substract(
+                        const BaseVector<ValueType> &otherVector)
+{
+    const DeviceVector<ValueType> *cast_vec = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&otherVector);
+
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    kernel_vector_substract <<<GridSize, BlockSize>>>
+                                    (mSize, d_mData, cast_vec->d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
+
+}
+
+template <typename ValueType>
+void DeviceVector<ValueType>::Substract(
+                        const BaseVector<ValueType> &v1,
+                        const BaseVector<ValueType> &v2)
+
+{
     const DeviceVector<ValueType> *cast_v1 = 
         dynamic_cast<const DeviceVector<ValueType>*> (&v1);
     const DeviceVector<ValueType> *cast_v2 = 
@@ -151,7 +194,7 @@ void DeviceVector<ValueType>::Add(
 
     dim3 BlockSize(BLOCKSIZE);
     dim3 GridSize( mSize / BLOCKSIZE +1);
-    kernel_vector_add <<<GridSize, BlockSize>>>
+    kernel_vector_substract <<<GridSize, BlockSize>>>
                                     (mSize, d_mData,
                                      cast_v1->d_mData,
                                      cast_v2->d_mData);

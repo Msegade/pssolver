@@ -68,6 +68,7 @@ void HostVector<ValueType>::CopyFromHost(
 {
 
     DEBUGLOG(this, "HostVector::CopyFromHost()", "Vec = " << &otherVector, 2);
+    this->Allocate(otherVector.GetSize());
     // To access private attributes of the derived class we need to 
     // downcast the object
     const HostVector<ValueType> *cast_vec = 
@@ -98,6 +99,7 @@ void HostVector<ValueType>::CopyToHost(
 {
 
     DEBUGLOG(this, "HostVector::CopyToHost()", "Vec = " << &otherVector, 2);
+    otherVector.Allocate(this->GetSize());
     const HostVector<ValueType> *cast_vec = 
         dynamic_cast<const HostVector<ValueType>*> (&otherVector);
 
@@ -148,6 +150,37 @@ void HostVector<ValueType>::Add(
     for (int i=0; i<this->mSize; i++)
     {
         mData[i] = cast_v1->mData[i] + cast_v2->mData[i];
+    }
+
+}
+
+template <typename ValueType>
+void HostVector<ValueType>::Substract(
+                        const BaseVector<ValueType> &otherVector)
+{
+    const HostVector<ValueType> *cast_vec = 
+        dynamic_cast<const HostVector<ValueType>*> (&otherVector);
+    for (int i=0; i<this->mSize; i++)
+    {
+        mData[i] = mData[i] - cast_vec->mData[i];
+    }
+
+}
+
+
+template <typename ValueType>
+void HostVector<ValueType>::Substract(
+                        const BaseVector<ValueType> &v1,
+                        const BaseVector<ValueType> &v2)
+{
+    const HostVector<ValueType> *cast_v1 = 
+        dynamic_cast<const HostVector<ValueType>*> (&v1);
+    const HostVector<ValueType> *cast_v2 = 
+        dynamic_cast<const HostVector<ValueType>*> (&v2);
+
+    for (int i=0; i<this->mSize; i++)
+    {
+        mData[i] = cast_v1->mData[i] - cast_v2->mData[i];
     }
 
 }
