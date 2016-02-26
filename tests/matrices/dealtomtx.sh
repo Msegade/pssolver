@@ -13,5 +13,6 @@ sed -i '1i%%MatrixMarket matrix coordinate real unsymmetric' $output
 sed -i "2i$nrows $nrows $nnz" $output
 
 vectorfile="$2"
+sed -i '$ d' $vectorfile
 size=$(wc -l $vectorfile | cut -d\  -f1)
 sed -i "1i$size" $vectorfile

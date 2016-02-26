@@ -52,7 +52,6 @@ VectorType LinearSystem<MatrixType, VectorType>::SolveCG(int maxiter, double tol
     //res = rb - rA*x;
     res = rA*x;
     res = rb - res;
-    std::cout << res;
     dir = res;
 
     double alpha, beta;

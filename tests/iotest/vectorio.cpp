@@ -11,8 +11,8 @@ int main(int argc, char* argv[] )
         std::exit(EXIT_FAILURE);
     }
     
-    std::string vectorfile = std::string(argv[1]);
-    std::string matrixfile = std::string(argv[2]);
+    std::string vectorfile = std::string(argv[2]);
+    std::string matrixfile = std::string(argv[1]);
 
     Vector<double> b;
     b.ReadFile(vectorfile);
@@ -23,8 +23,8 @@ int main(int argc, char* argv[] )
     A.ReadFile(matrixfile);
     //std::cout << A;
 
-    b.MoveToDevice();
-    A.MoveToDevice();
+    //b.MoveToDevice();
+    //A.MoveToDevice();
 
     std::cout << "Conjugated Gradients" << std::endl;
     LinearSystem<Matrix<double>, Vector<double>> LS(A,b);
