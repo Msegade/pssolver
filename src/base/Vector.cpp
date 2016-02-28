@@ -302,10 +302,24 @@ Vector<ValueType> Vector<ValueType>::operator*(const ValueType& val) const
 template <typename ValueType>
 void Vector<ValueType>::operator*=(const ValueType& val)
 {
+    DEBUGLOG( this, "Vector::operator*=", "Val =" << val, 1);
     pImpl->ScalarMul(val);
 }
                                 
 // Friend functions
+template <typename ValueType>
+void ScalarMul(const Vector<ValueType>& invec, const ValueType& val,
+                     Vector<ValueType>& outvec) 
+{
+    DEBUGLOG( &invec, "SacalrMul()", "invec =" << &invec << " outvec = " << &outvec 
+                                    << "val" << val, 1);
+    assert(( invec.IsHost() && outvec.IsHost() )|| 
+            (invec.IsDevice() && outvec.IsDevice()) );
+    assert(invec.GetSize() == outvec.GetSize()); 
+    invec.pImpl->ScalarMul(val, *(outvec.pImpl));
+
+}
+
 template <typename ValueType>
 std::ostream& operator<<(std::ostream& os, const Vector<ValueType> &Vec)
 {
@@ -325,6 +339,10 @@ std::ostream& operator<<(std::ostream& os, const Vector<ValueType> &Vec)
 template class Vector<double>;
 template class Vector<float>;
 template class Vector<int>;
+
+template void ScalarMul(const Vector<double>& invec, const double& val, Vector<double>& outvec);
+template void ScalarMul(const Vector<float>& invec, const float& val, Vector<float>& outvec);
+template void ScalarMul(const Vector<int>& invec, const int& val, Vector<int>& outvec);
 
 template std::ostream& operator<<(std::ostream& os, const Vector<double> &Vec);
 template std::ostream& operator<<(std::ostream& os, const Vector<float> &Vec);

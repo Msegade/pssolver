@@ -92,3 +92,14 @@ __global__ void kernel_vector_scalar_multiply(const int n,
     if (ind < n)
         in[ind] = in[ind]*val;
 }
+
+template <typename ValueType>
+__global__ void kernel_vector_scalar_multiply(const int n,
+                                              const  ValueType* in, ValueType val,
+                                                ValueType* out)
+{
+    
+    int ind = threadIdx.x + blockDim.x * blockIdx.x;
+    if (ind < n)
+        out[ind] = in[ind]*val;
+}

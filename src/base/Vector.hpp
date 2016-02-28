@@ -63,6 +63,8 @@ public:
     // a = a * val --> Allocates a temporary vector
 
     template <typename T>
+    friend void ScalarMul(const Vector<T>& invec, const T& val, Vector<T>& outvec);
+    template <typename T>
     friend void MatVec(const Matrix<T>& mat, const Vector<T>& invec, Vector<T>& outvec);
     template <typename T>
     friend std::ostream& operator<<(std::ostream& os, const Vector<T>& vec);
@@ -77,6 +79,8 @@ private:
 
 };
 
+template <typename ValueType>
+void ScalarMul(const Vector<ValueType>& invec, const ValueType& val, Vector<ValueType>& outvec);
 template <typename ValueType>
 void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec, Vector<ValueType>& outvec);
 template <typename ValueType>

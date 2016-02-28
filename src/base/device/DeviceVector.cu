@@ -87,7 +87,8 @@ template <typename ValueType>
 void DeviceVector<ValueType>::CopyFromDevice(const BaseVector<ValueType>& src)
 {
     DEBUGLOG(this, "DeviceVector::CopyFromDevice()", "Vec = " << &src, 2);
-    this->Allocate(src.GetSize());
+    if ( src.GetSize() != this->GetSize())
+        this->Allocate(src.GetSize());
     const DeviceVector<ValueType> *cast_vec; 
     cast_vec = dynamic_cast<const DeviceVector<ValueType>*> (&src);
 
@@ -224,6 +225,7 @@ double DeviceVector<ValueType>::Norm(void) const
 template <typename ValueType>
 ValueType DeviceVector<ValueType>::Dot(const BaseVector<ValueType>& otherVector)
 {
+    DEBUGLOG(this, "DeviceVector::Dot()", "Vec = " << &otherVector, 2);
     const DeviceVector<ValueType> *cast_v = 
         dynamic_cast<const DeviceVector<ValueType>*> (&otherVector);
 
@@ -244,6 +246,7 @@ ValueType DeviceVector<ValueType>::Dot(const BaseVector<ValueType>& otherVector)
 template <typename ValueType>
 void DeviceVector<ValueType>::ScalarMul(const ValueType& val)
 {
+    DEBUGLOG(this, "DeviceVector::ScalarMul()", "val = " << val, 2);
     dim3 BlockSize(BLOCKSIZE);
     dim3 GridSize( mSize / BLOCKSIZE +1);
     kernel_vector_scalar_multiply <<<GridSize, BlockSize>>> (mSize, d_mData, val);
@@ -251,6 +254,23 @@ void DeviceVector<ValueType>::ScalarMul(const ValueType& val)
     checkCudaErrors( cudaDeviceSynchronize() );
         
 }
+
+template <typename ValueType>
+void DeviceVector<ValueType>::ScalarMul(const ValueType& val, BaseVector<ValueType>& outvec)
+{
+    DEBUGLOG(this, "DeviceVector::ScalarMul()", "val = " << val <<
+                                                " outvec = " << &outvec, 2);
+    const DeviceVector<ValueType> *cast_v = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&outvec);
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    kernel_vector_scalar_multiply <<<GridSize, BlockSize>>> (mSize, d_mData, val,
+                                                            cast_v->d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
+        
+}
+
 template <typename ValueType>
 ValueType DeviceVector<ValueType>::SumReduce(void)
 {

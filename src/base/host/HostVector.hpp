@@ -48,6 +48,7 @@ public:
     virtual double Norm(void) const;
     virtual ValueType Dot(const BaseVector<ValueType> &otherVector);
     virtual void ScalarMul(const ValueType& val);
+    virtual void ScalarMul(const ValueType& val, BaseVector<ValueType>& outvec);
 
 private:
 

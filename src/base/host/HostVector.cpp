@@ -257,6 +257,17 @@ void HostVector<ValueType>::ScalarMul(const ValueType& val)
     }
 }
 
+template <typename ValueType>
+void HostVector<ValueType>::ScalarMul(const ValueType& val, BaseVector<ValueType>& outvec)
+{
+    const HostVector<ValueType> *cast_v = 
+        dynamic_cast<const HostVector<ValueType>*> (&outvec);
+    for (int i=0; i<this->mSize; i++)    
+    {
+        cast_v->mData[i] = mData[i]*val;
+    }
+}
+
 template class HostVector<double>;
 template class HostVector<float>;
 template class HostVector<int>;

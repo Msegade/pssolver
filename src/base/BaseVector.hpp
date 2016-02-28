@@ -41,6 +41,7 @@ public:
     virtual ValueType Dot(const BaseVector<ValueType>& otherVector) = 0;
 
     virtual void ScalarMul(const ValueType& val) = 0;
+    virtual void ScalarMul(const ValueType& val, BaseVector<ValueType>& outvec) = 0;
 
     
 // Protected so the derived classes have acces to it

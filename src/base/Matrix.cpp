@@ -202,7 +202,7 @@ template <typename ValueType>
 void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec, 
                                           Vector<ValueType>& outvec)
 {
-    DEBUGLOG(&mat, "Matrix::MatVec", "invec = " << &invec <<
+    DEBUGLOG(&mat, "MatVec()", "invec = " << &invec <<
                                     " outvec = "<< &outvec, 1);
     assert(invec.GetSize() == mat.GetNCols()); 
     assert(invec.GetSize() == outvec.GetSize());

@@ -36,6 +36,23 @@ int main(int argc, char* argv[])
     time =  timer.elapsed();
     std::cout << "Matrix Vector Time =  " << time << std::endl;
 
+    //Asigment operator
+    timer.restart();
+    result = b;
+    time =  timer.elapsed();
+    std::cout << "AssigmentTime =  " << time << std::endl;
+
+    //Dot product
+    timer.restart();
+    double alpha =  result * result;
+    time =  timer.elapsed();
+    std::cout << "Dot Product =  " << time << std::endl;
+
+    //Vector * escalar
+    timer.restart();
+    ScalarMul(b, alpha, result);
+    time =  timer.elapsed();
+    std::cout << "Vector * Scalar = " << time << std::endl;
 
 
     
