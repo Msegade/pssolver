@@ -6,9 +6,9 @@
 #ifndef NDEBUG
 #define  DEBUGLOG( obj, fct, args, level ) {                   \
     std::cout << std::string(level-1, '\t')                 \
-               <<  "Obj Addr: " << obj                    \
-             << "; fct: " << fct                         \
-            << " " args << std::endl;                    \
+              <<  "Obj Addr: " << obj                    \
+              << "; fct: " << fct                         \
+              << " " args << std::endl;                    \
 }
 
 #else

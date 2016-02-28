@@ -58,29 +58,31 @@ void HostCOOMatrix<ValueType>::ReadFile(const std::string filename)
     // Go to line 3 where the data begins
     GoToLine(mFile, 3);
     int linenumber = 2;
-    int index;
 
     std::string line;
+    std::getline(mFile, line);
+    // Only check syntax on first line for performance issues
+    // Checking regex in each iteration very slow
+    if (!regex_match (line, std::regex("^((?:(?:[0-9][0-9]*\\s+?){2})"
+                                "-?[0-9\\.]+e(?:\\+|\\-)[0-9]+)")))
+    {
+        std::cerr << "Bad syntax in line: " << linenumber << std::endl;
+    }
+    std::cout << "Hola" << std::endl;
+    GoToLine(mFile, 3);
+    int index;
     std::istringstream linestream;
     while   (std::getline(mFile, line))
     {
-        if (!regex_match (line, std::regex("^((?:(?:[0-9][0-9]*\\s+?){2})"
-                                    "-?[0-9\\.]+e(?:\\+|\\-)[0-9]+)")))
-        {
-            std::cerr << "Bad syntax in line: " << linenumber << std::endl;
-            linenumber++;
-        }
-        else
-        {
-            linestream.str(line); 
-            index = linenumber - 2;
-            int rowInd, colInd;
-            linestream >> rowInd >> colInd >> mData[index];
-            mRowInd[index] = rowInd - 1;
-            mColInd[index] = colInd - 1;
-            linenumber++;
-            linestream.clear();
-        }
+        linestream.str(line); 
+        index = linenumber - 2;
+        int rowInd, colInd;
+        linestream >> rowInd >> colInd >> mData[index];
+        mRowInd[index] = rowInd - 1;
+        mColInd[index] = colInd - 1;
+        linenumber++;
+        linestream.clear();
+        
     }
 
 }
