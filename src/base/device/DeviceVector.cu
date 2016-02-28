@@ -167,6 +167,31 @@ void DeviceVector<ValueType>::Add(
 }
 
 template <typename ValueType>
+void DeviceVector<ValueType>::ScalarAdd(
+                        const BaseVector<ValueType> &v1,
+                        const BaseVector<ValueType> &v2, const ValueType& val)
+
+{
+    DEBUGLOG(this, "DeviceVector::ScalarAdd()", "Vec1 = " << &v1 
+                                    << " Vec2 = " << &v2 << " val = " << val, 2);
+    const DeviceVector<ValueType> *cast_v1 = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&v1);
+    const DeviceVector<ValueType> *cast_v2 = 
+        dynamic_cast<const DeviceVector<ValueType>*> (&v2);
+
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    kernel_vector_scalar_add <<<GridSize, BlockSize>>>
+                                    (mSize, d_mData,
+                                     cast_v1->d_mData,
+                                     cast_v2->d_mData, val);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
+
+}
+
+
+template <typename ValueType>
 void DeviceVector<ValueType>::Substract(
                         const BaseVector<ValueType> &otherVector)
 {

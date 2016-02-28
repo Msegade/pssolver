@@ -321,6 +321,22 @@ void ScalarMul(const Vector<ValueType>& invec, const ValueType& val,
 }
 
 template <typename ValueType>
+void ScalarAdd(const Vector<ValueType>& vec1, const Vector<ValueType>& vec2, 
+                    const ValueType& val, Vector<ValueType>& outvec) 
+{
+    DEBUGLOG( &vec1, "SacalrAdd()", "vec1 =" << &vec1 << " vec2 = " << &vec2 
+                            << " val =  " << val << " outvec = " << &outvec, 1);
+    assert(( vec1.IsHost() && vec2.IsHost() )|| 
+            (vec1.IsDevice() && vec2.IsDevice()) );
+    assert(( vec1.IsHost() && outvec.IsHost() )|| 
+            (vec1.IsDevice() && outvec.IsDevice()) );
+    assert(vec1.GetSize() == vec2.GetSize()); 
+    assert(vec1.GetSize() == outvec.GetSize()); 
+    outvec.pImpl->ScalarAdd(*(vec1.pImpl), *(vec2.pImpl), val);
+
+}
+
+template <typename ValueType>
 std::ostream& operator<<(std::ostream& os, const Vector<ValueType> &Vec)
 {
     if (Vec.IsHost())
@@ -339,6 +355,13 @@ std::ostream& operator<<(std::ostream& os, const Vector<ValueType> &Vec)
 template class Vector<double>;
 template class Vector<float>;
 template class Vector<int>;
+
+template void ScalarAdd(const Vector<double>& vec1, const Vector<double>& vec2, 
+                        const double& val, Vector<double>& outvec);
+template void ScalarAdd(const Vector<float>& vec1, const Vector<float>& vec2, 
+                        const float& val, Vector<float>& outvec);
+template void ScalarAdd(const Vector<int>& vec1, const Vector<int>& vec2, 
+                        const int& val, Vector<int>& outvec); 
 
 template void ScalarMul(const Vector<double>& invec, const double& val, Vector<double>& outvec);
 template void ScalarMul(const Vector<float>& invec, const float& val, Vector<float>& outvec);

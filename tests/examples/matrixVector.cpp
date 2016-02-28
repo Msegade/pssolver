@@ -54,6 +54,19 @@ int main(int argc, char* argv[])
     time =  timer.elapsed();
     std::cout << "Vector * Scalar = " << time << std::endl;
 
+    std::cout << "******************************************" << std::endl;
+    Vector<double> x(b.GetSize());
+    x.MoveToDevice();
+    std::cout << "******************************************" << std::endl;
+    std::cout << "Alpha = " << alpha << std::endl;
+
+    std::cout << "Scalar Add" << std::endl;
+    timer.restart();
+    ScalarAdd(b, result, alpha, x);
+    time =  timer.elapsed();
+    std::cout << "Vector scalar add = " << time << std::endl;
+
+
 
     
 

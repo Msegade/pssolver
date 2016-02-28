@@ -30,6 +30,17 @@ __global__ void kernel_vector_add(const int n,
 }
 
 template <typename ValueType>
+__global__ void kernel_vector_scalar_add(const int n,
+                                 ValueType* out, const ValueType* v1,
+                                 const ValueType* v2, const ValueType val)
+{
+    int ind = blockIdx.x*blockDim.x + threadIdx.x;
+
+    if (ind <n)
+        out[ind] = v1[ind] + val*v2[ind];
+}
+
+template <typename ValueType>
 __global__ void kernel_vector_substract(const int n,
                                  ValueType* v1, const ValueType* v2)
 {

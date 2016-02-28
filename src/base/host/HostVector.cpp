@@ -190,6 +190,23 @@ void HostVector<ValueType>::Add(
 }
 
 template <typename ValueType>
+void HostVector<ValueType>::ScalarAdd(
+                        const BaseVector<ValueType> &v1,
+                        const BaseVector<ValueType> &v2, const ValueType& val)
+{
+    const HostVector<ValueType> *cast_v1 = 
+        dynamic_cast<const HostVector<ValueType>*> (&v1);
+    const HostVector<ValueType> *cast_v2 = 
+        dynamic_cast<const HostVector<ValueType>*> (&v2);
+
+    for (int i=0; i<this->mSize; i++)
+    {
+        mData[i] = cast_v1->mData[i] + val*cast_v2->mData[i];
+    }
+
+}
+
+template <typename ValueType>
 void HostVector<ValueType>::Substract(
                         const BaseVector<ValueType> &otherVector)
 {

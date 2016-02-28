@@ -33,6 +33,8 @@ public:
     virtual void Add(const BaseVector<ValueType> &otherVector) = 0;
     virtual void Add(const BaseVector<ValueType>& v1,
                 const BaseVector<ValueType>& v2) = 0;
+    virtual void ScalarAdd(const BaseVector<ValueType>& v1,
+                const BaseVector<ValueType>& v2, const ValueType& val) = 0;
     virtual void Substract(const BaseVector<ValueType> &otherVector) = 0;
     virtual void Substract(const BaseVector<ValueType>& v1,
                 const BaseVector<ValueType>& v2) = 0;
