@@ -68,19 +68,16 @@ void HostCOOMatrix<ValueType>::ReadFile(const std::string filename)
     {
         std::cerr << "Bad syntax in line: " << linenumber << std::endl;
     }
-    std::cout << "Hola" << std::endl;
     GoToLine(mFile, 3);
-    int index;
     std::istringstream linestream;
+    int index = 0;
     while   (std::getline(mFile, line))
     {
         linestream.str(line); 
-        index = linenumber - 2;
         int rowInd, colInd;
         linestream >> rowInd >> colInd >> mData[index];
         mRowInd[index] = rowInd - 1;
         mColInd[index] = colInd - 1;
-        linenumber++;
         linestream.clear();
         
     }

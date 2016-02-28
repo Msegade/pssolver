@@ -52,18 +52,17 @@ void HostVector<ValueType>::ReadFile(const std::string filename)
     }
     int size = std::stoi(line);
     this->Allocate(size);
+
+    std::getline(mFile, line);
     int index = 0;
+    if (!regex_match (line, std::regex("^(-?[0-9.]+e(?:\\+|\\-)[0-9]+)")))
+    {
+        std::cerr << "Bad syntax in line: " << index+2 << std::endl;
+    }
+    GoToLine(mFile, 2);
     while   (std::getline(mFile, line))
     {
-        //if (!std::regex_match (line, std::regex("^-?[0-9.]+e(?:\\+|\\-)[0-9]+)")))
-        if (!regex_match (line, std::regex("^(-?[0-9.]+e(?:\\+|\\-)[0-9]+)")))
-        {
-            std::cerr << "Bad syntax in line: " << index+2 << std::endl;
-        }
-        else
-        {
-            mData[index] = std::stod(line);
-        }
+        mData[index] = std::stod(line);
         index++;
     }
 
