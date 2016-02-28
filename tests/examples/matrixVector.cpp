@@ -18,12 +18,23 @@ int main(int argc, char* argv[])
     std::string filename = std::string(argv[1]);
     A.ReadFile(filename);
 
-    high_resolution_timer timer;
     Vector<double> b;
     filename = std::string(argv[2]);
     b.ReadFile(filename);
+
+    Vector<double> result(b.GetSize());
+
+    high_resolution_timer timer;
+    A.MoveToDevice();
+    b.MoveToDevice();
+    result.MoveToDevice();
     double time =  timer.elapsed();
-    std::cout << "Time =  " << time << std::endl;
+    std::cout << "Allocation Time =  " << time << std::endl;
+
+    timer.restart();
+    MatVec(A, b,result);
+    time =  timer.elapsed();
+    std::cout << "Matrix Vector Time =  " << time << std::endl;
 
 
 

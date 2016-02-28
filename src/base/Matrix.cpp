@@ -197,7 +197,25 @@ Vector<ValueType> Matrix<ValueType>::operator*(const Vector<ValueType>& vec)
     return out;
 }
 
-// Friend Functions
+// Friend Function
+template <typename ValueType>
+void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec, 
+                                          Vector<ValueType>& outvec)
+{
+    DEBUGLOG(&mat, "Matrix::MatVec", "invec = " << &invec <<
+                                    " outvec = "<< &outvec, 1);
+    assert(invec.GetSize() == mat.GetNCols()); 
+    assert(invec.GetSize() == outvec.GetSize());
+
+    assert( (mat.IsHost() && invec.IsHost() ) ||
+            (mat.IsDevice() && invec.IsDevice() ) );
+    assert( (mat.IsHost() && outvec.IsHost() ) ||
+            (mat.IsDevice() && outvec.IsDevice() ) );
+
+    mat.pImpl->MatVec(*(invec.pImpl), *(outvec.pImpl), 1.0);
+
+}
+
 template <typename ValueType>
 std::ostream& operator<<(std::ostream& os, const Matrix<ValueType> &Mat)
 {
@@ -219,6 +237,8 @@ std::ostream& operator<<(std::ostream& os, const Matrix<ValueType> &Mat)
 template class Matrix<double>;
 template class Matrix<float>;
 
+template void MatVec(const Matrix<double>& mat, const Vector<double>& invec, Vector<double>& outvec);
+template void MatVec(const Matrix<float>& mat, const Vector<float>& invec, Vector<float>& outvec);
 template std::ostream& operator<<(std::ostream& os, const Matrix<double> &Mat);
 template std::ostream& operator<<(std::ostream& os, const Matrix<float> &Mat);
 
