@@ -5,8 +5,8 @@
 namespace pssolver
 {
 // Constructor - Matrix and vector remain unchanged
-template <class MatrixType, class VectorType>
-LinearSystem<MatrixType, VectorType>::LinearSystem (MatrixType& A, VectorType& b) 
+template <class MatrixType, class VectorType, typename ValueType>
+LinearSystem<MatrixType, VectorType, ValueType>::LinearSystem (MatrixType& A, VectorType& b) 
 {
 
     DEBUGLOG(this, "LinearSystem::LinearSystem()", 
@@ -19,8 +19,8 @@ LinearSystem<MatrixType, VectorType>::LinearSystem (MatrixType& A, VectorType& b
 }
 
 
-template <typename MatrixType, typename VectorType>
-VectorType LinearSystem<MatrixType, VectorType>::SolveCG(int maxiter, double tol)
+template <class MatrixType, class VectorType, typename ValueType>
+VectorType LinearSystem<MatrixType, VectorType, ValueType>::SolveCG(int maxiter, double tol)
 {
     DEBUGLOG(this, "LinearSystem::SolveCG()", 
                                 "maxiter = " << maxiter << " tol = " << tol, 1);
@@ -36,34 +36,52 @@ VectorType LinearSystem<MatrixType, VectorType>::SolveCG(int maxiter, double tol
     VectorType res(mSize);
     VectorType resold(mSize);
     // Conjugated direction vector
-    VectorType dir(mSize);
+    VectorType s(mSize);
     // Initial guess
     VectorType x(mSize, 1.0);
+    // Aux vector
+    VectorType z(mSize, 1.0);
     // move to device if needed
     if (mpA->IsDevice() )
     {
         res.MoveToDevice();
         resold.MoveToDevice();
-        dir.MoveToDevice();
+        s.MoveToDevice();
         x.MoveToDevice();
+        z.MoveToDevice();
     }
 
+    ValueType sscalar;
+    ValueType alpha, beta;
 
     //res = rb - rA*x;
     MatVec(rA, x, res);
     res -= rb;
-    dir = res;
+    // Sin precondicionamiento
+    s = res;
+    MatVec(rA, s, z);
+    sscalar = z*s;
+    alpha = res*s;
+    alpha = 1/alpha;
 
-    double alpha, beta;
+    ScalarAdd(x, alpha, s, x);
+    resold = res;
+    ScalarAdd(resold, alpha, z, res);
+
     
     for (int i=1; i<maxiter; i++)
     {
-        alpha = res*res / (dir*(rA*dir));
-        x = x + (dir*alpha);
+        // No preconditioner
+        beta = z*res;
+        beta = 1/beta;
+        ScalarAdd(res, beta, s, s);
+        MatVec(rA, s, z);
+        sscalar = z*s;
+        alpha = res*s;
+        alpha = 1/alpha;
+        ScalarAdd(x, alpha, s, x);
         resold = res;
-        res = res - (rA*dir)*alpha;
-        beta = res*res / (resold*resold);
-        dir = res + dir*beta;
+        ScalarAdd(resold, alpha, z, res);
         if ( ( res.Norm() /  resold.Norm() ) < tol)
             break;
     }
@@ -73,7 +91,7 @@ VectorType LinearSystem<MatrixType, VectorType>::SolveCG(int maxiter, double tol
     
 }
 
-template class LinearSystem<Matrix<double>, Vector<double>>;
-template class LinearSystem<Matrix<float>, Vector<float>>;
+template class LinearSystem<Matrix<double>, Vector<double>, double>;
+template class LinearSystem<Matrix<float>, Vector<float>, float>;
 
 }

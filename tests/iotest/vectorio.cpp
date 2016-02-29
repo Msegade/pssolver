@@ -25,6 +25,6 @@ int main(int argc, char* argv[] )
     //b.MoveToDevice();
     //A.MoveToDevice();
 
-    LinearSystem<Matrix<double>, Vector<double>> LS(A,b);
+    LinearSystem<Matrix<double>, Vector<double>, double> LS(A,b);
     std::cout << LS.SolveCG(1000, 1e-12);
 }

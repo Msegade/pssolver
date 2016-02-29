@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
 
     std::cout << "Scalar Add" << std::endl;
     timer.restart();
-    ScalarAdd(b, result, alpha, x);
+    ScalarAdd(b, alpha, result, x);
     time =  timer.elapsed();
     std::cout << "Vector scalar add = " << time << std::endl;
 

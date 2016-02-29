@@ -38,7 +38,7 @@ int main(int argc, char* argv[] )
     std::cout << b;
     std::cout << result;
 
-    LinearSystem<Matrix<double>, Vector<double>> LS(A,b);
+    LinearSystem<Matrix<double>, Vector<double>, double> LS(A,b);
     std::cout << "**************************************" << std::endl;
     std::cout << "Empieza gradientes conjugados" << std::endl;
     std::cout << "**************************************" << std::endl;

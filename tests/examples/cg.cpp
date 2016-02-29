@@ -9,12 +9,12 @@ int main(int argc, char* argv[] )
 {
     if (argc != 3)
     {
-        std::cerr << "Usage vectorio [vectorfile] [matrixfile]" << std::endl;
+        std::cerr << "Usage gc [matrixfile] [vectorfile]" << std::endl;
         std::exit(EXIT_FAILURE);
     }
     
-    std::string vectorfile = std::string(argv[2]);
     std::string matrixfile = std::string(argv[1]);
+    std::string vectorfile = std::string(argv[2]);
 
     Vector<double> b;
     b.ReadFile(vectorfile);
@@ -24,10 +24,10 @@ int main(int argc, char* argv[] )
     A.ReadFile(matrixfile);
     //std::cout << A;
 
-    LinearSystem<Matrix<double>, Vector<double>> LS(A,b);
+    LinearSystem<Matrix<double>, Vector<double>, double> LS(A,b);
 
     high_resolution_timer timer;
-    LS.SolveCG(1000, 1e-12);
+    std::cout << LS.SolveCG(1000, 1e-12);
     double hosttime = timer.elapsed();
 
     std::cout << "Host Time = " << hosttime << std::endl;

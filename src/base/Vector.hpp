@@ -13,6 +13,14 @@ namespace pssolver
 template <typename ValueType>
 class Matrix;
 
+template <typename ValueType>
+class Vector;
+
+template <typename ValueType>
+void ScalarAdd(const Vector<ValueType>& vec1, const ValueType& val, 
+                const Vector<ValueType>& vec2, Vector<ValueType>& outvec);
+
+
 // Integers Floats and doubles
 template <typename ValueType>
 class Vector
@@ -62,11 +70,11 @@ public:
     void operator*=(const ValueType& val);
     // a = a * val --> Allocates a temporary vector
 
+    friend void ScalarAdd<ValueType>(const Vector& vec1, const ValueType& val, const Vector& vec2,
+                          Vector& outvec);
+
     template <typename T>
     friend void ScalarMul(const Vector<T>& invec, const T& val, Vector<T>& outvec);
-    template <typename T>
-    friend void ScalarAdd(const Vector<T>& vec1, const Vector<T>& vec2, const T& val,
-                                                       Vector<T>& outvec);
     template <typename T>
     friend void MatVec(const Matrix<T>& mat, const Vector<T>& invec, Vector<T>& outvec);
     template <typename T>
@@ -85,7 +93,7 @@ private:
 template <typename ValueType>
 void ScalarMul(const Vector<ValueType>& invec, const ValueType& val, Vector<ValueType>& outvec);
 template <typename ValueType>
-void ScalarAdd(const Vector<ValueType>& vec1, const Vector<ValueType>& vec2, const ValueType& val,
+void ScalarAdd(const Vector<ValueType>& vec1,  const ValueType& val, const Vector<ValueType>& vec2,
                                                     Vector<ValueType>& outvec);
 template <typename ValueType>
 void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec, Vector<ValueType>& outvec);

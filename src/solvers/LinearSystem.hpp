@@ -6,7 +6,8 @@
 namespace pssolver
 {
 
-template <class MatrixType, class VectorType>
+
+template <class MatrixType, class VectorType, typename ValueType>
 class LinearSystem
 {
 private:

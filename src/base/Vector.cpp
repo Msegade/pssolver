@@ -321,8 +321,8 @@ void ScalarMul(const Vector<ValueType>& invec, const ValueType& val,
 }
 
 template <typename ValueType>
-void ScalarAdd(const Vector<ValueType>& vec1, const Vector<ValueType>& vec2, 
-                    const ValueType& val, Vector<ValueType>& outvec) 
+void ScalarAdd(const Vector<ValueType>& vec1, const ValueType& val,
+                    const Vector<ValueType>& vec2, Vector<ValueType>& outvec) 
 {
     DEBUGLOG( &vec1, "SacalrAdd()", "vec1 =" << &vec1 << " vec2 = " << &vec2 
                             << " val =  " << val << " outvec = " << &outvec, 1);
@@ -356,12 +356,12 @@ template class Vector<double>;
 template class Vector<float>;
 template class Vector<int>;
 
-template void ScalarAdd(const Vector<double>& vec1, const Vector<double>& vec2, 
-                        const double& val, Vector<double>& outvec);
-template void ScalarAdd(const Vector<float>& vec1, const Vector<float>& vec2, 
-                        const float& val, Vector<float>& outvec);
-template void ScalarAdd(const Vector<int>& vec1, const Vector<int>& vec2, 
-                        const int& val, Vector<int>& outvec); 
+template void ScalarAdd(const Vector<double>& vec1, const double& val,
+                        const Vector<double>& vec2, Vector<double>& outvec);
+template void ScalarAdd(const Vector<float>& vec1, const float& val,
+                        const Vector<float>& vec2, Vector<float>& outvec);
+template void ScalarAdd(const Vector<int>& vec1, const int& val,
+                        const Vector<int>& vec2, Vector<int>& outvec); 
 
 template void ScalarMul(const Vector<double>& invec, const double& val, Vector<double>& outvec);
 template void ScalarMul(const Vector<float>& invec, const float& val, Vector<float>& outvec);
