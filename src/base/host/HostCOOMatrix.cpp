@@ -54,11 +54,12 @@ void HostCOOMatrix<ValueType>::ReadFile(const std::string filename)
     //Allocate matrix after reading the size from the file
     this->Allocate(this->mNRows, this->mNCols, this->mNnz);
     // Re open file
-    std::ifstream mFile(filename);
+    std::ifstream mFile;
+    mFile.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
+    mFile.open(filename);
     // Go to line 3 where the data begins
-    GoToLine(mFile, 3);
-    int linenumber = 2;
 
+    GoToLine(mFile, 3);
     std::string line;
     std::getline(mFile, line);
     // Only check syntax on first line for performance issues
@@ -66,13 +67,14 @@ void HostCOOMatrix<ValueType>::ReadFile(const std::string filename)
     if (!regex_match (line, std::regex("^((?:(?:[0-9][0-9]*\\s+?){2})"
                                 "-?[0-9\\.]+e(?:\\+|\\-)[0-9]+)")))
     {
-        std::cerr << "Bad syntax in line: " << linenumber << std::endl;
+        std::cerr << "Bad syntax in line: 3" << std::endl;
     }
     GoToLine(mFile, 3);
     std::istringstream linestream;
-    int index = 0;
-    while   (std::getline(mFile, line))
+    for (int index=0; index<this->mNnz; index++)
     {
+        std::getline(mFile, line);
+        std::cout << line << std::endl;
         linestream.str(line); 
         int rowInd, colInd;
         linestream >> rowInd >> colInd >> mData[index];
@@ -81,6 +83,7 @@ void HostCOOMatrix<ValueType>::ReadFile(const std::string filename)
         linestream.clear();
         
     }
+    mFile.close();
 
 }
 

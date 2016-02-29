@@ -1,4 +1,5 @@
 #include "BaseMatrix.hpp"
+#include "../utils.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -35,7 +36,10 @@ template <typename ValueType>
 void BaseMatrix<ValueType>::ReadFile(const std::string filename)
 {
     
-    std::ifstream mFile(filename);
+    DEBUGLOG(this, "BaseMatrix::ReadFile()", "filename = " << filename, 2);
+    std::ifstream mFile;
+    mFile.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
+    mFile.open(filename);
     std::string line;
     std::getline(mFile, line);
     int linenumber = 1;
@@ -68,9 +72,7 @@ void BaseMatrix<ValueType>::ReadFile(const std::string filename)
     }
     std::istringstream linestream(line);
     linestream >> mNRows >> mNCols >> mNnz;
-    // The stream is in position for reading the data (line 3)
-    // That is done in the subclasses
-    // getline(mFile,line);
+    mFile.close();
 
 }
 

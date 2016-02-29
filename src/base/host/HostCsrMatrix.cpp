@@ -188,6 +188,7 @@ void HostCsrMatrix<ValueType>::CopyToDevice(BaseMatrix<ValueType> &mat) const
 template <typename ValueType>
 ValueType HostCsrMatrix<ValueType>::Read(int i, int j) const
 {
+    DEBUGLOG(this, "HostCsrMatrix::Read()", "i = " << i << "j = " << j, 2);
     assert (i >=0 && j>=0 && i < this->mNRows && j < this->mNCols);
     int aux = mRowPtr[i];
     int rowWidth = mRowPtr[i+1] - mRowPtr[i];

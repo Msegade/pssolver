@@ -32,10 +32,11 @@ void HostVector<ValueType>::Allocate(const int size)
 {
     DEBUGLOG(this, "HostVector::Allocate()", "size = " << size, 2);
     assert(size > 0);
-    mSize = size;
-    mData = new ValueType[size];      
+    this->mSize = size;
+    this->mData = new ValueType[size];      
     // Set to 0
     memset(mData, 0, size*sizeof(ValueType));
+    
 }
 
 template <typename ValueType>

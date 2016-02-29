@@ -116,18 +116,22 @@ void Vector<ValueType>::Allocate(int size)
     if ( pImpl == pImplHost )
     {
         pImplHost.reset();
+        pImpl.reset();
         pImplHost = std::shared_ptr<HostVector<ValueType>>
                                     (new HostVector<ValueType>());
         assert(pImplHost != NULL);
         pImplHost->Allocate(size);
+        pImpl = pImplHost;
     }
     else if (pImpl == pImplDevice )
     {
         pImplDevice.reset();
+        pImpl.reset();
         pImplDevice = std::shared_ptr<DeviceVector<ValueType>>
                                     (new DeviceVector<ValueType>());
         assert(pImplDevice != NULL);
         pImplDevice->Allocate(size);
+        pImpl = pImplDevice;
 
     }
 
