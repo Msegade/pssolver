@@ -74,7 +74,6 @@ void HostCOOMatrix<ValueType>::ReadFile(const std::string filename)
     for (int index=0; index<this->mNnz; index++)
     {
         std::getline(mFile, line);
-        std::cout << line << std::endl;
         linestream.str(line); 
         int rowInd, colInd;
         linestream >> rowInd >> colInd >> mData[index];

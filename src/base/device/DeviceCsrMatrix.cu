@@ -56,15 +56,22 @@ void DeviceCsrMatrix<ValueType>::CopyFromHost(
                                        const BaseMatrix<ValueType> &hostMatrix)
 {
     DEBUGLOG(this, "DeviceCsrMatrix::CopyFromHost()", "Mat = " << &hostMatrix, 2);
-    this->Allocate(hostMatrix.GetNRows(), hostMatrix.GetNCols(), hostMatrix.GetNnz());
+    if ( (this->mNRows != hostMatrix.GetNRows()) || 
+        (this->mNCols != hostMatrix.GetNCols()) ||
+        (this->mNnz   != hostMatrix.GetNnz()) )
+    {
+        this->Allocate(hostMatrix.GetNRows(), hostMatrix.GetNCols(), hostMatrix.GetNnz());
+    }
     const HostCsrMatrix<ValueType> *cast_host = 
                 dynamic_cast<const HostCsrMatrix<ValueType>*> (&hostMatrix);
+
     checkCudaErrors(cudaMemcpy(d_mData, cast_host->mData, this->mNnz*sizeof(ValueType),
                             cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemcpy(d_mColInd, cast_host->mColInd, this->mNnz*sizeof(int),
                             cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemcpy(d_mRowPtr, cast_host->mRowPtr, (this->mNRows+1)*sizeof(int),
                             cudaMemcpyHostToDevice));
+
 
 }
 
@@ -119,6 +126,26 @@ void DeviceCsrMatrix<ValueType>::CopyToDevice(
 
 }
 
+template <typename ValueType>
+ValueType DeviceCsrMatrix<ValueType>::Read(int i, int j) const
+{
+    DEBUGLOG(this, "DeviceCsrMatrix::Read()", "i = " << i << " j = " << j, 2);
+    assert (i >=0 && j>=0 && i < this->mNRows && j < this->mNCols);
+    // Launch a single therad only to get the value
+    ValueType result = 0.0;
+    ValueType* d_result;
+    checkCudaErrors(cudaMalloc(&d_result, sizeof(ValueType)));
+    kernel_csrmatrix_getvalue <<<1, 1>>>( i, j, this->mNRows, 
+            this->d_mRowPtr, this->d_mColInd, this->d_mData, d_result);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
+    checkCudaErrors(cudaMemcpy(&result, d_result, sizeof(ValueType),
+                            cudaMemcpyDeviceToHost));
+
+    return result;
+    
+
+}
 
 template <typename ValueType>
 void DeviceCsrMatrix<ValueType>::MatVec(BaseVector<ValueType>& invec,

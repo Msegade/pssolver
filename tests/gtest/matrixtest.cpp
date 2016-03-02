@@ -57,6 +57,27 @@ TYPED_TEST(MatrixTest, MatrixConstructors)
     EXPECT_EQ(2, C(4,4));
     EXPECT_EQ(-1, C(4,3));
 
+
+}
+
+TYPED_TEST(MatrixTest, MatrixDataManipulation)
+{
+
+    Matrix<TypeParam> A;
+    A.ReadFile("../tests/matrices/matrix.mtx");
+    std::cout << A;
+
+    A.MoveToDevice();
+
+    EXPECT_TRUE(A.GetFormat() == CSR);
+    EXPECT_EQ(5, A.GetNRows());
+    EXPECT_EQ(5, A.GetNCols());
+    EXPECT_EQ(13, A.GetNnz());
+    EXPECT_EQ(2, A(4,4));
+    EXPECT_EQ(-1, A(4,3));
+
+    
+
 }
 
 

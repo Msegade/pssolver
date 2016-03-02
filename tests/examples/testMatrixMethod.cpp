@@ -17,9 +17,9 @@ int main(void)
         return 1;
     }
 
-    std::cout << "NRows = " << C.GetNRows() << std::endl;
-    std::cout << "NCols = " << C.GetNCols() << std::endl;
-    std::cout << "Nnz = " << C.GetNnz() << std::endl;
-    std::cout << C << std::endl;
+    C.MoveToDevice();
+
+    std::cout << C(4,4) << std::endl;
+
 
 }

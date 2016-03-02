@@ -27,7 +27,7 @@ public:
     virtual void CopyToHost(BaseMatrix<ValueType> &hostMatrix) const;
     virtual void CopyToDevice(BaseMatrix<ValueType> &deviceMatrix) const;
 
-    virtual ValueType Read(int i, int j) const { return 0.0;}
+    virtual ValueType Read(int i, int j) const;
 
     virtual void MatVec(BaseVector<ValueType>& invec, 
                                     BaseVector<ValueType>& outvec,
