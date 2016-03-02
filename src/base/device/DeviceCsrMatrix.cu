@@ -97,7 +97,12 @@ void DeviceCsrMatrix<ValueType>::CopyToHost(
                                        BaseMatrix<ValueType> &hostMatrix) const
 {
     DEBUGLOG(this, "DeviceCsrMatrix::CopyToHost()", "Mat = " << &hostMatrix, 2);
-    hostMatrix.Allocate(this->GetNRows(), this->GetNCols(), this->GetNnz());
+    if ( (this->mNRows != hostMatrix.GetNRows()) || 
+        (this->mNCols != hostMatrix.GetNCols()) ||
+        (this->mNnz   != hostMatrix.GetNnz()) )
+    {
+        hostMatrix.Allocate(this->GetNRows(), this->GetNCols(), this->GetNnz());
+    }
     const HostCsrMatrix<ValueType> *cast_host = 
                 dynamic_cast<const HostCsrMatrix<ValueType>*> (&hostMatrix);
     checkCudaErrors(cudaMemcpy(cast_host->mData, d_mData, this->mNnz*sizeof(ValueType),

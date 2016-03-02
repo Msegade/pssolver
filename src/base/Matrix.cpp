@@ -166,6 +166,21 @@ void Matrix<ValueType>::MoveToDevice(void)
 }
 
 template <typename ValueType>
+void Matrix<ValueType>::MoveToHost(void)
+{
+    DEBUGLOG(this, "Matrix::MoveToHost()", "Empty", 1);
+    assert(pImpl == pImplDevice);
+    if (this->GetFormat() == CSR)
+    {
+        pImplHost = std::shared_ptr<HostCsrMatrix<ValueType>>
+                        (new HostCsrMatrix<ValueType>());
+        pImplDevice->CopyToHost(*pImplHost);
+        pImpl = pImplHost;
+    }
+
+}
+
+template <typename ValueType>
 ValueType Matrix<ValueType>::operator()(int i, int j)
 {
     return pImpl->Read(i,j);

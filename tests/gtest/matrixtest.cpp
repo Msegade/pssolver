@@ -67,6 +67,7 @@ TYPED_TEST(MatrixTest, MatrixDataManipulation)
     A.ReadFile("../tests/matrices/matrix.mtx");
 
     A.MoveToDevice();
+    EXPECT_TRUE(A.IsDevice());
 
     EXPECT_TRUE(A.GetFormat() == CSR);
     EXPECT_EQ(5, A.GetNRows());
@@ -76,6 +77,12 @@ TYPED_TEST(MatrixTest, MatrixDataManipulation)
     EXPECT_EQ(-1, A(4,3));
 
     A.Allocate(100, 100, 121, CSR);
+    EXPECT_EQ(100, A.GetNRows());
+    EXPECT_EQ(100, A.GetNCols());
+    EXPECT_EQ(121, A.GetNnz());
+
+    A.MoveToHost();
+    EXPECT_TRUE(A.IsHost());
     EXPECT_EQ(100, A.GetNRows());
     EXPECT_EQ(100, A.GetNCols());
     EXPECT_EQ(121, A.GetNnz());

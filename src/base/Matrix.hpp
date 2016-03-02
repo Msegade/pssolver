@@ -35,6 +35,7 @@ public:
 
     void ConvertTo(MatrixType format);
     void MoveToDevice(void);
+    void MoveToHost(void);
 
     int GetNRows(void) const;
     int GetNCols(void) const;
