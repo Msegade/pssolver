@@ -65,7 +65,6 @@ TYPED_TEST(MatrixTest, MatrixDataManipulation)
 
     Matrix<TypeParam> A;
     A.ReadFile("../tests/matrices/matrix.mtx");
-    std::cout << A;
 
     A.MoveToDevice();
 
@@ -75,6 +74,11 @@ TYPED_TEST(MatrixTest, MatrixDataManipulation)
     EXPECT_EQ(13, A.GetNnz());
     EXPECT_EQ(2, A(4,4));
     EXPECT_EQ(-1, A(4,3));
+
+    A.Allocate(100, 100, 121, CSR);
+    EXPECT_EQ(100, A.GetNRows());
+    EXPECT_EQ(100, A.GetNCols());
+    EXPECT_EQ(121, A.GetNnz());
 
     
 

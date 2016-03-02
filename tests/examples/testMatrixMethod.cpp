@@ -19,7 +19,8 @@ int main(void)
 
     C.MoveToDevice();
 
-    std::cout << C(4,4) << std::endl;
+    C.Allocate(100, 100, 121, CSR);
+    std::cout << C.GetNRows() << std::endl;
 
 
 }

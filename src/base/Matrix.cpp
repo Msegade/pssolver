@@ -99,10 +99,13 @@ int Matrix<ValueType>::GetNnz(void) const
 template <typename ValueType>
 void Matrix<ValueType>::Allocate(int nRows, int nCols, int nnz, MatrixType format)
 {
+    DEBUGLOG(this, "Matrix::Allocate()", "nRows = " << nRows << " nCols = " << nCols
+                            << " nnz = " << nnz  << " format = " << format, 1);
     assert(nRows > 0 && nCols > 0 && nnz > 0);
     if (pImpl == pImplHost )
     {
         pImplHost.reset();
+        pImpl.reset();
         if(format == CSR)
             pImplHost = std::shared_ptr<HostMatrix<ValueType>>
                             (new HostCsrMatrix<ValueType>());
@@ -112,6 +115,17 @@ void Matrix<ValueType>::Allocate(int nRows, int nCols, int nnz, MatrixType forma
         pImplHost->Allocate(nRows, nCols, nnz);
         pImpl = pImplHost;
     }
+    else if (pImpl == pImplDevice)
+    {
+        pImplDevice.reset();
+        pImpl.reset();
+        if(format == CSR)
+            pImplDevice = std::shared_ptr<DeviceMatrix<ValueType>>
+                            (new DeviceCsrMatrix<ValueType>());
+        pImplDevice->Allocate(nRows, nCols, nnz);
+        pImpl = pImplDevice;
+        
+    }
     
 }
 
@@ -119,6 +133,7 @@ void Matrix<ValueType>::Allocate(int nRows, int nCols, int nnz, MatrixType forma
 template <typename ValueType>
 void Matrix<ValueType>::ConvertTo(MatrixType format)
 {
+    DEBUGLOG(this, "Matrix::ConvertTO()", "format = " << format, 1);
     assert( format == COO || format == CSR );
     if (format == this->GetFormat() ) return;
     std::shared_ptr<HostMatrix<ValueType>> tmpPointer;
