@@ -335,7 +335,10 @@ void ScalarAdd(const Vector<ValueType>& vec1, const ValueType& val,
     assert(( vec1.IsHost() && outvec.IsHost() )|| 
             (vec1.IsDevice() && outvec.IsDevice()) );
     assert(vec1.GetSize() == vec2.GetSize()); 
-    assert(vec1.GetSize() == outvec.GetSize()); 
+
+    if ( outvec.GetSize() != vec1.GetSize()) 
+        outvec.Allocate(vec1.GetSize());
+
     outvec.pImpl->ScalarAdd(*(vec1.pImpl), *(vec2.pImpl), val);
 
 }

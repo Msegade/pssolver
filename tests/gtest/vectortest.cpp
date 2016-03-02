@@ -33,10 +33,30 @@ TYPED_TEST(VectorTest, VectorConstructors)
         EXPECT_EQ(3, c[i]);
     }
 
+    Vector<TypeParam> d(c);
+    EXPECT_EQ(10, d.GetSize());
+    for (int i = 0; i<10; i++)
+    {
+        EXPECT_EQ(3, d[i]);
+    }
+
+
 }
 
 TYPED_TEST(VectorTest, VectorDataManipulation)
 {
+
+    Vector<TypeParam> a;
+    a.ReadFile("../tests/gtest/vector.txt");
+    TypeParam value = 1.0;
+    for (int i = 0; i<a.GetSize(); i++)
+    {
+        EXPECT_NEAR(value, a[i], 0.00001);
+        value = value + 1.1;
+    }
+    EXPECT_TRUE(a.IsHost());
+
+
     Vector<TypeParam> b;
     b.Allocate(100);
     EXPECT_EQ(100, b.GetSize());
@@ -90,6 +110,13 @@ TYPED_TEST(VectorTest, VectorOperationsHost)
     {
         EXPECT_EQ(9, c[i]);
     }
+    // Substraction
+    c = c - b;
+    EXPECT_EQ(100, c.GetSize());
+    for (int i = 0; i<100; i++)
+    {
+        EXPECT_EQ(3, c[i]);
+    }
 
     // Norm
     c.Allocate(5);
@@ -106,6 +133,22 @@ TYPED_TEST(VectorTest, VectorOperationsHost)
     for (int i = 0; i<4; i++)
     {
         EXPECT_EQ(12, b[i]);
+    }
+
+    Vector<TypeParam> d;
+    // Scalar Add
+    TypeParam val = 2.0;
+    ScalarAdd(b, val, c, d);
+    for (int i = 0; i<4; i++)
+    {
+        EXPECT_EQ(26, d[i]);
+    }
+
+    // Scalar Mul
+    ScalarMul(b, val, d); 
+    for (int i = 0; i<4; i++)
+    {
+        EXPECT_EQ(24, d[i]);
     }
 
 
@@ -142,6 +185,14 @@ TYPED_TEST(VectorTest, VectorOperationsDevice)
         EXPECT_EQ(21, d[i]);
     }
 
+    // Substraction
+    c = c - b;
+    EXPECT_EQ(100, c.GetSize());
+    for (int i = 0; i<100; i++)
+    {
+        EXPECT_EQ(-7, c[i]);
+    }
+    // Norm
     c.Allocate(5);
     c.SetVal(7);
     EXPECT_NEAR(15.652476, c.Norm(), 0.0001);
@@ -157,6 +208,23 @@ TYPED_TEST(VectorTest, VectorOperationsDevice)
     {
         EXPECT_EQ(12, b[i]);
     }
+
+    // Scalar Add No extra allocs
+    TypeParam val = 2.0;
+    ScalarAdd(b, val, c, d);
+    for (int i = 0; i<4; i++)
+    {
+        EXPECT_EQ(26, d[i]);
+    }
+
+    // Scalar Mul No extra allocs
+    ScalarMul(b, val, d); 
+    for (int i = 0; i<4; i++)
+    {
+        EXPECT_EQ(24, d[i]);
+    }
+
+
 
 }
 
