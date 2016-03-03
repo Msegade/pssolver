@@ -87,7 +87,70 @@ TYPED_TEST(MatrixTest, MatrixDataManipulation)
     EXPECT_EQ(100, A.GetNCols());
     EXPECT_EQ(121, A.GetNnz());
 
-    
+    Matrix<TypeParam> B;
+    B = A;
+    EXPECT_TRUE(A.GetFormat() == CSR);
+    EXPECT_TRUE(A.IsHost());
+    EXPECT_EQ(100, A.GetNRows());
+    EXPECT_EQ(100, A.GetNCols());
+    EXPECT_EQ(121, A.GetNnz());
+
+}
+
+TYPED_TEST(MatrixTest, MatrixOperationsHost)
+{
+    Matrix<TypeParam> A;
+    A.ReadFile("../tests/matrices/matrix.mtx");
+
+    Vector<TypeParam> b(A.GetNRows(), 1.0);
+    Vector<TypeParam> c(A.GetNRows());
+
+    c = A*b;
+    EXPECT_EQ(1.0, c[0]);
+    for (int i = 1; i < c.GetSize()-1; i++)
+    {
+        EXPECT_EQ(0.0, c[i]);
+    }
+    EXPECT_EQ(1.0, c[4]);
+
+    c.SetVal(0.0);
+    MatVec(A, b, c);
+    EXPECT_EQ(1.0, c[0]);
+    for (int i = 1; i < c.GetSize()-1; i++)
+    {
+        EXPECT_EQ(0.0, c[i]);
+    }
+    EXPECT_EQ(1.0, c[4]);
+
+}
+
+TYPED_TEST(MatrixTest, MatrixOperationsDevice)
+{
+    Matrix<TypeParam> A;
+    A.ReadFile("../tests/matrices/matrix.mtx");
+    A.MoveToDevice();
+
+    Vector<TypeParam> b(A.GetNRows(), 1.0);
+    Vector<TypeParam> c(A.GetNRows());
+    b.MoveToDevice();
+    c.MoveToDevice();
+
+    c = A*b;
+    EXPECT_EQ(1.0, c[0]);
+    for (int i = 1; i < c.GetSize()-1; i++)
+    {
+        EXPECT_EQ(0.0, c[i]);
+    }
+    EXPECT_EQ(1.0, c[4]);
+
+    c.SetVal(0.0);
+    MatVec(A, b, c);
+    EXPECT_EQ(1.0, c[0]);
+    for (int i = 1; i < c.GetSize()-1; i++)
+    {
+        EXPECT_EQ(0.0, c[i]);
+    }
+    EXPECT_EQ(1.0, c[4]);
 
 }
 
