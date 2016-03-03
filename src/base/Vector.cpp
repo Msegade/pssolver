@@ -90,10 +90,22 @@ template <typename ValueType>
 void Vector<ValueType>::MoveToDevice(void)
 {
     DEBUGLOG( this, "Vector::MoveToDevice()", "Empty", 1);
+    assert(this->IsHost());
     pImplDevice = std::shared_ptr<DeviceVector<ValueType>>
                                 (new DeviceVector<ValueType>());
     pImplDevice->CopyFromHost(*pImplHost);
     pImpl = pImplDevice;
+}
+
+template <typename ValueType>
+void Vector<ValueType>::MoveToHost(void)
+{
+    DEBUGLOG( this, "Vector::MoveToHost()", "Empty", 1);
+    assert(this->IsDevice());
+    pImplHost = std::shared_ptr<HostVector<ValueType>>
+                                (new HostVector<ValueType>());
+    pImplDevice->CopyToHost(*pImplHost);
+    pImpl = pImplHost;
 }
 
 template <typename ValueType>

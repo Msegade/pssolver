@@ -167,7 +167,8 @@ void DeviceCsrMatrix<ValueType>::MatVec(BaseVector<ValueType>& invec,
     dim3 BlockSize(BLOCKSIZE);
     dim3 GridSize( this->mNRows / BLOCKSIZE +1);
     kernel_csrmatrix_matvec <<<GridSize, BlockSize>>>( this->mNRows, this->d_mRowPtr,
-                this->d_mColInd, this->d_mData, cast_in->d_mData, cast_out->d_mData);
+                this->d_mColInd, this->d_mData, cast_in->d_mData, cast_out->d_mData,
+                scalar);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
 }

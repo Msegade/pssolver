@@ -67,6 +67,13 @@ TYPED_TEST(VectorTest, VectorDataManipulation)
         EXPECT_EQ(7, b[i]);
     }
 
+    Vector<TypeParam> c;
+    c = b;
+    for (int i = 0; i<100; i++)
+    {
+        EXPECT_EQ(7, c[i]);
+    }
+
     // Mov to the device
     b.MoveToDevice();
     EXPECT_TRUE(b.IsDevice());
@@ -78,6 +85,14 @@ TYPED_TEST(VectorTest, VectorDataManipulation)
     for (int i = 0; i<5; i++)
     {
         EXPECT_EQ(9, b[i]);
+    }
+    c.MoveToDevice();
+    // assigment
+    c = b;
+    EXPECT_TRUE(b.IsDevice());
+    for (int i = 0; i<5; i++)
+    {
+        EXPECT_EQ(9, c[i]);
     }
 
     

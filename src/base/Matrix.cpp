@@ -235,14 +235,56 @@ void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec,
     DEBUGLOG(&mat, "MatVec()", "invec = " << &invec <<
                                     " outvec = "<< &outvec, 1);
     assert(invec.GetSize() == mat.GetNCols()); 
-    assert(invec.GetSize() == outvec.GetSize());
+    if(invec.GetSize() != outvec.GetSize())
+    {
+        outvec.Allocate(invec.GetSize());
+    }
 
     assert( (mat.IsHost() && invec.IsHost() ) ||
             (mat.IsDevice() && invec.IsDevice() ) );
     assert( (mat.IsHost() && outvec.IsHost() ) ||
             (mat.IsDevice() && outvec.IsDevice() ) );
+    if ( mat.IsHost() )
+    {
+        if ( outvec.IsHost() ) {}
+        else outvec.MoveToHost();
+    }
+    else if ( mat.IsDevice() )
+    {
+        if ( outvec.IsDevice() ) {}
+        else outvec.MoveToDevice();
+    }
 
     mat.pImpl->MatVec(*(invec.pImpl), *(outvec.pImpl), 1.0);
+
+}
+
+template <typename ValueType>
+void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec, 
+                                const ValueType& val, Vector<ValueType>& outvec)
+{
+    DEBUGLOG(&mat, "MatVec()", "invec = " << &invec <<
+                                    " outvec = "<< &outvec, 1);
+    assert(invec.GetSize() == mat.GetNCols()); 
+    if(invec.GetSize() != outvec.GetSize())
+    {
+        outvec.Allocate(invec.GetSize());
+    }
+
+    assert( (mat.IsHost() && invec.IsHost() ) ||
+            (mat.IsDevice() && invec.IsDevice() ) );
+    if ( mat.IsHost() )
+    {
+        if ( outvec.IsHost() ) {}
+        else outvec.MoveToHost();
+    }
+    else if ( mat.IsDevice() )
+    {
+        if ( outvec.IsDevice() ) {}
+        else outvec.MoveToDevice();
+    }
+
+    mat.pImpl->MatVec(*(invec.pImpl), *(outvec.pImpl), val);
 
 }
 
@@ -269,6 +311,10 @@ template class Matrix<float>;
 
 template void MatVec(const Matrix<double>& mat, const Vector<double>& invec, Vector<double>& outvec);
 template void MatVec(const Matrix<float>& mat, const Vector<float>& invec, Vector<float>& outvec);
+template void MatVec(const Matrix<double>& mat, const Vector<double>& invec,
+                                    const double& val, Vector<double>& outvec);
+template void MatVec(const Matrix<float>& mat, const Vector<float>& invec,
+                                    const float& val, Vector<float>& outvec);
 template std::ostream& operator<<(std::ostream& os, const Matrix<double> &Mat);
 template std::ostream& operator<<(std::ostream& os, const Matrix<float> &Mat);
 

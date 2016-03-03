@@ -98,7 +98,7 @@ void Step3::make_grid ()
 
 
 
-  triangulation.refine_global (5);
+  triangulation.refine_global (8);
 
 
   std::cout << "Number of active cells: "

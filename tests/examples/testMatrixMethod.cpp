@@ -1,15 +1,20 @@
 #include "pssolver.hpp"
 #include <iostream>
 #include <fstream>
+#include "../timer.hpp"
 
 using namespace pssolver;
 
 int main(void)
 {
-    Matrix<double> C;
+    Matrix<double> A;
+    Vector<double> b;
+    Vector<double> result;
     try 
     {
-        C.ReadFile("../tests/matrices/matrix.mtx");
+        A.ReadFile("../tests/dealii/matrix.mtx");
+        b.ReadFile("../tests/dealii/vector.txt");
+
     }
     catch (std::exception  f)
     {
@@ -17,10 +22,19 @@ int main(void)
         return 1;
     }
 
-    C.MoveToDevice();
+    high_resolution_timer timer;
+    timer.restart();
+    MatVec(A, b, result);
+    std::cout << "Host Time = " << timer.elapsed() << std::endl;
 
-    C.Allocate(100, 100, 121, CSR);
-    std::cout << C.GetNRows() << std::endl;
+    std::cout << "Device time *****************" << std::endl;
+    A.MoveToDevice();
+    b.MoveToDevice();
+    result.MoveToDevice();
+    timer.restart();
+    MatVec(A, b, result);
+    std::cout << "Device Time = " << timer.elapsed() << std::endl;
+
 
 
 }

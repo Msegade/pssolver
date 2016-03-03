@@ -223,6 +223,7 @@ void HostCsrMatrix<ValueType>::MatVec(BaseVector<ValueType>& invec, BaseVector<V
 
     for (int i=0; i<this->mNRows; i++)
     {
+        cast_out->mData[i] = 0.0;
         for (int j=this->mRowPtr[i]; j<this->mRowPtr[i+1]; j++)
         {
             cast_out->mData[i] += scalar*this->mData[j]*cast_in->mData[this->mColInd[j] ];

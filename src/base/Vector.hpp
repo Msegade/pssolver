@@ -35,6 +35,7 @@ public:
     
     void ReadFile(const std::string filename);
     void MoveToDevice(void);
+    void MoveToHost(void);
     bool IsHost(void) const;
     bool IsDevice(void) const;
 
@@ -78,6 +79,9 @@ public:
     template <typename T>
     friend void MatVec(const Matrix<T>& mat, const Vector<T>& invec, Vector<T>& outvec);
     template <typename T>
+    friend void MatVec(const Matrix<T>& mat, const Vector<T>& invec, 
+            const T& val, Vector<T>& outvec);
+    template <typename T>
     friend std::ostream& operator<<(std::ostream& os, const Vector<T>& vec);
 
 
@@ -97,6 +101,9 @@ void ScalarAdd(const Vector<ValueType>& vec1,  const ValueType& val, const Vecto
                                                     Vector<ValueType>& outvec);
 template <typename ValueType>
 void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec, Vector<ValueType>& outvec);
+template <typename ValueType>
+void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec,
+        const ValueType& val, Vector<ValueType>& outvec);
 template <typename ValueType>
 std::ostream& operator<<(std::ostream& os, const Vector<ValueType>& vec);
 

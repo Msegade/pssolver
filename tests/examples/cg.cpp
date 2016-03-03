@@ -27,7 +27,7 @@ int main(int argc, char* argv[] )
     LinearSystem<Matrix<double>, Vector<double>, double> LS(A,b);
 
     high_resolution_timer timer;
-    std::cout << LS.SolveCG(1000, 1e-12);
+    LS.SolveCG(100, 1e-12);
     double hosttime = timer.elapsed();
 
     std::cout << "Host Time = " << hosttime << std::endl;
@@ -36,7 +36,7 @@ int main(int argc, char* argv[] )
     b.MoveToDevice();
 
     timer.restart();
-    LS.SolveCG(1000, 1e-12);
+    LS.SolveCG(100, 1e-12);
     double devicetime = timer.elapsed();
     std::cout << "Device Time = " << devicetime;
 

@@ -50,6 +50,10 @@ public:
     // Do not allocate other object
     template <typename T>
     friend void MatVec(const Matrix<T>& mat, const Vector<T>& invec, Vector<T>& outvec);
+    // With scalar mul
+    template <typename T>
+    friend void MatVec(const Matrix<T>& mat, const Vector<T>& invec,
+            const T& val, Vector<T>& outvec);
     template <typename T>
     friend std::ostream& operator<<(std::ostream& os, const Matrix<T>& Mat);
 
@@ -62,6 +66,11 @@ private:
 
 template <typename ValueType>
 void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec, Vector<ValueType>& outvec);
+
+template <typename ValueType>
+void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec,
+            const ValueType& val, Vector<ValueType>& outvec);
+
 template <typename ValueType>
 std::ostream& operator<<(std::ostream& os, const Matrix<ValueType>& Mat);
 

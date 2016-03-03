@@ -1,6 +1,7 @@
 #include "LinearSystem.hpp"
 #include "../pssolver.hpp"
 #include "../utils.hpp"
+#include "../../tests/timer.hpp"
 
 namespace pssolver
 {
@@ -55,35 +56,61 @@ VectorType LinearSystem<MatrixType, VectorType, ValueType>::SolveCG(int maxiter,
     ValueType alpha, beta;
 
     //res = rb - rA*x;
-    MatVec(rA, x, res);
-    res -= rb;
+    ValueType val = -1.0;
+    MatVec(rA, x, val, res);
+    res += rb;
     // Sin precondicionamiento
     s = res;
-    MatVec(rA, s, z);
-    sscalar = z*s;
+    MatVec(rA, s, val, z);
+    sscalar = -(z*s);
     alpha = res*s;
-    alpha = 1/alpha;
+    alpha = alpha/sscalar;
 
     ScalarAdd(x, alpha, s, x);
     resold = res;
     ScalarAdd(resold, alpha, z, res);
 
     
+    std::ofstream ofs;
+    if (x.IsHost())
+        ofs.open("HostTimes.txt");
+    else
+        ofs.open("DeviceTimes.txt");
+    high_resolution_timer timer;
     for (int i=1; i<maxiter; i++)
     {
         // No preconditioner
-        beta = z*res;
-        beta = 1/beta;
-        ScalarAdd(res, beta, s, s);
-        MatVec(rA, s, z);
-        sscalar = z*s;
-        alpha = res*s;
-        alpha = 1/alpha;
-        ScalarAdd(x, alpha, s, x);
-        resold = res;
-        ScalarAdd(resold, alpha, z, res);
-        if ( ( res.Norm() /  resold.Norm() ) < tol)
-            break;
+        timer.restart();
+            beta = z*res;
+        ofs << "Dotproduct " << timer.elapsed() << std::endl;
+            beta = beta/sscalar;
+        timer.restart();
+            ScalarAdd(res, beta, s, s);
+        ofs << "ScalarAdd " << timer.elapsed() << std::endl;
+            ValueType val = -1.0;
+        timer.restart();
+            MatVec(rA, s, val, z);
+        ofs << "MatVec " << timer.elapsed() << std::endl;
+        timer.restart();
+            sscalar = -(z*s);
+        ofs << "DotProductII " << timer.elapsed() << std::endl;
+        timer.restart();
+            alpha = res*s;
+        ofs << "DotProductIII " << timer.elapsed() << std::endl;
+            alpha = alpha/sscalar;
+        timer.restart();
+            ScalarAdd(x, alpha, s, x);
+        ofs << "ScalarAddII " << timer.elapsed() << std::endl;
+        timer.restart();
+            resold = res;
+        ofs << "Assigment " << timer.elapsed() << std::endl;
+        timer.restart();
+            ScalarAdd(resold, alpha, z, res);
+        ofs << "ScalarAddIII " << timer.elapsed() << std::endl;
+        timer.restart();
+            if ( ( res.Norm() /  resold.Norm() ) < tol)
+                break;
+        ofs << "Norms " << timer.elapsed() << std::endl;
     }
 
     return x;

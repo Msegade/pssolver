@@ -8,7 +8,7 @@ namespace pssolver
 template <typename ValueType>
 __global__ void kernel_csrmatrix_matvec (const int nRows, const int* rowPtr,
         const int* colInd, const ValueType* mat, const ValueType* in, 
-        ValueType *out)
+        ValueType *out, const ValueType scalar)
 {
     int i = blockIdx.x*blockDim.x+threadIdx.x;
     int j;
@@ -18,7 +18,7 @@ __global__ void kernel_csrmatrix_matvec (const int nRows, const int* rowPtr,
         out[i] = ValueType(0.0);
         for (j = rowPtr[i]; j <rowPtr[i+1]; j++)
         {
-            out[i] = out[i] + mat[j]*in[colInd[j]];
+            out[i] = out[i] + scalar*mat[j]*in[colInd[j]];
         }
     }
 }
