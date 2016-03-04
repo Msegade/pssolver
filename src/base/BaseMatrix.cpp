@@ -73,6 +73,7 @@ void BaseMatrix<ValueType>::ReadFile(const std::string filename)
     std::istringstream linestream(line);
     linestream >> mNRows >> mNCols >> mNnz;
     mFile.close();
+    DEBUGEND();
 
 }
 

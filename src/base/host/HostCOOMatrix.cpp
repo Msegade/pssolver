@@ -43,6 +43,7 @@ void HostCOOMatrix<ValueType>::Allocate(const int nRows,
     memset(mData, 0, nnz*sizeof(ValueType));
     memset(mColInd, 0, nnz*sizeof(int));
     memset(mRowInd, 0, nnz*sizeof(int));
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -83,6 +84,7 @@ void HostCOOMatrix<ValueType>::ReadFile(const std::string filename)
         
     }
     mFile.close();
+    DEBUGEND();
 
 }
 

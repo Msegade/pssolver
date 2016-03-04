@@ -25,15 +25,15 @@ int main(void)
     high_resolution_timer timer;
     timer.restart();
     MatVec(A, b, result);
-    std::cout << "Host Time = " << timer.elapsed() << std::endl;
+//    std::cout << "Host Time = " << timer.elapsed() << std::endl;
 
-    std::cout << "Device time *****************" << std::endl;
+ //   std::cout << "Device time *****************" << std::endl;
     A.MoveToDevice();
     b.MoveToDevice();
     result.MoveToDevice();
     timer.restart();
     MatVec(A, b, result);
-    std::cout << "Device Time = " << timer.elapsed() << std::endl;
+  //  std::cout << "Device Time = " << timer.elapsed() << std::endl;
 
 
 

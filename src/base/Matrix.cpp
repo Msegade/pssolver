@@ -11,6 +11,7 @@
 
 namespace pssolver
 {
+
 template <typename ValueType>
 Matrix<ValueType>::Matrix()
 {
@@ -19,16 +20,20 @@ Matrix<ValueType>::Matrix()
     pImplHost = std::shared_ptr<HostMatrix<ValueType>>
                         (new HostCsrMatrix<ValueType>());
     pImpl = pImplHost;
+    DEBUGEND();
 }
 
 template <typename ValueType>
 Matrix<ValueType>::Matrix(int nRows, int nCols, int nnz)
 {
+    DEBUGLOG(this, "Matrix::Matrix()", "nRows" << nRows << " nCols " << nCols
+           << " nnz " << nnz , 1);
     // Empty CSR matrix on host
     pImplHost = std::shared_ptr<HostMatrix<ValueType>>
                         (new HostCsrMatrix<ValueType>());
     pImplHost->Allocate(nRows, nCols, nnz);
     pImpl = pImplHost;
+    DEBUGEND();
 }
 
 
@@ -74,6 +79,7 @@ void Matrix<ValueType>::ReadFile(const std::string filename)
         pImplHost->CopyFromHost(*(tmpPtr));
         pImpl = pImplHost;
     }
+    DEBUGEND();
 
     
 }
@@ -126,6 +132,7 @@ void Matrix<ValueType>::Allocate(int nRows, int nCols, int nnz, MatrixType forma
         pImpl = pImplDevice;
         
     }
+    DEBUGEND();
     
 }
 
@@ -146,6 +153,7 @@ void Matrix<ValueType>::ConvertTo(MatrixType format)
     std::swap(pImplHost, tmpPointer);
     tmpPointer.reset();
     pImpl = pImplHost;
+    DEBUGEND();
 
     
 }
@@ -162,6 +170,7 @@ void Matrix<ValueType>::MoveToDevice(void)
         pImplHost->CopyToDevice(*pImplDevice);
         pImpl = pImplDevice;
     }
+    DEBUGEND();
 
 }
 
@@ -177,6 +186,7 @@ void Matrix<ValueType>::MoveToHost(void)
         pImplDevice->CopyToHost(*pImplHost);
         pImpl = pImplHost;
     }
+    DEBUGEND();
 
 }
 
@@ -224,6 +234,7 @@ Vector<ValueType> Matrix<ValueType>::operator*(const Vector<ValueType>& vec)
     if ( this->IsDevice() ) out.MoveToDevice();
     this->pImpl->MatVec(*(vec.pImpl), *(out.pImpl), 1.0);
 
+    DEBUGEND();
     return out;
 }
 
@@ -256,6 +267,7 @@ void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec,
     }
 
     mat.pImpl->MatVec(*(invec.pImpl), *(outvec.pImpl), 1.0);
+    DEBUGEND();
 
 }
 
@@ -285,6 +297,7 @@ void MatVec(const Matrix<ValueType>& mat, const Vector<ValueType>& invec,
     }
 
     mat.pImpl->MatVec(*(invec.pImpl), *(outvec.pImpl), val);
+    DEBUGEND();
 
 }
 

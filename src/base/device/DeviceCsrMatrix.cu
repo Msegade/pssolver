@@ -26,6 +26,7 @@ DeviceCsrMatrix<ValueType>::~DeviceCsrMatrix()
     checkCudaErrors(cudaFree(d_mData));
     checkCudaErrors(cudaFree(d_mColInd));
     checkCudaErrors(cudaFree(d_mRowPtr));
+    DEBUGEND();
 
 }
 
@@ -40,6 +41,7 @@ void DeviceCsrMatrix<ValueType>::Allocate(const int nRows, const int nCols,
     checkCudaErrors(cudaMalloc(&d_mData, nnz*sizeof(ValueType)));
     checkCudaErrors(cudaMalloc(&d_mColInd, nnz*sizeof(int)));
     checkCudaErrors(cudaMalloc(&d_mRowPtr, (nRows+1)*sizeof(int)));
+    DEBUGEND();
 
 }
 template <typename ValueType>
@@ -71,6 +73,7 @@ void DeviceCsrMatrix<ValueType>::CopyFromHost(
                             cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemcpy(d_mRowPtr, cast_host->mRowPtr, (this->mNRows+1)*sizeof(int),
                             cudaMemcpyHostToDevice));
+    DEBUGEND();
 
 
 }
@@ -89,6 +92,7 @@ void DeviceCsrMatrix<ValueType>::CopyFromDevice(
                             cudaMemcpyDeviceToDevice));
     checkCudaErrors(cudaMemcpy(d_mRowPtr, cast_device->d_mRowPtr, (this->mNRows+1)*sizeof(int),
                             cudaMemcpyDeviceToDevice));
+    DEBUGEND();
 
 }
 
@@ -111,6 +115,7 @@ void DeviceCsrMatrix<ValueType>::CopyToHost(
                             cudaMemcpyDeviceToHost));
     checkCudaErrors(cudaMemcpy(cast_host->mRowPtr, d_mRowPtr, (this->mNRows+1)*sizeof(int),
                             cudaMemcpyDeviceToHost));
+    DEBUGEND();
 
 }
 
@@ -128,6 +133,7 @@ void DeviceCsrMatrix<ValueType>::CopyToDevice(
                             cudaMemcpyDeviceToDevice));
     checkCudaErrors(cudaMemcpy(cast_device->d_mRowPtr, d_mRowPtr, (this->mNRows+1)*sizeof(int),
                             cudaMemcpyDeviceToDevice));
+    DEBUGEND();
 
 }
 
@@ -147,6 +153,7 @@ ValueType DeviceCsrMatrix<ValueType>::Read(int i, int j) const
     checkCudaErrors(cudaMemcpy(&result, d_result, sizeof(ValueType),
                             cudaMemcpyDeviceToHost));
 
+    DEBUGEND();
     return result;
     
 
@@ -171,6 +178,7 @@ void DeviceCsrMatrix<ValueType>::MatVec(BaseVector<ValueType>& invec,
                 scalar);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
+    DEBUGEND();
 }
 
 template class DeviceCsrMatrix<double>;

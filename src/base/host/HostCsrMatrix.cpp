@@ -17,6 +17,7 @@ HostCsrMatrix<ValueType>::HostCsrMatrix()
     mData = new ValueType[0];
     mColInd = new int[0];
     mRowPtr = new int[0];
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -26,6 +27,7 @@ HostCsrMatrix<ValueType>::~HostCsrMatrix()
     delete[] mData;
     delete[] mRowPtr;
     delete[] mColInd;
+    DEBUGEND();
 
 }
 
@@ -45,6 +47,7 @@ void HostCsrMatrix<ValueType>::Allocate(const int nRows,
     memset(mData, 0, nnz*sizeof(ValueType));
     memset(mColInd, 0, nnz*sizeof(int));
     memset(mRowPtr, 0, (nRows+1)*sizeof(int));
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -135,6 +138,7 @@ void HostCsrMatrix<ValueType>::CopyFromHost(const BaseMatrix<ValueType> &mat)
         }
 
     }
+    DEBUGEND();
 
 }
 
@@ -145,6 +149,7 @@ void HostCsrMatrix<ValueType>::CopyFromDevice(const BaseMatrix<ValueType> &mat)
     const DeviceCsrMatrix<ValueType> *cast_device = 
         dynamic_cast<const DeviceCsrMatrix<ValueType>*> (&mat);
     cast_device->CopyToHost(*(this));
+    DEBUGEND();
 
 
 }
@@ -171,6 +176,7 @@ void HostCsrMatrix<ValueType>::CopyToHost(BaseMatrix<ValueType> &mat) const
         }
 
     }
+    DEBUGEND();
 
 }
 
@@ -181,6 +187,7 @@ void HostCsrMatrix<ValueType>::CopyToDevice(BaseMatrix<ValueType> &mat) const
     DeviceCsrMatrix<ValueType> *cast_device = 
         dynamic_cast<DeviceCsrMatrix<ValueType>*> (&mat);
     cast_device->CopyFromHost(*(this));
+    DEBUGEND();
 
 
 }
@@ -204,6 +211,7 @@ ValueType HostCsrMatrix<ValueType>::Read(int i, int j) const
         else result = 0.0;
     }
     return result;
+    DEBUGEND();
 
 }
 
@@ -230,6 +238,7 @@ void HostCsrMatrix<ValueType>::MatVec(BaseVector<ValueType>& invec, BaseVector<V
         }
     }
     
+    DEBUGEND();
 
 
 }

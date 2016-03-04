@@ -11,3 +11,11 @@
 #include "base/host/HostCOOMatrix.hpp"
 
 #include "solvers/LinearSystem.hpp"
+
+
+#ifndef NDEBUG
+
+extern int mlevel;
+int mlevel=0;
+
+#endif

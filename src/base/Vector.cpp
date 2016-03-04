@@ -17,6 +17,7 @@ Vector<ValueType>::Vector()
     pImplHost = std::shared_ptr<HostVector<ValueType>>
                                 (new HostVector<ValueType>());
     pImpl = pImplHost;
+    DEBUGEND();
 
 }
 
@@ -35,6 +36,7 @@ Vector<ValueType>::Vector(const Vector<ValueType>& otherVector)
         pImplDevice->CopyFromDevice(*(otherVector.pImplDevice)); 
         pImpl = pImplDevice;
     }
+    DEBUGEND();
     
 }
 
@@ -47,6 +49,8 @@ Vector<ValueType>::Vector(int size)
                                 (new HostVector<ValueType>());
     pImplHost->Allocate(size);
     pImpl = pImplHost;
+    DEBUGEND();
+
 
 }
 
@@ -61,6 +65,7 @@ Vector<ValueType>::Vector(int size, const ValueType val)
     pImplHost->Allocate(size);
     pImpl = pImplHost;
     pImpl->SetVal(val);
+    DEBUGEND();
 
 }
 
@@ -82,6 +87,7 @@ void Vector<ValueType>::ReadFile(const std::string filename)
         pImplHost->ReadFile(filename);
         pImplHost->CopyToDevice(*pImplDevice);
     }
+    DEBUGEND();
 
     
 }
@@ -95,6 +101,7 @@ void Vector<ValueType>::MoveToDevice(void)
                                 (new DeviceVector<ValueType>());
     pImplDevice->CopyFromHost(*pImplHost);
     pImpl = pImplDevice;
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -106,6 +113,7 @@ void Vector<ValueType>::MoveToHost(void)
                                 (new HostVector<ValueType>());
     pImplDevice->CopyToHost(*pImplHost);
     pImpl = pImplHost;
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -124,6 +132,7 @@ template <typename ValueType>
 void Vector<ValueType>::Allocate(int size)
 {
     DEBUGLOG( this, "Vector::Allocate()", "Size = " << size, 1);
+
     assert(size>0);
     if ( pImpl == pImplHost )
     {
@@ -146,6 +155,7 @@ void Vector<ValueType>::Allocate(int size)
         pImpl = pImplDevice;
 
     }
+    DEBUGEND();
 
 }
 
@@ -187,7 +197,10 @@ Vector<ValueType>& Vector<ValueType>::operator=(
     DEBUGLOG( this, "Vector::operator=", "Vector = " << &otherVector, 1);
     assert(&otherVector != NULL);
     if (this == &otherVector)
+    {
+       DEBUGEND();
        return *this;
+    }
     
     if((pImpl == pImplHost) && (otherVector.pImpl == otherVector.pImplHost))
     {
@@ -201,6 +214,7 @@ Vector<ValueType>& Vector<ValueType>::operator=(
         // a = b = c;
         // Returning by reference makes that no copy of the object is created
         // and destroyed
+        DEBUGEND();
         return *this;
     }
     else if((pImpl == pImplDevice) && (otherVector.pImpl == otherVector.pImplDevice))
@@ -208,12 +222,14 @@ Vector<ValueType>& Vector<ValueType>::operator=(
         int size = otherVector.GetSize();
         //this->Allocate(size);
         pImpl->CopyFromDevice(*(otherVector.pImpl));
+        DEBUGEND();
         return *this;
     }
     else
     {
         std::cerr << "Objects must be on the same place (device or host)"
                   << std::endl;
+        DEBUGEND();
         return *this;
     }
 
@@ -227,6 +243,7 @@ void Vector<ValueType>::operator+=(
     DEBUGLOG( this, "Vector::operator+=", "Vec =" << &otherVector, 1);
     assert(GetSize() == otherVector.GetSize());
     pImpl->Add(*(otherVector.pImpl));
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -248,6 +265,7 @@ Vector<ValueType> Vector<ValueType>::operator+(
         result.pImpl->Add(*(otherVector.pImpl), *pImpl);
     }
 
+    DEBUGEND();
     return result;
         
 }
@@ -259,6 +277,7 @@ void Vector<ValueType>::operator-=(
     DEBUGLOG( this, "Vector::operator-=", "Vec =" << &otherVector, 1);
     assert(GetSize() == otherVector.GetSize());
     pImpl->Substract(*(otherVector.pImpl));
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -278,6 +297,7 @@ Vector<ValueType> Vector<ValueType>::operator-(
         result.pImpl->Substract((*pImpl), *(otherVector.pImpl));
     }
 
+    DEBUGEND();
     return result;
         
 }
@@ -285,12 +305,15 @@ Vector<ValueType> Vector<ValueType>::operator-(
 template <typename ValueType>
 double Vector<ValueType>::Norm(void) const
 {
+    DEBUGLOG( this, "Vector::Norm()", "Empty" , 1);
     if (GetSize()>0)
     {
+        DEBUGEND();
         return pImpl->Norm();
     }
     else
     {
+        DEBUGEND();
         return 0.0;
     }
 
@@ -301,6 +324,7 @@ ValueType Vector<ValueType>::operator*(const Vector<ValueType>& otherVector) con
 {
     DEBUGLOG( this, "Vector::operator*", "Vec =" << &otherVector, 1);
     assert(GetSize() == otherVector.GetSize()); 
+    DEBUGEND();
     return pImpl->Dot(*(otherVector.pImpl));
     
 }
@@ -311,6 +335,7 @@ Vector<ValueType> Vector<ValueType>::operator*(const ValueType& val) const
     DEBUGLOG( this, "Vector::operator*", "Scalar =" << val, 1);
     Vector<ValueType> result(*this);
     result.pImpl->ScalarMul(val);
+    DEBUGEND();
     return result;
     
 }
@@ -320,6 +345,7 @@ void Vector<ValueType>::operator*=(const ValueType& val)
 {
     DEBUGLOG( this, "Vector::operator*=", "Val =" << val, 1);
     pImpl->ScalarMul(val);
+    DEBUGEND();
 }
                                 
 // Friend functions
@@ -333,6 +359,7 @@ void ScalarMul(const Vector<ValueType>& invec, const ValueType& val,
             (invec.IsDevice() && outvec.IsDevice()) );
     assert(invec.GetSize() == outvec.GetSize()); 
     invec.pImpl->ScalarMul(val, *(outvec.pImpl));
+    DEBUGEND();
 
 }
 
@@ -352,6 +379,7 @@ void ScalarAdd(const Vector<ValueType>& vec1, const ValueType& val,
         outvec.Allocate(vec1.GetSize());
 
     outvec.pImpl->ScalarAdd(*(vec1.pImpl), *(vec2.pImpl), val);
+    DEBUGEND();
 
 }
 

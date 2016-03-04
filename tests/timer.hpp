@@ -1,3 +1,4 @@
+#pragma once
 #include <chrono>
 
 struct high_resolution_timer

@@ -28,6 +28,7 @@ DeviceVector<ValueType>::DeviceVector(const DeviceVector<ValueType>& v)
     DEBUGLOG(this, "DeviceVector::DeviceVector()", "Vec = " << &v, 2);
     this->Allocate(v.mSize);
     this->CopyFromDevice(v);
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -35,6 +36,7 @@ DeviceVector<ValueType>::~DeviceVector()
 {
     DEBUGLOG(this, "DeviceVector::~DeviceVector()", "Empty", 2);
     checkCudaErrors(cudaFree(d_mData)); 
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -44,6 +46,7 @@ void DeviceVector<ValueType>::Allocate (const int size)
     assert(size >= 0);
     mSize = size;
     checkCudaErrors(cudaMalloc(&d_mData, mSize*sizeof(double)));
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -53,6 +56,7 @@ void DeviceVector<ValueType>::SetVal (const ValueType val)
     dim3 BlockSize(BLOCKSIZE);
     dim3 GridSize( mSize / BLOCKSIZE +1);
     kernel_vector_fill <<<GridSize, BlockSize>>>(mSize, d_mData, val);
+    DEBUGEND();
 }
 
 template <typename ValueType>
@@ -80,6 +84,7 @@ void DeviceVector<ValueType>::CopyFromHost(const BaseVector<ValueType>& src)
 
     checkCudaErrors(cudaMemcpy(d_mData, cast_vec->mData, mSize*sizeof(ValueType),
                     cudaMemcpyHostToDevice));
+    DEBUGEND();
 
 }
 
@@ -94,6 +99,7 @@ void DeviceVector<ValueType>::CopyFromDevice(const BaseVector<ValueType>& src)
 
     checkCudaErrors(cudaMemcpy(d_mData, cast_vec->d_mData, mSize*sizeof(ValueType),
                     cudaMemcpyDeviceToDevice));
+    DEBUGEND();
 
 }
 
@@ -107,6 +113,7 @@ void DeviceVector<ValueType>::CopyToHost(BaseVector<ValueType>& dst) const
 
     checkCudaErrors(cudaMemcpy(cast_vec->mData, d_mData, mSize*sizeof(ValueType),
                     cudaMemcpyDeviceToHost));
+    DEBUGEND();
 
 }
 
@@ -120,6 +127,7 @@ void DeviceVector<ValueType>::CopyToDevice(BaseVector<ValueType>& dst) const
 
     checkCudaErrors(cudaMemcpy(cast_vec->d_mData, d_mData, mSize*sizeof(ValueType),
                     cudaMemcpyDeviceToDevice));
+    DEBUGEND();
 
 }
 
@@ -137,6 +145,7 @@ void DeviceVector<ValueType>::Add(
                                     (mSize, d_mData, cast_vec->d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
+    DEBUGEND();
 
 }
 
@@ -163,6 +172,7 @@ void DeviceVector<ValueType>::Add(
                                      cast_v2->d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
+    DEBUGEND();
 
 }
 
@@ -187,6 +197,7 @@ void DeviceVector<ValueType>::ScalarAdd(
                                      cast_v2->d_mData, val);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
+    DEBUGEND();
 
 }
 
@@ -195,6 +206,7 @@ template <typename ValueType>
 void DeviceVector<ValueType>::Substract(
                         const BaseVector<ValueType> &otherVector)
 {
+    DEBUGLOG(this, "DeviceVector::Substract()", "Vec = " << &otherVector, 2);
     const DeviceVector<ValueType> *cast_vec = 
         dynamic_cast<const DeviceVector<ValueType>*> (&otherVector);
 
@@ -204,6 +216,7 @@ void DeviceVector<ValueType>::Substract(
                                     (mSize, d_mData, cast_vec->d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
+    DEBUGEND();
 
 }
 
@@ -213,6 +226,8 @@ void DeviceVector<ValueType>::Substract(
                         const BaseVector<ValueType> &v2)
 
 {
+    DEBUGLOG(this, "DeviceVector::Substract()", "Vec1 = " << &v1
+            << " Vec2 = " << &v2, 2);
     const DeviceVector<ValueType> *cast_v1 = 
         dynamic_cast<const DeviceVector<ValueType>*> (&v1);
     const DeviceVector<ValueType> *cast_v2 = 
@@ -226,12 +241,14 @@ void DeviceVector<ValueType>::Substract(
                                      cast_v2->d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
+    DEBUGEND();
 
 }
 
 template <typename ValueType>
 double DeviceVector<ValueType>::Norm(void) const
 {
+    DEBUGLOG(this, "DeviceVector::Norm()", "Empty" , 2);
     DeviceVector<ValueType> aux(*this);
     double result = 0.0;
     dim3 BlockSize(BLOCKSIZE);
@@ -243,6 +260,7 @@ double DeviceVector<ValueType>::Norm(void) const
 
     result = aux.SumReduce();
 
+    DEBUGEND();
     return sqrt((double)result);
 
 }
@@ -263,6 +281,7 @@ ValueType DeviceVector<ValueType>::Dot(const BaseVector<ValueType>& otherVector)
     checkCudaErrors( cudaDeviceSynchronize() );
     ValueType result = aux.SumReduce();
 
+    DEBUGEND();
     return result;
        
     
@@ -277,6 +296,7 @@ void DeviceVector<ValueType>::ScalarMul(const ValueType& val)
     kernel_vector_scalar_multiply <<<GridSize, BlockSize>>> (mSize, d_mData, val);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
+    DEBUGEND();
         
 }
 
@@ -293,12 +313,14 @@ void DeviceVector<ValueType>::ScalarMul(const ValueType& val, BaseVector<ValueTy
                                                             cast_v->d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
+    DEBUGEND();
         
 }
 
 template <typename ValueType>
 ValueType DeviceVector<ValueType>::SumReduce(void)
 {
+    DEBUGLOG(this, "DeviceVector::SumReduce()", "Empty" ,2);
     dim3 BlockSize(BLOCKSIZE);
     dim3 GridSize( mSize / BLOCKSIZE +1);
     kernel_vector_sum_reduce <<<GridSize, BlockSize>>> ( mSize, d_mData);
@@ -329,6 +351,7 @@ ValueType DeviceVector<ValueType>::SumReduce(void)
 
     checkCudaErrors(cudaMemcpy( &result, d_mData, sizeof(double), cudaMemcpyDeviceToHost));
 
+    DEBUGEND();
     return result;
 }
 

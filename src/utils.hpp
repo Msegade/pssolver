@@ -4,15 +4,27 @@
 #include <string>
 
 #ifndef NDEBUG
-#define  DEBUGLOG( obj, fct, args, level ) {                   \
-    std::cout << std::string(level-1, '\t')                 \
+
+#include "../tests/timer.hpp"
+
+extern int mlevel;
+
+#define  DEBUGLOG( obj, fct, args, level )                    \
+    high_resolution_timer debugtimer;    \
+    mlevel++;                               \
+    std::cout << std::string(mlevel-1, '\t')               \
               <<  "Obj Addr: " << obj                    \
               << "; fct: " << fct                         \
               << " " args << std::endl;                    \
-}
+
+#define  DEBUGEND()                    \
+    mlevel--;                                   \
+    std::cout << debugtimer.elapsed() << std::endl; \
+
 
 #else
 #define DEBUGLOG( obj, fct, args, level );
+#define DEBUGEND();
 #endif
 
 namespace pssolver
