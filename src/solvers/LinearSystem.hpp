@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../pssolver.hpp"
 #include <cassert>
 
 namespace pssolver
@@ -13,16 +12,22 @@ class LinearSystem
 private:
     int mSize;
     // This have to be pointers because they don't have a constructor with 0 arguments
-    MatrixType* mpA;
+    MatrixType* mpA; 
     VectorType* mpb;
 
-    // Don't allow the use of copy constructor -> private
-    //LinearSystem(const LinearSystem& otherLinearSystem){};
+    // Aux vectors
+    VectorType res;
+    VectorType resold;
+    VectorType s;
+    VectorType x;
+    VectorType z;
+
+    bool mIsHost;
 
 public:
     LinearSystem(MatrixType &A, VectorType &b);
     // No objects allocated with new
-//    ~LinearSystem();
+    void  MoveToDevice(void);
 
     VectorType SolveCG(int maxiter, double tol);
 

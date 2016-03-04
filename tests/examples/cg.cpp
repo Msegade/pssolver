@@ -18,11 +18,9 @@ int main(int argc, char* argv[] )
 
     Vector<double> b;
     b.ReadFile(vectorfile);
-    //std::cout << b;
 
     Matrix<double> A;
     A.ReadFile(matrixfile);
-    //std::cout << A;
 
     LinearSystem<Matrix<double>, Vector<double>, double> LS(A,b);
 
@@ -34,6 +32,7 @@ int main(int argc, char* argv[] )
 
     A.MoveToDevice();
     b.MoveToDevice();
+    LS.MoveToDevice();
 
     timer.restart();
     LS.SolveCG(100, 1e-12);
