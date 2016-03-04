@@ -64,6 +64,7 @@ VectorType LinearSystem<MatrixType, VectorType, ValueType>::SolveCG(int maxiter,
     ValueType sscalar;
     ValueType alpha, beta;
 
+    // Aprox inicial
     x.SetVal(1.0);
 
     //res = rb - rA*x;
@@ -83,26 +84,25 @@ VectorType LinearSystem<MatrixType, VectorType, ValueType>::SolveCG(int maxiter,
 
     for (int i=1; i<maxiter; i++)
     {
-        // No preconditioner
-            beta = z*res;
-            beta = beta/sscalar;
-            ScalarAdd(res, beta, s, s);
-            ValueType val = -1.0;
-            MatVec(rA, s, val, z);
-            sscalar = -(z*s);
-            alpha = res*s;
-            alpha = alpha/sscalar;
-            ScalarAdd(x, alpha, s, x);
-            resold = res;
-            ScalarAdd(resold, alpha, z, res);
-            if ( ( res.Norm() /  resold.Norm() ) < tol)
-                break;
+        beta = z*res;
+        beta = beta/sscalar;
+        ScalarAdd(res, beta, s, s);
+        ValueType val = -1.0;
+        MatVec(rA, s, val, z);
+        sscalar = -(z*s);
+        alpha = res*s;
+        alpha = alpha/sscalar;
+        ScalarAdd(x, alpha, s, x);
+        resold = res;
+        ScalarAdd(resold, alpha, z, res);
+        if ( ( res.Norm() /  resold.Norm() ) < tol)
+            break;
     }
 
+    DEBUGEND();
     return x;
     
     
-    DEBUGEND();
 }
 
 template class LinearSystem<Matrix<double>, Vector<double>, double>;

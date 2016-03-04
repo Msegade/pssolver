@@ -5,7 +5,7 @@ set (CMAKE_CXX_STANDARD 11)
 
 find_package (CUDA REQUIRED)
 
-set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11")
+set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -std=c++11" )
 
 set (EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/build/bin/")
 set (LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/build/lib/")

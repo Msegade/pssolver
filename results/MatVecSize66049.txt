@@ -1,0 +1,36 @@
+Obj Addr: 0x7fffe0ede6f0; fct: Matrix::Matrix() Empty 	1	5.8747e-05
+	Obj Addr: 0x1c4ce30; fct: HostCsrMatrix::HostCsrMatrix() Empty 	2	2.223e-06
+Obj Addr: 0x7fffe0ede6b0; fct: Vector::Vector() Empty 	3	1.3969e-05
+Obj Addr: 0x7fffe0ede670; fct: Vector::Vector() Empty 	4	1.376e-06
+Obj Addr: 0x7fffe0ede6f0; fct: Matrix::ReadFile() filename = ../tests/dealii/matrix.mtx 	5	0.693763
+	Obj Addr: 0x1c4cfe0; fct: HostCOOMatrix::ReadFile() filename = ../tests/dealii/matrix.mtx 	6	0.672538
+		Obj Addr: 0x1c4cfe0; fct: BaseMatrix::ReadFile() filename = ../tests/dealii/matrix.mtx 	7	0.00242491
+		Obj Addr: 0x1c4cfe0; fct: HostCOOMatrix::Allocate() nRows = 66049 nCols = 66049 nnz = 591361 	8	0.00368324
+	Obj Addr: 0x1c4ce30; fct: HostCsrMatrix::CopyFromHost() BaseMat = 0x1c4cfe0 	9	0.0205224
+		Obj Addr: 0x1c4ce30; fct: HostCsrMatrix::Allocate() nRows = 66049 nCols = 66049 nnz = 591361 	10	0.00232203
+Obj Addr: 0x7fffe0ede6b0; fct: Vector::ReadFile() filename = ../tests/dealii/vector.txt 	11	0.0349673
+	Obj Addr: 0x1c4cef0; fct: HostVector::ReadFile() filename = ../tests/dealii/vector.txt 	12	0.0349289
+		Obj Addr: 0x1c4cef0; fct: HostVector::Allocate() size = 66049 	13	0.000228805
+Obj Addr: 0x7fffe0ede6f0; fct: MatVec() invec = 0x7fffe0ede6b0 outvec = 0x7fffe0ede670 	14	0.0075881
+	Obj Addr: 0x7fffe0ede670; fct: Vector::Allocate() Size = 66049 	15	0.000273183
+		Obj Addr: 0x1c4cf50; fct: HostVector::~HostVector() Empty 	16	3.38e-07
+		Obj Addr: 0x1c4cf90; fct: HostVector::Allocate() size = 66049 	17	0.000232073
+	Obj Addr: 0x1c4ce30; fct: HostCsrMatrix::MatVec() InVec = 0x1c4cef0 OutVec = 0x1c4cf90 Scalar = 1 	18	0.00726144
+Obj Addr: 0x7fffe0ede6f0; fct: Matrix::MoveToDevice() Empty 	19	0.0378419
+	Obj Addr: 0x1c4ce30; fct: HostCsrMatrix::CopyToDevice() BaseMat = 0x1c4cfb0 	20	0.0378014
+		Obj Addr: 0x1c4cfb0; fct: DeviceCsrMatrix::CopyFromHost() Mat = 0x1c4ce30 	21	0.037766
+			Obj Addr: 0x1c4cfb0; fct: DeviceCsrMatrix::Allocate() nRows = 66049 nCols = 66049 nnz = 591361 	22	0.0357325
+Obj Addr: 0x7fffe0ede6b0; fct: Vector::MoveToDevice() Empty 	23	0.00019398
+	Obj Addr: 0x1f9a190; fct: DeviceVector::CopyFromHost() Vec = 0x1c4cef0 	24	0.000152088
+		Obj Addr: 0x1f9a190; fct: DeviceVector::Allocate() size = 66049 	25	2.3107e-05
+Obj Addr: 0x7fffe0ede670; fct: Vector::MoveToDevice() Empty 	26	0.000386608
+	Obj Addr: 0x1f9a6d0; fct: DeviceVector::CopyFromHost() Vec = 0x1c4cf90 	27	0.000367652
+		Obj Addr: 0x1f9a6d0; fct: DeviceVector::Allocate() size = 66049 	28	0.000229359
+Obj Addr: 0x7fffe0ede6f0; fct: MatVec() invec = 0x7fffe0ede6b0 outvec = 0x7fffe0ede670 	29	0.00056286
+	Obj Addr: 0x1c4cfb0; fct: DeviceCsrMatrix::MatVec() InVec = 0x1f9a190 OutVec = 0x1f9a6d0 Scalar = 1 	30	0.000534962
+Obj Addr: 0x1c4cf90; fct: HostVector::~HostVector() Empty 	31	2.52e-06
+Obj Addr: 0x1f9a6d0; fct: DeviceVector::~DeviceVector() Empty 	32	0.000138343
+Obj Addr: 0x1c4cef0; fct: HostVector::~HostVector() Empty 	33	1.512e-06
+Obj Addr: 0x1f9a190; fct: DeviceVector::~DeviceVector() Empty 	34	2.0565e-05
+Obj Addr: 0x1c4ce30; fct: HostCsrMatrix::~HostCsrMatrix() Empty 	35	0.000375626
+Obj Addr: 0x1c4cfb0; fct: DeviceCsrMatrix::~DeviceCsrMatrix() Empty 	36	0.000364512
