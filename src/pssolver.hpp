@@ -15,7 +15,14 @@
 
 #ifndef NDEBUG
 
+#include <fstream>
+extern std::ofstream logfile;
+std::ofstream logfile("log.txt");
+
 extern int mlevel;
 int mlevel=0;
+
+extern int linedebug;
+int linedebug=0;
 
 #endif

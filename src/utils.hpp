@@ -8,18 +8,25 @@
 #include "../tests/timer.hpp"
 
 extern int mlevel;
+extern std::ofstream logfile;
+extern int linedebug;
 
 #define  DEBUGLOG( obj, fct, args, level )                    \
-    high_resolution_timer debugtimer;    \
-    mlevel++;                               \
-    std::cout << std::string(mlevel-1, '\t')               \
-              <<  "Obj Addr: " << obj                    \
-              << "; fct: " << fct                         \
-              << " " args << std::endl;                    \
+    mlevel++;                                                \
+    int locallinedebug;                                     \
+    linedebug++;                                           \
+    locallinedebug = linedebug;                           \
+    logfile  << std::string(mlevel-1, '\t')              \
+              <<  "Obj Addr: " << obj                   \
+              << "; fct: " << fct                      \
+              << " " << args << std::endl;            \
+    high_resolution_timer debugtimer;                \
 
-#define  DEBUGEND()                    \
-    mlevel--;                                   \
-    std::cout << debugtimer.elapsed() << std::endl; \
+#define  DEBUGEND()                                  \
+    double elapsedtime = debugtimer.elapsed();      \
+    logfile << '\t' << locallinedebug              \
+            << '\t' << elapsedtime << std::endl;  \
+    mlevel--;                                    \
 
 
 #else
