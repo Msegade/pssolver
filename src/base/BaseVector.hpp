@@ -40,6 +40,7 @@ public:
                 const BaseVector<ValueType>& v2) = 0;
 
     virtual double Norm(void) const = 0;
+    virtual double Norm(BaseVector<ValueType>& aux) const = 0;
     virtual ValueType Dot(const BaseVector<ValueType>& otherVector) = 0;
 
     virtual void ScalarMul(const ValueType& val) = 0;

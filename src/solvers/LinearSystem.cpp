@@ -82,7 +82,8 @@ VectorType LinearSystem<MatrixType, VectorType, ValueType>::SolveCG(int maxiter,
     resold = res;
     ScalarAdd(resold, alpha, z, res);
 
-    for (int i=1; i<maxiter; i++)
+    int iter;
+    for (iter=1; iter<maxiter; iter++)
     {
         beta = z*res;
         beta = beta/sscalar;
@@ -95,9 +96,14 @@ VectorType LinearSystem<MatrixType, VectorType, ValueType>::SolveCG(int maxiter,
         ScalarAdd(x, alpha, s, x);
         resold = res;
         ScalarAdd(resold, alpha, z, res);
-        if ( ( res.Norm() /  resold.Norm() ) < tol)
+        //std::cout << "**********************" << std::endl;
+        //std::cout << res.Norm() << std::endl;
+        //std::cout << resold.Norm() << std::endl;
+        if (  res.Norm() < tol)
             break;
     }
+
+    std::cout << "CG Number of iterations = " << iter << std::endl;
 
     DEBUGEND();
     return x;

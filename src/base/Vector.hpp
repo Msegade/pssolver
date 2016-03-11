@@ -61,6 +61,7 @@ public:
     Vector<ValueType> operator-(const Vector<ValueType>& otherVector);
 
     double Norm(void) const;
+    double Norm(Vector<ValueType>& aux) const;
     // Dot Product
     ValueType operator*(const Vector<ValueType>& otherVector) const;
     // Scalar product

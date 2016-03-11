@@ -306,10 +306,33 @@ template <typename ValueType>
 double Vector<ValueType>::Norm(void) const
 {
     DEBUGLOG( this, "Vector::Norm()", "Empty" , 1);
+    double result;
     if (GetSize()>0)
     {
+        result = pImpl->Norm();
         DEBUGEND();
-        return pImpl->Norm();
+        return result;
+    }
+    else
+    {
+        DEBUGEND();
+        return 0.0;
+    }
+
+}
+
+template <typename ValueType>
+double Vector<ValueType>::Norm(Vector<ValueType>& aux) const
+{
+    // aux vector for the device calculation
+    DEBUGLOG( this, "Vector::Norm()", "Aux = " << &aux , 1);
+    assert(aux.GetSize() == this->GetSize());
+    double result;
+    if (GetSize()>0)
+    {
+        result = pImpl->Norm(*(aux.pImpl));
+        DEBUGEND();
+        return result;
     }
     else
     {

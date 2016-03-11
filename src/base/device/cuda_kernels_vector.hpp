@@ -78,7 +78,7 @@ __global__ void kernel_vector_sum_reduce(const int n,  ValueType* in)
     int ind = threadIdx.x + blockDim.x * blockIdx.x;
     int tind = threadIdx.x;
 
-        for (unsigned int s = blockDim.x / 2; s > 0; s>>=1 )
+        for (unsigned int s = blockDim.x / 2; s > 0; s = s/2)
         {
             // If ind+s is greater than n It takes garbage
             if (tind < s && (ind+s) < n)
@@ -86,6 +86,7 @@ __global__ void kernel_vector_sum_reduce(const int n,  ValueType* in)
                 //in[ind] = 1.0;
                 in[ind] += in[ind + s];
             }
+
         }
 
         if (tind == 0)

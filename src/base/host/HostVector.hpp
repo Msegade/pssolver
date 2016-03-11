@@ -48,6 +48,7 @@ public:
     virtual void Substract(const BaseVector<ValueType> &v1,
                     const BaseVector<ValueType> &v2);
     virtual double Norm(void) const;
+    virtual double Norm(BaseVector<ValueType>& aux) const;
     virtual ValueType Dot(const BaseVector<ValueType> &otherVector);
     virtual void ScalarMul(const ValueType& val);
     virtual void ScalarMul(const ValueType& val, BaseVector<ValueType>& outvec);

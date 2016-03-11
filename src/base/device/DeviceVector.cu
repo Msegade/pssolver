@@ -261,7 +261,30 @@ double DeviceVector<ValueType>::Norm(void) const
     result = aux.SumReduce();
 
     DEBUGEND();
-    return sqrt((double)result);
+    return sqrt(result);
+
+}
+
+template <typename ValueType>
+double DeviceVector<ValueType>::Norm(BaseVector<ValueType>& aux) const
+{
+    DEBUGLOG(this, "DeviceVector::Norm()", "Aux = " << &aux , 2);
+    assert(aux.GetSize() == this->GetSize());
+    DeviceVector<ValueType> *cast_aux = 
+        dynamic_cast<DeviceVector<ValueType>*> (&aux);
+
+    double result = 0.0;
+    dim3 BlockSize(BLOCKSIZE);
+    dim3 GridSize( mSize / BLOCKSIZE +1);
+    kernel_vector_multiply <<<GridSize, BlockSize>>> ( mSize, cast_aux->d_mData,
+                                                    d_mData);
+    checkCudaErrors( cudaPeekAtLastError() );
+    checkCudaErrors( cudaDeviceSynchronize() );
+
+    result = cast_aux->SumReduce();
+
+    DEBUGEND();
+    return sqrt(result);
 
 }
 
@@ -331,18 +354,18 @@ ValueType DeviceVector<ValueType>::SumReduce(void)
     // array that we need to sum, and the algorithm kernel_sum_reduce_onevector
     // only reduces an even number of elements
     ValueType result=0.0;
-    if ( GridSize.x % 2 != 0)
-    {
-        // We change the element to 0 and increase the size of the grid by one
-        // to get an even number of elements
-        ValueType zero = 0.0;
-        checkCudaErrors(cudaMemcpy(&d_mData[GridSize.x], &zero, sizeof(double), cudaMemcpyHostToDevice));
-        BlockSize = GridSize.x + 1;
-        GridSize = 1;
-        kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, d_mData);
-    checkCudaErrors( cudaPeekAtLastError() );
-    checkCudaErrors( cudaDeviceSynchronize() );
-    }
+    //if ( GridSize.x % 2 != 0)
+    //{
+    //    // We change the element to 0 and increase the size of the grid by one
+    //    // to get an even number of elements
+    //    ValueType zero = 0.0;
+    //    checkCudaErrors(cudaMemcpy(&d_mData[GridSize.x], &zero, sizeof(double), cudaMemcpyHostToDevice));
+    //    BlockSize = GridSize.x + 1;
+    //    GridSize = 1;
+    //    kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, d_mData);
+    //checkCudaErrors( cudaPeekAtLastError() );
+    //checkCudaErrors( cudaDeviceSynchronize() );
+    //}
     BlockSize = GridSize;
     GridSize = 1;
     kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, d_mData);

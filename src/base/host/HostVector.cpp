@@ -269,6 +269,12 @@ double HostVector<ValueType>::Norm(void) const
     return std::sqrt((double)result);
 
 }
+template <typename ValueType>
+double HostVector<ValueType>::Norm(BaseVector<ValueType>& aux) const
+{
+    // Host Vector doesn't need an aux vector
+    this->Norm();
+}
 
 template <typename ValueType>
 ValueType HostVector<ValueType>::Dot(const BaseVector<ValueType>& otherVector)

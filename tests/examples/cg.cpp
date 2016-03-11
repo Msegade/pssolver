@@ -22,22 +22,26 @@ int main(int argc, char* argv[] )
     Matrix<double> A;
     A.ReadFile(matrixfile);
 
+    Vector<double> result;
+
     LinearSystem<Matrix<double>, Vector<double>, double> LS(A,b);
 
     high_resolution_timer timer;
-    LS.SolveCG(2, 1e-12);
+    result = LS.SolveCG(1000, 1e-12);
     double hosttime = timer.elapsed();
-
     std::cout << "Host Time = " << hosttime << std::endl;
 
     A.MoveToDevice();
     b.MoveToDevice();
     LS.MoveToDevice();
+    result.MoveToDevice();
 
     timer.restart();
-    LS.SolveCG(2, 1e-12);
+    result = LS.SolveCG(1000, 1e-12);
     double devicetime = timer.elapsed();
     std::cout << "Device Time = " << devicetime;
+
+
 
 
 
