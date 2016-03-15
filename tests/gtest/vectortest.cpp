@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include "pssolver.hpp"
+#include <iostream>
+#include <unistd.h>
 
 using namespace pssolver;
 
@@ -47,6 +49,10 @@ TYPED_TEST(VectorTest, VectorDataManipulation)
 {
 
     Vector<TypeParam> a;
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    std::cout << "*********************" << std::endl;
+    std::cout << cwd << std::endl;
     a.ReadFile("../tests/gtest/vector.txt");
     TypeParam value = 1.0;
     for (int i = 0; i<a.GetSize(); i++)
