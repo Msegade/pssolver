@@ -345,33 +345,26 @@ ValueType DeviceVector<ValueType>::SumReduce(void)
 {
     DEBUGLOG(this, "DeviceVector::SumReduce()", "Empty" ,2);
     dim3 BlockSize(BLOCKSIZE);
-    dim3 GridSize( mSize / BLOCKSIZE +1);
+    dim3 GridSize( (mSize % BLOCKSIZE) == 0 ?  (mSize / BLOCKSIZE) : 
+                                               (mSize / BLOCKSIZE + 1));
     kernel_vector_sum_reduce <<<GridSize, BlockSize>>> ( mSize, d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
 
-    //If the grid size is odd, we get at an odd number of elements at the beginning of the
-    // array that we need to sum, and the algorithm kernel_sum_reduce_onevector
-    // only reduces an even number of elements
-    ValueType result=0.0;
-    //if ( GridSize.x % 2 != 0)
-    //{
-    //    // We change the element to 0 and increase the size of the grid by one
-    //    // to get an even number of elements
-    //    ValueType zero = 0.0;
-    //    checkCudaErrors(cudaMemcpy(&d_mData[GridSize.x], &zero, sizeof(double), cudaMemcpyHostToDevice));
-    //    BlockSize = GridSize.x + 1;
-    //    GridSize = 1;
-    //    kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, d_mData);
-    //checkCudaErrors( cudaPeekAtLastError() );
-    //checkCudaErrors( cudaDeviceSynchronize() );
-    //}
-    BlockSize = GridSize;
-    GridSize = 1;
-    kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (mSize, d_mData);
+    //BlockSize = GridSize;
+    //GridSize = 1;
+    kernel_vector_sum_reduce <<<1, BlockSize>>> (GridSize.x, d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
-
+    //if(BlockSize.x % 2 != 0)
+    //{
+    //    kernel_vector_add_element <<<1, 1>>> 
+    //        (d_mData, BlockSize.x-1, 0.0);
+    //    checkCudaErrors( cudaPeekAtLastError() );
+    //    checkCudaErrors( cudaDeviceSynchronize() );
+    //}
+    
+    ValueType result = 0.0;
     checkCudaErrors(cudaMemcpy( &result, d_mData, sizeof(double), cudaMemcpyDeviceToHost));
 
     DEBUGEND();

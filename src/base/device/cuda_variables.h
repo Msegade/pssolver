@@ -2,6 +2,6 @@
 namespace pssolver
 {
 
-const int BLOCKSIZE = 1024;
+const int BLOCKSIZE = 512;
 
 }

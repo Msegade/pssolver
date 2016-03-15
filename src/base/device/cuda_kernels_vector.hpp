@@ -81,13 +81,14 @@ __global__ void kernel_vector_sum_reduce(const int n,  ValueType* in)
         for (unsigned int s = blockDim.x / 2; s > 0; s = s/2)
         {
             // If ind+s is greater than n It takes garbage
-            if (tind < s && (ind+s) < n)
+            //if (tind < s && (ind+s) < n)
+            if (tind < s && (ind) < n && (ind+s) < n)
             {
-                //in[ind] = 1.0;
                 in[ind] += in[ind + s];
             }
 
         }
+        __syncthreads();
 
         if (tind == 0)
         {
@@ -114,4 +115,12 @@ __global__ void kernel_vector_scalar_multiply(const int n,
     int ind = threadIdx.x + blockDim.x * blockIdx.x;
     if (ind < n)
         out[ind] = in[ind]*val;
+}
+
+template <typename ValueType>
+__global__ void kernel_vector_add_element(ValueType* vec, const int source, const int dest)
+{
+    int ind = threadIdx.x + blockDim.x * blockIdx.x;
+    if (ind == 0)
+        vec[dest] = vec[dest] + vec[source]; 
 }

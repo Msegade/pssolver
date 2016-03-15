@@ -22,12 +22,13 @@ int main(void)
     Vector<double> aux(b);
     high_resolution_timer timer;
     timer.restart();
-    std::cout << aux.Norm() << std::endl;
+    std::cout << aux.SumReduce() << std::endl;
     std::cout << "Host Time = " << timer.elapsed() << std::endl;
 
     b.MoveToDevice();
     timer.restart();
-    std::cout << b.Norm() << std::endl;
+    std::cout << b.SumReduce() << std::endl;
+    std::cout << b << std::endl;
     std::cout << "Device Time = " << timer.elapsed() << std::endl;
 
 

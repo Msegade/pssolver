@@ -46,6 +46,8 @@ public:
     virtual void ScalarMul(const ValueType& val) = 0;
     virtual void ScalarMul(const ValueType& val, BaseVector<ValueType>& outvec) = 0;
 
+    virtual ValueType SumReduce(void) = 0;
+
     
 // Protected so the derived classes have acces to it
 protected:

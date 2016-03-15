@@ -48,10 +48,10 @@ public:
     virtual void ScalarMul(const ValueType& val);
     virtual void ScalarMul(const ValueType& val, BaseVector<ValueType>& outvec);
     
+    virtual ValueType SumReduce(void);
 private:
     ValueType *d_mData;
 
-    ValueType SumReduce(void);
 };
 
 }

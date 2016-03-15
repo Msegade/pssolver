@@ -72,6 +72,8 @@ public:
     void operator*=(const ValueType& val);
     // a = a * val --> Allocates a temporary vector
 
+    ValueType SumReduce(void);
+
     friend void ScalarAdd<ValueType>(const Vector& vec1, const ValueType& val, const Vector& vec2,
                           Vector& outvec);
 

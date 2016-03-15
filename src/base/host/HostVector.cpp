@@ -318,6 +318,20 @@ void HostVector<ValueType>::ScalarMul(const ValueType& val, BaseVector<ValueType
     DEBUGEND();
 }
 
+template <typename ValueType>
+ValueType HostVector<ValueType>::SumReduce(void)
+{
+    DEBUGLOG(this, "HostVector::SumReduce()", "Empty", 1);
+    ValueType result = 0.0;
+    for (int i = 0; i<this->mSize; i++)
+    {
+        result = result + mData[i];
+    }
+
+    DEBUGEND();
+    return result;
+}
+
 template class HostVector<double>;
 template class HostVector<float>;
 template class HostVector<int>;

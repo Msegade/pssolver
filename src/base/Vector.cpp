@@ -370,6 +370,16 @@ void Vector<ValueType>::operator*=(const ValueType& val)
     pImpl->ScalarMul(val);
     DEBUGEND();
 }
+
+template <typename ValueType>
+ValueType Vector<ValueType>::SumReduce(void)
+{
+    DEBUGLOG( this, "Vector::SumReduce", "Empty" , 1);
+    ValueType result;
+    result =  pImpl->SumReduce();
+    DEBUGEND();
+    return result;
+}
                                 
 // Friend functions
 template <typename ValueType>
@@ -409,6 +419,7 @@ void ScalarAdd(const Vector<ValueType>& vec1, const ValueType& val,
 template <typename ValueType>
 std::ostream& operator<<(std::ostream& os, const Vector<ValueType> &Vec)
 {
+    DEBUGLOG( &Vec, "operator<<", "os" << &os , 1);
     if (Vec.IsHost())
         Vec.pImpl->Print(os);
     else
@@ -416,6 +427,7 @@ std::ostream& operator<<(std::ostream& os, const Vector<ValueType> &Vec)
         Vec.pImpl->CopyToHost(*(Vec.pImplHost));
         Vec.pImplHost->Print(os);
     }
+    DEBUGEND(); 
     return os;
 }
 

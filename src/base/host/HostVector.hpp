@@ -52,6 +52,7 @@ public:
     virtual ValueType Dot(const BaseVector<ValueType> &otherVector);
     virtual void ScalarMul(const ValueType& val);
     virtual void ScalarMul(const ValueType& val, BaseVector<ValueType>& outvec);
+    virtual ValueType SumReduce(void);
 
 private:
 
