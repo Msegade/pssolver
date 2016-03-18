@@ -36,6 +36,7 @@ DeviceVector<ValueType>::~DeviceVector()
 {
     DEBUGLOG(this, "DeviceVector::~DeviceVector()", "Empty", 2);
     checkCudaErrors(cudaFree(d_mData)); 
+    checkCudaErrors( cudaDeviceSynchronize() );
     DEBUGEND();
 }
 
@@ -46,6 +47,7 @@ void DeviceVector<ValueType>::Allocate (const int size)
     assert(size >= 0);
     mSize = size;
     checkCudaErrors(cudaMalloc(&d_mData, mSize*sizeof(double)));
+    checkCudaErrors( cudaDeviceSynchronize() );
     DEBUGEND();
 }
 
@@ -65,6 +67,7 @@ ValueType DeviceVector<ValueType>::Read(const int i) const
     ValueType val;
     checkCudaErrors(cudaMemcpy(&val, &(d_mData[i]), sizeof(ValueType),
                     cudaMemcpyDeviceToHost));
+    checkCudaErrors( cudaDeviceSynchronize() );
     return val;
 }
 
@@ -84,6 +87,7 @@ void DeviceVector<ValueType>::CopyFromHost(const BaseVector<ValueType>& src)
 
     checkCudaErrors(cudaMemcpy(d_mData, cast_vec->mData, mSize*sizeof(ValueType),
                     cudaMemcpyHostToDevice));
+    checkCudaErrors( cudaDeviceSynchronize() );
     DEBUGEND();
 
 }
@@ -99,6 +103,7 @@ void DeviceVector<ValueType>::CopyFromDevice(const BaseVector<ValueType>& src)
 
     checkCudaErrors(cudaMemcpy(d_mData, cast_vec->d_mData, mSize*sizeof(ValueType),
                     cudaMemcpyDeviceToDevice));
+    checkCudaErrors( cudaDeviceSynchronize() );
     DEBUGEND();
 
 }
@@ -113,6 +118,7 @@ void DeviceVector<ValueType>::CopyToHost(BaseVector<ValueType>& dst) const
 
     checkCudaErrors(cudaMemcpy(cast_vec->mData, d_mData, mSize*sizeof(ValueType),
                     cudaMemcpyDeviceToHost));
+    checkCudaErrors( cudaDeviceSynchronize() );
     DEBUGEND();
 
 }
@@ -127,6 +133,7 @@ void DeviceVector<ValueType>::CopyToDevice(BaseVector<ValueType>& dst) const
 
     checkCudaErrors(cudaMemcpy(cast_vec->d_mData, d_mData, mSize*sizeof(ValueType),
                     cudaMemcpyDeviceToDevice));
+    checkCudaErrors( cudaDeviceSynchronize() );
     DEBUGEND();
 
 }
@@ -344,28 +351,38 @@ template <typename ValueType>
 ValueType DeviceVector<ValueType>::SumReduce(void)
 {
     DEBUGLOG(this, "DeviceVector::SumReduce()", "Empty" ,2);
-    dim3 BlockSize(BLOCKSIZE);
-    dim3 GridSize( (mSize % BLOCKSIZE) == 0 ?  (mSize / BLOCKSIZE) : 
-                                               (mSize / BLOCKSIZE + 1));
+    //dim3 BlockSize(BLOCKSIZE);
+    //dim3 GridSize( (mSize % BLOCKSIZE) == 0 ?  (mSize / BLOCKSIZE) : 
+    //                                           (mSize / BLOCKSIZE + 1));
+    dim3 BlockSize(BLOCKSIZE, 1);
+    dim3 GridSize((mSize+BlockSize.x -1)/ BlockSize.x, 1);
     kernel_vector_sum_reduce <<<GridSize, BlockSize>>> ( mSize, d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
 
-    //BlockSize = GridSize;
-    //GridSize = 1;
-    kernel_vector_sum_reduce <<<1, BlockSize>>> (GridSize.x, d_mData);
+    kernel_vector_sum_reduce <<<1, GridSize.x>>> (GridSize.x, d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
-    //if(BlockSize.x % 2 != 0)
-    //{
-    //    kernel_vector_add_element <<<1, 1>>> 
-    //        (d_mData, BlockSize.x-1, 0.0);
-    //    checkCudaErrors( cudaPeekAtLastError() );
-    //    checkCudaErrors( cudaDeviceSynchronize() );
-    //}
-    
+    if(GridSize.x % 2 != 0)
+    {
+        kernel_vector_add_element <<<1, 1>>> 
+            (d_mData, GridSize.x-1, 0);
+        checkCudaErrors( cudaPeekAtLastError() );
+        checkCudaErrors( cudaDeviceSynchronize() );
+    }
     ValueType result = 0.0;
     checkCudaErrors(cudaMemcpy( &result, d_mData, sizeof(double), cudaMemcpyDeviceToHost));
+
+    //ValueType* hresult;
+    //hresult = (ValueType *) malloc(GridSize.x*sizeof(ValueType));
+    //checkCudaErrors(cudaMemcpy( hresult, d_mData, GridSize.x*sizeof(double), cudaMemcpyDeviceToHost));
+    //ValueType result = 0.0;
+    //for(int i = 0; i < GridSize.x; i++)
+    //{
+    //    result += hresult[i]; 
+    //}
+
+    checkCudaErrors( cudaDeviceSynchronize() );
 
     DEBUGEND();
     return result;

@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 
 template <typename ValueType>
 __global__ void kernel_vector_fill(const int n, ValueType* v, ValueType value)
@@ -73,27 +74,34 @@ __global__ void kernel_vector_multiply(const int n,
 }
 
 template <typename ValueType>
-__global__ void kernel_vector_sum_reduce(const int n,  ValueType* in)
+__global__ void kernel_vector_sum_reduce(const int n,  ValueType* gdata)
 {
     int ind = threadIdx.x + blockDim.x * blockIdx.x;
     int tind = threadIdx.x;
 
-        for (unsigned int s = blockDim.x / 2; s > 0; s = s/2)
-        {
-            // If ind+s is greater than n It takes garbage
-            //if (tind < s && (ind+s) < n)
-            if (tind < s && (ind) < n && (ind+s) < n)
-            {
-                in[ind] += in[ind + s];
-            }
+    //Local pointer for this block
+    //ValueType *ldata = gdata + blockIdx.x * blockDim.x;
 
+    if (ind >= n ) return;
+
+    for (unsigned int stride = blockDim.x / 2; stride > 0; stride >>=1)
+    {
+        //if (tind < stride )
+        if ( (tind < stride) && ((ind+stride) < n))
+        {
+            gdata[ind] += gdata[ind + stride];
         }
         __syncthreads();
+    }
 
-        if (tind == 0)
-        {
-            in[blockIdx.x] = in[ind];
-        }
+    // If I use a local vector index and do
+    // gdata[blockIdx.x] = ldata[tind]
+    // Causes a race condition in the first element of the array beacause I 
+    // read and write to the same address at the same time
+    if (tind == 0)
+    {
+        gdata[blockIdx.x] = gdata[ind];
+    }
 }
 
 template <typename ValueType>

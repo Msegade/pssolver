@@ -10,7 +10,9 @@ int main(void)
     Vector<double> b;
     try 
     {
-        b.ReadFile("../tests/matrices/evenvector.txt");
+        b.ReadFile("../tests/matrices/step3vector.txt");
+        //b.ReadFile("../tests/matrices/evenvector.txt");
+        //b.ReadFile("../tests/matrices/step6vector.txt");
 
     }
     catch (std::exception  f)
