@@ -39,5 +39,7 @@ namespace pssolver
 
     std::ifstream& GoToLine(std::ifstream& file, unsigned int num);
 
+    unsigned int nextPow2(unsigned int x);
+
 }
 

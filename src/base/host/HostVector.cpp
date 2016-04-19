@@ -63,8 +63,11 @@ void HostVector<ValueType>::ReadFile(const std::string filename)
         std::cerr << "Bad syntax in line: " << index+2 << std::endl;
     }
     GoToLine(mFile, 2);
-    while   (std::getline(mFile, line))
+    // If the file its bigger than the size specified above -> no errors
+    // if its smaller -> exception
+    for (int i = 0; i < mSize; i++)
     {
+        std::getline(mFile, line);
         mData[index] = std::stod(line);
         index++;
     }

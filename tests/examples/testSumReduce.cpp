@@ -10,9 +10,10 @@ int main(void)
     Vector<double> b;
     try 
     {
-        b.ReadFile("../tests/matrices/step3vector.txt");
+        //b.ReadFile("../tests/matrices/step3vector.txt");
         //b.ReadFile("../tests/matrices/evenvector.txt");
         //b.ReadFile("../tests/matrices/step6vector.txt");
+        b.ReadFile("../tests/matrices/myvector.txt");
 
     }
     catch (std::exception  f)
@@ -30,7 +31,7 @@ int main(void)
     b.MoveToDevice();
     timer.restart();
     std::cout << b.SumReduce() << std::endl;
-    std::cout << b << std::endl;
+    //std::cout << b << std::endl;
     std::cout << "Device Time = " << timer.elapsed() << std::endl;
 
 

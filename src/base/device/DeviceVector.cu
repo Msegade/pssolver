@@ -351,28 +351,27 @@ template <typename ValueType>
 ValueType DeviceVector<ValueType>::SumReduce(void)
 {
     DEBUGLOG(this, "DeviceVector::SumReduce()", "Empty" ,2);
-    //dim3 BlockSize(BLOCKSIZE);
-    //dim3 GridSize( (mSize % BLOCKSIZE) == 0 ?  (mSize / BLOCKSIZE) : 
-    //                                           (mSize / BLOCKSIZE + 1));
-    dim3 BlockSize(BLOCKSIZE, 1);
-    dim3 GridSize((mSize+BlockSize.x -1)/ BlockSize.x, 1);
+
+
+    //dim3 BlockSize(BLOCKSIZE, 1);
+    //dim3 GridSize(mSize/BLOCKSIZE +1);
+    dim3 BlockSize( (mSize < BLOCKSIZE) ? nextPow2(mSize) : BLOCKSIZE);
+    dim3 GridSize( (mSize + BLOCKSIZE - 1 ) / BLOCKSIZE);
     kernel_vector_sum_reduce <<<GridSize, BlockSize>>> ( mSize, d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
 
-    kernel_vector_sum_reduce <<<1, GridSize.x>>> (GridSize.x, d_mData);
+    unsigned int s = GridSize.x;
+    BlockSize.x =  (s < BLOCKSIZE) ? nextPow2(s) : BLOCKSIZE;
+    GridSize.x = ( s + BLOCKSIZE - 1 / BLOCKSIZE);
+    kernel_vector_sum_reduce <<<GridSize, BlockSize>>> (s, d_mData);
     checkCudaErrors( cudaPeekAtLastError() );
     checkCudaErrors( cudaDeviceSynchronize() );
-    if(GridSize.x % 2 != 0)
-    {
-        kernel_vector_add_element <<<1, 1>>> 
-            (d_mData, GridSize.x-1, 0);
-        checkCudaErrors( cudaPeekAtLastError() );
-        checkCudaErrors( cudaDeviceSynchronize() );
-    }
+
     ValueType result = 0.0;
     checkCudaErrors(cudaMemcpy( &result, d_mData, sizeof(double), cudaMemcpyDeviceToHost));
 
+    //std::cout << GridSize.x << std::endl;
     //ValueType* hresult;
     //hresult = (ValueType *) malloc(GridSize.x*sizeof(ValueType));
     //checkCudaErrors(cudaMemcpy( hresult, d_mData, GridSize.x*sizeof(double), cudaMemcpyDeviceToHost));

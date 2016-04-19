@@ -76,6 +76,7 @@ __global__ void kernel_vector_multiply(const int n,
 template <typename ValueType>
 __global__ void kernel_vector_sum_reduce(const int n,  ValueType* gdata)
 {
+
     int ind = threadIdx.x + blockDim.x * blockIdx.x;
     int tind = threadIdx.x;
 
@@ -96,8 +97,8 @@ __global__ void kernel_vector_sum_reduce(const int n,  ValueType* gdata)
 
     // If I use a local vector index and do
     // gdata[blockIdx.x] = ldata[tind]
-    // Causes a race condition in the first element of the array beacause I 
-    // read and write to the same address at the same time
+    // Causes a race condition in the first element of the array for a unknown 
+    // reason
     if (tind == 0)
     {
         gdata[blockIdx.x] = gdata[ind];
@@ -130,5 +131,8 @@ __global__ void kernel_vector_add_element(ValueType* vec, const int source, cons
 {
     int ind = threadIdx.x + blockDim.x * blockIdx.x;
     if (ind == 0)
-        vec[dest] = vec[dest] + vec[source]; 
+    {
+        ValueType aux = vec[dest];
+        vec[dest] = aux + vec[source]; 
+    }
 }
